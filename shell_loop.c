@@ -13,6 +13,8 @@
 const char *shell_start = ">>";
 
 void shell_loop(void) {
+    char *username;
+    char *hostname;
     char *cwd;
     char *line;
     char **args;
@@ -21,8 +23,10 @@ void shell_loop(void) {
     do {
         // Printing the dir
         // HI_GREEN ; HI_BLUE
-        cwd = get_dir();
-        printf(HI_BLUE "%s" RESET, cwd);
+        username = get_username();
+        hostname = get_hostname();
+        cwd = get_cwd();
+        printf(HI_GREEN "%s@%s" RESET ":" HI_BLUE "%s" RESET, username, hostname, cwd);
 
         // Printing the starting point of the shell commands
         printf("%s \n", shell_start);
@@ -32,6 +36,8 @@ void shell_loop(void) {
         status = shell_execute(args);
     } while (status);
 
+    free(username);
+    free(hostname);
     free(cwd);
     free(line);
     free(args);

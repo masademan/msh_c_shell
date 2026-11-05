@@ -1,4 +1,4 @@
-CFLAGS = -std=c99 -Wall -Wextra -O0 -pedantic -g
+CFLAGS = -std=c11 -Wall -Wextra -O0 -pedantic -g
 CC = gcc
 
 ASAN_FLAGS = -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all
@@ -29,11 +29,9 @@ commit:
 	@git commit -m "$(m)"
 
 push:
-	@printf "Pushing changes\n"
 	@git push origin main
 
 pull:
-	@printf "Pulling from repo\n"
 	@git pull origin main
 
 .PHONY: all clean commit push pull
