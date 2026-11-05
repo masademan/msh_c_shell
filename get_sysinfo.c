@@ -1,9 +1,10 @@
-#define _POSIX_C_SOURCE 200112L // AI assisted code to make gethostname work
+// #define _POSIX_C_SOURCE 200112L // AI assisted code to make gethostname work
 
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "get_sysinfo.h"
 
@@ -11,9 +12,8 @@ size_t size_increase_func(size_t size) {
     return size * 2;
 }
 
-#include <string.h>
 char *get_username(void) {
-    size_t size = 64;
+    size_t size = 4;
     char *username = malloc(size * sizeof(char));
 
     if (username == NULL) {
@@ -21,13 +21,33 @@ char *get_username(void) {
         exit(EXIT_FAILURE);
     }
 
-    strcpy(username, "bob");
+    while (getlogin_r(username, size) != 0) {
+        if (errno == ERANGE) {
+            size = size_increase_func(size);
+            if (size < 1) { size = 1; }
+
+            free(username);
+
+            username = malloc(size * sizeof(char));
+            if (username == NULL) {
+                perror("Expanding USERNAME alloc failed");
+                exit(EXIT_FAILURE);
+            }
+        } else if (errno == ENXIO) {
+            strcpy(username, "");
+            break;
+        } else {
+            perror("getlogin_r error");
+            free(username);
+            exit(EXIT_FAILURE);
+        }
+    }
 
     return username;
 }
 
 char *get_hostname(void) {
-    size_t size = 64;
+    size_t size = 8;
     char *hostname = malloc(size * sizeof(char));
 
     if (hostname == NULL) {
@@ -58,7 +78,7 @@ char *get_hostname(void) {
 }
 
 char *get_cwd(void) {
-    size_t size = 64;
+    size_t size = 8;
     char *cwd = malloc(size * sizeof(char));
 
     if (cwd == NULL) {

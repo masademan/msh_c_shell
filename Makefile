@@ -1,4 +1,6 @@
-CFLAGS = -std=c11 -Wall -Wextra -O0 -pedantic -g
+# CFLAGS = -std=c11 -Wall -Wextra -O0 -pedantic -g
+CFLAGS = -std=gnu11 -Wall -Wextra -O0 -pedantic -g
+
 CC = gcc
 
 ASAN_FLAGS = -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all
