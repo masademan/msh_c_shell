@@ -7,7 +7,7 @@ VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --errors-for-leak-ki
 
 all: msh
 
-msh: main.o shell_loop.o shell_read_line.o shell_parse_line.o shell_execute.o
+msh: main.o shell_loop.o shell_read_line.o shell_parse_line.o shell_execute.o get_dir.o
 	@printf "\nLinking the files to finish compiling\n\n"
 	@$(CC) $(CFLAGS) $^ -o $@
 #	@chmod +x $@
