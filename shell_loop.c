@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "get_dir.h"
+#include "get_sysinfo.h"
 
 #include "ansi_colors.h"
 

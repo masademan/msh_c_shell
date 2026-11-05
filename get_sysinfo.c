@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "get_dir.h"
+#include "get_sysinfo.h"
 
 size_t size_increase_func(size_t size) {
     return size * 2;
