@@ -9,6 +9,10 @@ size_t size_increase_func(size_t size) {
     return size * 2;
 }
 
+char *get_hostname(void) {
+    return "test";
+}
+
 char *get_dir(void) {
     size_t size = 64;
     char *cwd = malloc(size * sizeof(char));
