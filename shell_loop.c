@@ -18,8 +18,12 @@ void shell_loop(void) {
     int status;
 
     do {
-        printf(HI_GREEN "%s" RESET, get_dir());        // Printing the dir
-        printf("%s \n", shell_start);  // Printing the starting point of the shell commands
+        // Printing the dir
+        // HI_GREEN ; HI_BLUE
+        printf(HI_BLUE "%s" RESET, get_dir());
+
+        // Printing the starting point of the shell commands
+        printf("%s \n", shell_start);
 
         line = shell_read_line();
         args = shell_parse_line(line);
