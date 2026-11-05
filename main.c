@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "get_dir.h"
 #include "shell_loop.h"
 
 int main(int arg_c, char **arg_v)

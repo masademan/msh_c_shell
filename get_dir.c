@@ -6,5 +6,5 @@
 #include "get_dir.h"
 
 char *get_dir(void) {
-    return NULL;
+    return "test_dir";
 }
