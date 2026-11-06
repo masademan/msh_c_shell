@@ -75,4 +75,5 @@ push:
 pull:
 	@git pull origin main
 
+
 .PHONY: all clean commit push pull fast trial asan valgrind
