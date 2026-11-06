@@ -11,7 +11,7 @@
    infinitely, so make sure the function can only increase the value (not counting overflows) */
 size_t size_increase_func(size_t size);
 
-/* Returns a string (pointer to chars) that gives the active username of the user running
+/* Returns a string (pointer to chars) that gives the username of the active user running
    the program
    The caller owns the pointer returned and has to call free() on it to free it */
 char *get_username(void);

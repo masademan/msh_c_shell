@@ -1,10 +1,8 @@
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "shell_loop.h"
 
-int main(int arg_c, char **arg_v)
-{
+int main(int arg_c, char **arg_v) {
     // arg_c = argument count
     // arg_v = argument
     (void) arg_c;

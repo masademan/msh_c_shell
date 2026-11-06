@@ -1,16 +1,12 @@
-// #define _POSIX_C_SOURCE 200112L // AI assisted code to make gethostname work
-
-#include <stdio.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-
 #include "get_sysinfo.h"
 
-size_t size_increase_func(size_t size) {
-    return size * 2;
-}
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+size_t size_increase_func(size_t size) { return size * 2; }
 
 char *get_username(void) {
     size_t size = 4;
@@ -24,7 +20,9 @@ char *get_username(void) {
     while (getlogin_r(username, size) != 0) {
         if (errno == ERANGE) {
             size = size_increase_func(size);
-            if (size < 1) { size = 1; }
+            if (size < 1) {
+                size = 1;
+            }
 
             free(username);
 
@@ -58,7 +56,9 @@ char *get_hostname(void) {
     while (gethostname(hostname, size) == -1) {
         if (errno == ENAMETOOLONG) {
             size = size_increase_func(size);
-            if (size < 1) { size = 1; }
+            if (size < 1) {
+                size = 1;
+            }
 
             free(hostname);
 
@@ -89,7 +89,9 @@ char *get_cwd(void) {
     while (getcwd(cwd, size) == NULL) {
         if (errno == ERANGE) {
             size = size_increase_func(size);
-            if (size < 1) { size = 1; }
+            if (size < 1) {
+                size = 1;
+            }
 
             free(cwd);
 

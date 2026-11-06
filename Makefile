@@ -14,7 +14,6 @@ all: msh
 msh: main.o shell_loop.o shell_read_line.o shell_parse_line.o shell_execute.o get_sysinfo.o
 	@printf "\nLinking the files to finish compiling\n\n"
 	@$(CC) $(CFLAGS) $^ -o $@
-#	@chmod +x $@
 	@printf "Finished!\n"
 
 %.o: %.c
