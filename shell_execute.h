@@ -1,21 +1,21 @@
 #ifndef SHELL_EXECUTE_H
 #define SHELL_EXECUTE_H
 
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 
-/* Takes in a dynamic array of strings (pointer to a pointer to a char) and starts a process
-   based on the args given
+/* Takes in a dynamic array of strings (pointer to a pointer to a char) and
+   starts a process based on the args given
    An int is then returned, which is the status code after finishing */
 int shell_execute(char **args);
 
-/* Takes in a dynamic array of strings (pointer to a pointer to a char) and starts launching a
-   program from the PATH
+/* Takes in a dynamic array of strings (pointer to a pointer to a char) and
+   starts launching a program from the PATH
    An int is then returned, which is the status code after finishing */
 int shell_launch_program(char **args);
 
-/* Takes in a dynamic array of strings (pointer to a pointer to a char) and starts running
-   a command built directly into the shell
+/* Takes in a dynamic array of strings (pointer to a pointer to a char) and
+   starts running a command built directly into the shell
    An int is then returned, which is the status code after finishing */
 int shell_run_shell_command(char **args);
 

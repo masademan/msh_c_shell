@@ -32,9 +32,10 @@ void shell_loop(void) {
         printf(HI_GREEN "%s" RESET ":" HI_BLUE "%s" RESET, hostname, cwd);
 
         // Printing the starting point of the shell commands
-        printf("%s ", shell_start);
+        printf("%s \n", shell_start);
 
         line = shell_read_line();
+        printf("\"\"\"\n%s\n\"\"\"\n", line);
         args = shell_parse_line(line);
         status = shell_execute(args);
     } while (status);
