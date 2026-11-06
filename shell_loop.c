@@ -48,5 +48,5 @@ void shell_loop(void) {
     free(hostname);
     free(cwd);
     free(line);
-    free(args);
+    arg_free(args);
 }
