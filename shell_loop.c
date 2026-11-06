@@ -1,11 +1,11 @@
-#include "shell_loop.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "ansi_colors.h"
 #include "get_sysinfo.h"
 #include "shell_execute.h"
+#include "shell_helpers.h"
+#include "shell_loop.h"
 #include "shell_parse_line.h"
 #include "shell_read_line.h"
 
@@ -18,6 +18,10 @@ void shell_loop(void) {
     char *line;
     char **args;
     int status;
+
+    clear_terminal();
+
+    // TODO: Use configs that are set up in main.c to turn on/off the user and machine name
 
     do {
         // Printing the dir

@@ -13,4 +13,9 @@
    increases the value (not counting overflows) */
 size_t size_increase_func(size_t size);
 
+/* Clears the terminal where the shell is being run
+   Good to clear when the program starts so the shell looks more seamless
+   Also useful for the shell command "clear" */
+void clear_terminal(void);
+
 #endif

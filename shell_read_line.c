@@ -5,6 +5,8 @@
 #include "shell_helpers.h"
 #include "shell_read_line.h"
 
+// TODO: Make it so that multi-line commands are possible
+
 char *shell_read_line(void) {
     size_t size = 8;
     size_t position = 0;
