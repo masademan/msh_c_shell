@@ -3,7 +3,7 @@
 int shell_execute(char **args) {
     (void) args;
 
-    return -1;
+    return 0;
 }
 
 int shell_launch_program(char **args) {
