@@ -61,18 +61,21 @@ $(SHELL_NAME): main.o \
 	@$(CC) $(CFLAGS) -c $<
 
 clean:
-	@printf "Cleaning up files\n"
+	@printf "Cleaning up files...\n"
 	@rm -f *.o $(SHELL_NAME)
+	@printf "\nFinished!\n"
 
 commit:
-	@printf "Commiting changes\n"
+	@printf "Commiting changes...\n"
 	@git add .
 	@git commit -m "$(m)"
 
 push:
+	@printf "Pushing to main branch...\n"
 	@git push origin main
 
 pull:
+	@printf "Pulling from main branch...\n"
 	@git pull origin main
 
 
