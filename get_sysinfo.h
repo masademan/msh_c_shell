@@ -4,15 +4,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-/* Takes in a size_t size and increases it. Could be doubled or increased by a
-   constant amount. This function will be run in get_dir when the directory is
-   too big to fit in the allocated memory. Then the output of this function will
-   be the new amount of memory allocated
-   If the function returns a number smaller than the inputted size,
-   then the loop will go on infinitely, so make sure the function can only
-   increase the value (not counting overflows) */
-size_t size_increase_func(size_t size);
-
 /* Returns a string (pointer to chars) that gives the username of the active
    user running the program
    The caller owns the pointer returned and has to call free() on it to free it

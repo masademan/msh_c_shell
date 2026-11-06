@@ -1,12 +1,11 @@
-#include "get_sysinfo.h"
-
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-size_t size_increase_func(size_t size) { return size * 2; }
+#include "get_sysinfo.h"
+#include "shell_helpers.h"
 
 char *get_username(void) {
     size_t size = 4;

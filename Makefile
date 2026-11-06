@@ -11,7 +11,9 @@ m ?= Default message from Makefile commit
 
 all: msh
 
-msh: main.o shell_loop.o shell_read_line.o shell_parse_line.o shell_execute.o get_sysinfo.o
+msh: main.o \
+	shell_loop.o shell_read_line.o shell_parse_line.o shell_execute.o \
+	get_sysinfo.o shell_helpers.o
 	@printf "\nLinking the files to finish compiling\n\n"
 	@$(CC) $(CFLAGS) $^ -o $@
 	@printf "Finished!\n"
