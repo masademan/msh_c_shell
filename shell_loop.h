@@ -1,9 +1,6 @@
 #ifndef SHELL_LOOP_H
 #define SHELL_LOOP_H
 
-#include <stdbool.h>
-#include <stddef.h>
-
 /* The shell loop for msh
    Uses shell_parse_line.h, shell_read_line.h, and shell_execute_line.h in the loop
    It follows the loop: Read, Parse, Execute, Repeat

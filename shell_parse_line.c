@@ -1,3 +1,5 @@
+#include <stddef.h>
+
 #include "shell_parse_line.h"
 
 char **shell_parse_line(char *line) {

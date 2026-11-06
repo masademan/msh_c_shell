@@ -1,7 +1,6 @@
 #ifndef SHELL_HELPERS_H
 #define SHELL_HELPERS_H
 
-#include <stdbool.h>
 #include <stddef.h>
 
 /* Takes in a size_t size and increases it. Could be doubled or increased by a

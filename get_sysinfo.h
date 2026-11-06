@@ -1,9 +1,6 @@
 #ifndef GET_DIR_H
 #define GET_DIR_H
 
-#include <stdbool.h>
-#include <stddef.h>
-
 /* Returns a string (pointer to chars) that gives the username of the active
    user running the program
    The caller owns the pointer returned and has to call free() on it to free it
