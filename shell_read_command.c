@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "shell_command_check.h"
 #include "shell_helpers.h"
-#include "shell_line_check.h"
-#include "shell_read_line.h"
+#include "shell_read_command.h"
 
 // TODO: Make it so that multi-line commands are possible
 //         Maybe instead of doing many checks, make a function
@@ -16,6 +16,10 @@
 // This can check the string to check if the command is complete
 // Code: string_check(char)
 // Then use: (bool) quotes_closed
+
+// split this function into 2 pieces
+// one that reads line by line (for multiline stuff, or single)
+// and one that glues all those pieces together
 
 char *shell_read_line(void) {
     size_t size = 8;
@@ -29,11 +33,13 @@ char *shell_read_line(void) {
         exit(EXIT_FAILURE);
     }
 
+    line_check_reset();
+
     while (1) {
         c = getchar();
         check_next_char(c);
 
-        if ((c == EOF || c == '\n')) {
+        if ((c == EOF || c == '\n') && is_complete_command()) {
             line[position] = '\0';
             break;
         } else {

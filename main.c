@@ -11,6 +11,14 @@ int main(int arg_c, char **arg_v) {
     // Load configs (if there are any)
     // TODO: Find a way to load configs using arg_c and arg_v, then input that to shell_loop
     //          somehow
+    //  config ideas:
+    //      allow multi line commands (to save memory)
+    //      allow print colors (idk)
+    //      show username
+    //      show machine
+    //      max dir length (int, and is how many directories up to show, replace rest with ...,
+    //          0 means show all)
+    //      allow for arrow keys to reselect commands (also to save memory)
 
     // Run shell loop
     shell_loop();

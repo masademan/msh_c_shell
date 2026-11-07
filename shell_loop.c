@@ -6,8 +6,8 @@
 #include "shell_execute.h"
 #include "shell_helpers.h"
 #include "shell_loop.h"
-#include "shell_parse_line.h"
-#include "shell_read_line.h"
+#include "shell_parse_command.h"
+#include "shell_read_command.h"
 
 const char *shell_start = ">>";
 
@@ -22,6 +22,7 @@ void shell_loop(void) {
     clear_terminal();
 
     // TODO: Use configs that are set up in main.c to turn on/off the user and machine name
+    //       Allow for arrow keys to select previous commands and stuff
 
     do {
         // Printing the dir
@@ -38,7 +39,7 @@ void shell_loop(void) {
         // Printing the starting point of the shell commands
         printf("%s ", shell_start);
 
-        line = shell_read_line();
+        line = shell_read_command();
         printf("\n\"\"\"\n%s\n\"\"\"\n", line);
         args = shell_parse_line(line);
         status = shell_execute(args);

@@ -8,6 +8,9 @@
    lines breaks, incomplete instructions, etc. */
 void check_next_char(int chr);
 
+/* Resets all the static internal variables */
+void line_check_reset(void);
+
 /* All the following functions use internal static variables to check their respective
    parts of the inputted command */
 

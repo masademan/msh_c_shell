@@ -1,6 +1,6 @@
 #include <stddef.h>
 
-#include "shell_parse_line.h"
+#include "shell_parse_command.h"
 
 // TODO: Make a "clean_line" function to remove '\' from the line to make parsing easier
 //         This will also allow for more complex line-breaking rules in the reading stage
