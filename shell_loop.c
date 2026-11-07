@@ -43,11 +43,11 @@ void shell_loop(void) {
         printf("\n\"\"\"\n%s\n\"\"\"\n", line);
         args = shell_parse_line(line);
         status = shell_execute(args);
-    } while (status);
 
-    free(username);
-    free(hostname);
-    free(cwd);
-    free(line);
-    arg_free(args);
+        free(username);
+        free(hostname);
+        free(cwd);
+        free(line);
+        arg_free(args);
+    } while (status);
 }

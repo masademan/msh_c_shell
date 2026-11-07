@@ -18,8 +18,39 @@ SHELL_NAME = msh
 MSG ?= ""
 m ?= Default message from Makefile commit
 
+# Makefile docs:
+# "make" / "make msh":
+#   makes the executable shell (run with "./msh")
+# "make clean":
+#   cleans all the .o files as well as the msh executable
+# "make fast":
+#   just like "make msh", but uses -O2 as a flag in gcc
+# "make trial":
+#   just like "make msh", but also runs it after compiling
+# "make asan":
+#   just like "make msh", but uses ASAN flags and runs it after compiling
+#    (used for memory leak checks)
+# "make valgrind":
+#   just like "make msh", but runs it using valgrind after compiling
+#    (used for memory leak checks)
+# "make commit":
+#   commits all the files in the directory with a message
+#    the message can be changed with 'm=""' ('make commit m="[msg here]"')
+# "make push":
+#   pushes changes to the main branch in the linked github repo
+# "make pull":
+#   pulls from the main branch in the linked github repo
+
 
 all: $(SHELL_NAME)
+
+check:
+	@printf "\0--- Deleting old .o files ---\n"
+	@$(MAKE) --no-print-directory clean
+	@printf "\n--- Compiling ---\n"
+	@$(MAKE) --no-print-directory $(SHELL_NAME)
+	@printf "\n--- Deleting old .o files ---\n"
+	@$(MAKE) --no-print-directory clean
 
 trial: $(SHELL_NAME)
 	@printf "\n--- Running '$(SHELL_NAME)' to test ---\n\n"
@@ -91,4 +122,4 @@ pull:
 	@git pull origin main
 
 
-.PHONY: all clean clean_objs clean_shell commit push pull fast trial asan valgrind
+.PHONY: all clean clean_objs clean_shell commit push pull check fast trial asan valgrind

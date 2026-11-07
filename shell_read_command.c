@@ -98,6 +98,10 @@ char *shell_read_command(void) {
     line_check_reset();
 
     do {
+        if (command_size != 0) {
+            printf("> ");
+        }
+
         new_line = shell_read_line();
         command_size += strlen(new_line) + 1;
 

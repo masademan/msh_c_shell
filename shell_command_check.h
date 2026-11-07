@@ -46,4 +46,8 @@ bool has_unfinished_pipe(void);
    Else, returns false */
 bool has_unfinished_logical_operator(void);
 
+/* Returns true if there's a backslash without a newline or space after it (\)
+   Else, returns false */
+bool has_unfinished_backslash(void);
+
 #endif
