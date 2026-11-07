@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "shell_helpers.h"
+#include "shell_line_check.h"
 #include "shell_read_line.h"
 
 // TODO: Make it so that multi-line commands are possible
@@ -22,7 +23,6 @@ char *shell_read_line(void) {
     char *line = malloc(size * sizeof(char));
     char *new_line;
     int c;
-    int prev_c;
 
     if (line == NULL) {
         perror("Initial COMMAND alloc failed");
@@ -31,15 +31,15 @@ char *shell_read_line(void) {
 
     while (1) {
         c = getchar();
+        check_next_char(c);
 
-        if ((c == EOF || c == '\n') && prev_c != '\\') {
+        if ((c == EOF || c == '\n')) {
             line[position] = '\0';
             break;
         } else {
             line[position] = c;
         }
         ++position;
-        prev_c = c;
 
         if (position >= size) {
             size = size_increase_func(size);

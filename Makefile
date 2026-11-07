@@ -1,5 +1,5 @@
 #  Vars
-# CFLAGS = -std=c11 -Wall -Wextra -O0 -pedantic -g
+# BASE_CFLAGS = -std=c11 -Wall -Wextra -O0 -pedantic -g
 BASE_CFLAGS = -std=gnu11 -Wall -Wextra -pedantic
 FAST_FLAGS = -O2
 NORMAL_FLAGS = -O0 -g
@@ -12,6 +12,7 @@ VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --errors-for-leak-ki
 					 --track-origins=yes --error-exitcode=1
 
 SHELL_NAME = msh
+
 
 #  Parameters
 MSG ?= ""
@@ -30,6 +31,8 @@ fast:
 	@printf "\nCompiling with optimization:\n"
 	@$(MAKE) --no-print-directory $(SHELL_NAME) CFLAGS="$(BASE_CFLAGS) $(FAST_FLAGS)" \
 		MSG="' - Compiled with optimization turned on (-O2)\n'"
+	@printf "Clearing out new .o files to prevent mixing...\n"
+	@$(MAKE) --no-print-directory clean_objs
 
 asan:
 	@printf "Clearing out old .o files to prevent mixing...\n"
@@ -39,6 +42,8 @@ asan:
 		CFLAGS="$(CFLAGS) $(ASAN_FLAGS)" MSG="' - Compiled with ASAN'"
 	@printf "\n\n--- Running '$(SHELL_NAME)' with ASAN ---\n\n"
 	./$(SHELL_NAME)
+	@printf "\nCleaning ASAN files to prevent mixing in future tests...\n"
+	@$(MAKE) --no-print-directory clean
 
 valgrind:
 	@printf "Clearing out old .o files to prevent mixing...\n"
@@ -62,8 +67,15 @@ $(SHELL_NAME): main.o \
 
 clean:
 	@printf "Cleaning up files...\n"
-	@rm -f *.o $(SHELL_NAME)
+	@$(MAKE) --no-print-directory clean_objs
+	@$(MAKE) --no-print-directory clean_shell
 	@printf "\nFinished!\n"
+
+clean_objs:
+	@rm -f *.o
+
+clean_shell:
+	@rm -f $(SHELL_NAME)
 
 commit:
 	@printf "Commiting changes...\n"
@@ -79,4 +91,4 @@ pull:
 	@git pull origin main
 
 
-.PHONY: all clean commit push pull fast trial asan valgrind
+.PHONY: all clean clean_objs clean_shell commit push pull fast trial asan valgrind

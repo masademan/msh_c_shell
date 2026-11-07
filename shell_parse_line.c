@@ -10,8 +10,7 @@
     Replace '\' with ' '
     Replace '\n' with ' '
     And do more
-   This is meant to make parsing easier, as well as allow for multi-line commands
-   */
+   This is meant to make parsing easier, as well as allow for multi-line commands */
 static char *shell_clean_line(char *line) {
     (void) line;
 
