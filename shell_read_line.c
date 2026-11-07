@@ -11,6 +11,11 @@
 //           that determines if a command is valid and ready to
 //           be inputted and ran
 
+// Make a header and c file with a global var
+// This can check the string to check if the command is complete
+// Code: string_check(char)
+// Then use: (bool) quotes_closed
+
 char *shell_read_line(void) {
     size_t size = 8;
     size_t position = 0;
@@ -18,8 +23,6 @@ char *shell_read_line(void) {
     char *new_line;
     int c;
     int prev_c;
-    // bool open_quotes;
-    // int quote_type;
 
     if (line == NULL) {
         perror("Initial COMMAND alloc failed");

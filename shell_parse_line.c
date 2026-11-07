@@ -30,6 +30,9 @@ static char **shell_split_line(char *line) {
 char **shell_parse_line(char *line) {
     (void) line;
 
+    shell_clean_line(NULL);
+    shell_split_line(NULL);
+
     return NULL;
 }
 
