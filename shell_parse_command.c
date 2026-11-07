@@ -1,4 +1,6 @@
 #include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "shell_parse_command.h"
 
@@ -14,6 +16,8 @@
 static char *shell_clean_line(char *line) {
     (void) line;
 
+    printf("\n\"\"\"\n%s\n\"\"\"\n", line);
+
     return NULL;
 }
 
@@ -27,12 +31,11 @@ static char **shell_split_line(char *line) {
 }
 
 char **shell_parse_line(char *line) {
-    (void) line;
+    char *cleaned_line = shell_clean_line(line);
+    char **split_args = shell_split_line(cleaned_line);
 
-    shell_clean_line(NULL);
-    shell_split_line(NULL);
-
-    return NULL;
+    free(cleaned_line);
+    return split_args;
 }
 
 // Maybe args can have a '\0' at the end of the list to know when it ends without having a length?

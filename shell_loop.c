@@ -9,7 +9,7 @@
 #include "shell_parse_command.h"
 #include "shell_read_command.h"
 
-const char *shell_start = ">>";
+static const char *shell_start = ">>";
 
 void shell_loop(void) {
     char *username;
@@ -19,7 +19,7 @@ void shell_loop(void) {
     char **args;
     int status;
 
-    // clear_terminal();
+    clear_terminal();
 
     // TODO: Use configs that are set up in main.c to turn on/off the user and machine name
     //       Allow for arrow keys to select previous commands and stuff
@@ -40,7 +40,6 @@ void shell_loop(void) {
         printf("%s ", shell_start);
 
         line = shell_read_command();
-        printf("\n\"\"\"\n%s\n\"\"\"\n", line);
         args = shell_parse_line(line);
         status = shell_execute(args);
 
