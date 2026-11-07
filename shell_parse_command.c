@@ -35,4 +35,9 @@ char **shell_parse_line(char *line) {
     return NULL;
 }
 
-void arg_free(char **args) { (void) args; }
+// Maybe args can have a '\0' at the end of the list to know when it ends without having a length?
+void arg_free(char **args) {
+    if (args == NULL) {
+        return;
+    }
+}

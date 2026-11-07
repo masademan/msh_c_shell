@@ -19,7 +19,7 @@ void shell_loop(void) {
     char **args;
     int status;
 
-    clear_terminal();
+    // clear_terminal();
 
     // TODO: Use configs that are set up in main.c to turn on/off the user and machine name
     //       Allow for arrow keys to select previous commands and stuff
@@ -44,6 +44,7 @@ void shell_loop(void) {
         args = shell_parse_line(line);
         status = shell_execute(args);
 
+        // Pointer clean-up
         free(username);
         free(hostname);
         free(cwd);

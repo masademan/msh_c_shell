@@ -8,7 +8,8 @@
  */
 char **shell_parse_line(char *line);
 
-/* Used to free the dynamic array of strings (pointer to a pointer to a char) */
+/* Used to free the dynamic array of strings (pointer to a pointer to a char)
+   If args is NULL, it does nothing */
 void arg_free(char **args);
 
 #endif

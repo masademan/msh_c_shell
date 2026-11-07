@@ -45,41 +45,44 @@ m ?= Default message from Makefile commit
 all: $(SHELL_NAME)
 
 check:
-	@printf "\0--- Deleting old .o files ---\n"
+	@printf "\0--- Cleaning old .o files ---\n"
 	@$(MAKE) --no-print-directory clean
-	@printf "\n--- Compiling ---\n"
+	@printf "\n\n--- Compiling ---\n"
 	@$(MAKE) --no-print-directory $(SHELL_NAME)
-	@printf "\n--- Deleting old .o files ---\n"
+	@printf "\n\n--- Cleaning .o files ---\n"
 	@$(MAKE) --no-print-directory clean
 
-trial: $(SHELL_NAME)
-	@printf "\n--- Running '$(SHELL_NAME)' to test ---\n\n"
+trial:
+	@printf "\0--- Compiling '$(SHELL_NAME)' ---\n"
+	@$(MAKE) --no-print-directory $(SHELL_NAME)
+	@printf "\n\n--- Running '$(SHELL_NAME)' to test ---\n\n"
 	./$(SHELL_NAME)
 
 fast:
-	@printf "Clearing out old .o files to prevent mixing...\n"
+	@printf "\0--- Clearing out old .o files to prevent mixing ---\n"
 	@$(MAKE) --no-print-directory clean
-	@printf "\nCompiling with optimization:\n"
+	@printf "\n\n--- Compiling with optimization ---\n"
 	@$(MAKE) --no-print-directory $(SHELL_NAME) CFLAGS="$(BASE_CFLAGS) $(FAST_FLAGS)" \
 		MSG="' - Compiled with optimization turned on (-O2)\n'"
-	@printf "Clearing out new .o files to prevent mixing...\n"
+	@printf "\n\n--- Clearing out new .o files to prevent mixing ---\n"
 	@$(MAKE) --no-print-directory clean_objs
+	@printf "Finished!\n"
 
 asan:
-	@printf "Clearing out old .o files to prevent mixing...\n"
+	@printf "\0--- Clearing out old .o files to prevent mixing ---\n"
 	@$(MAKE) --no-print-directory clean
-	@printf "\nCompiling with ASAN:\n"
+	@printf "\n\n--- Compiling with ASAN ---\n"
 	@$(MAKE) --no-print-directory $(SHELL_NAME) \
-		CFLAGS="$(CFLAGS) $(ASAN_FLAGS)" MSG="' - Compiled with ASAN'"
+		CFLAGS="$(CFLAGS) $(ASAN_FLAGS)" MSG="' - Compiled with ASAN\n'"
 	@printf "\n\n--- Running '$(SHELL_NAME)' with ASAN ---\n\n"
 	./$(SHELL_NAME)
-	@printf "\nCleaning ASAN files to prevent mixing in future tests...\n"
+	@printf "\n\n--- Cleaning ASAN files to prevent mixing in future tests ---\n"
 	@$(MAKE) --no-print-directory clean
 
 valgrind:
-	@printf "Clearing out old .o files to prevent mixing...\n"
+	@printf "\0--- Clearing out old .o files to prevent mixing ---\n"
 	@$(MAKE) --no-print-directory clean
-	@printf "\nCompiling normally:\n"
+	@printf "\n\n--- Compiling normally ---\n"
 	@$(MAKE) --no-print-directory $(SHELL_NAME)
 	@printf "\n\n--- Running '$(SHELL_NAME)' with Valgrind ---\n\n"
 	$(VALGRIND) ./$(SHELL_NAME)

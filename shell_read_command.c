@@ -7,20 +7,6 @@
 #include "shell_helpers.h"
 #include "shell_read_command.h"
 
-// TODO: Make it so that multi-line commands are possible
-//         Maybe instead of doing many checks, make a function
-//           that determines if a command is valid and ready to
-//           be inputted and ran
-
-// Make a header and c file with a global var
-// This can check the string to check if the command is complete
-// Code: string_check(char)
-// Then use: (bool) quotes_closed
-
-// split this function into 2 pieces
-// one that reads line by line (for multiline stuff, or single)
-// and one that glues all those pieces together
-
 char *shell_read_line(void) {
     size_t size = 8;
     size_t position = 0;
