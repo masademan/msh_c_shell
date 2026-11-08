@@ -126,11 +126,11 @@ bool da_count_of(const DynamicArray *a, int value, size_t *count);
 bool da_resize(DynamicArray *a, size_t n, int fill);
 
 /* Creates a new DynamicArray with every steps elements from a, starting at index start and ending
-   at index end. Returns NULL, if a is NULL, memory runs out, or steps is 0. If the range between start and end is
-   out of bounds, da_slice_steps will return an empty array. If steps is negative, start should be
-   greater than or equal to end, and if steps is positive, then end should be greater than or equal
-   to start, otherwise you get an empty array.
-   Caller owns the outputted array and has to use da_free to free it. */
+   at index end. Returns NULL, if a is NULL, memory runs out, or steps is 0. If the range between start
+   and end is out of bounds, da_slice_steps will return an empty array. If steps is negative, start
+   should be greater than or equal to end, and if steps is positive, then end should be greater than or
+   equal to start, otherwise you get an empty array. Caller owns the outputted array and has to use
+   da_free to free it. */
 DynamicArray *da_slice_steps(const DynamicArray *a, size_t start, size_t end, int steps);
 
 /* Creates a new DynamicArray with every element from a, starting at index start and ending
