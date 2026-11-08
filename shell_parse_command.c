@@ -14,8 +14,6 @@
     And do more
    This is meant to make parsing easier, as well as allow for multi-line commands */
 static char *shell_clean_line(char *line) {
-    (void) line;
-
     printf("\n\"\"\"\n%s\n\"\"\"\n", line);
 
     return NULL;

@@ -31,10 +31,13 @@ void shell_loop(void) {
         hostname = get_hostname();
         cwd = get_cwd();
 
+        /*
         if (username[0] != '\0') {  // Has username
             printf(HI_GREEN "%s@" RESET, username);
         }
         printf(HI_GREEN "%s" RESET ":" HI_BLUE "%s" RESET, hostname, cwd);
+        */
+        printf(HI_BLUE "%s" RESET, cwd);
 
         // Printing the starting point of the shell commands
         printf("%s ", shell_start);
