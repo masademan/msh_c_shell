@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>  // TODO: REMOVE LATER
 
 #include "ansi_colors.h"
 #include "get_sysinfo.h"
@@ -45,6 +46,11 @@ void shell_loop(void) {
         line = shell_read_command();
         args = shell_parse_line(line);
         status = shell_execute(args);
+
+        // TODO: REMOVE LATER
+        if (strlen(line) == 0) {
+            status = 0;
+        }
 
         // Pointer clean-up
         free(username);

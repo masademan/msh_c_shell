@@ -14,6 +14,6 @@ int shell_launch_program(char **args);
 /* Takes in a dynamic array of strings (pointer to a pointer to a char) and
    starts running a command built directly into the shell
    An int is then returned, which is the status code after finishing */
-int shell_run_shell_command(char **args);
+int run_shell_command(char **args);
 
 #endif

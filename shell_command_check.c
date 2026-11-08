@@ -19,7 +19,7 @@ static bool unfinished_backslash;
 
 // Static internal funcs
 static void check_for_quotes(int chr) {
-    if (chr != '\"' && chr != '\'') {
+    if ((chr != '\"' && chr != '\'') || open_backslashes) {
         return;
     }
 
