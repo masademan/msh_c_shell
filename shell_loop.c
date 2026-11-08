@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>  // TODO: REMOVE LATER
 
 #include "ansi_colors.h"
+#include "dynamic_array_char.h"
 #include "get_sysinfo.h"
 #include "shell_execute.h"
 #include "shell_helpers.h"
@@ -16,7 +16,7 @@ void shell_loop(void) {
     char *username;
     char *hostname;
     char *cwd;
-    char *command;
+    CharArray *command;
     char **args;
     int status;
 
@@ -46,23 +46,23 @@ void shell_loop(void) {
         // Read command
         command = shell_read_command();
 
-        if (command != NULL) {
-            args = shell_parse_line(command);
-            status = shell_execute(args);
+        if (command == NULL || da_count(command) == 0) {
+            status = 1;
 
             // TODO: REMOVE LATER
-            if (strlen(command) == 0) {
+            if (command != NULL) {
                 status = 0;
             }
-        } else {
-            status = 1;
-        }
 
+        } else {
+            args = shell_parse_line(command);
+            status = shell_execute(args);
+        }
         // Pointer clean-up
         free(username);
         free(hostname);
         free(cwd);
-        free(command);
+        da_free(command);
         arg_free(args);
     } while (status);
 }

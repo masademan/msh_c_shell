@@ -11,15 +11,15 @@
 
 #include "dynamic_array_char.h"
 
-/* Define struct DynamicArray here. */
-struct DynamicArray {
-    int *data;
+/* Define struct CharArray here. */
+struct CharArray {
+    char *data;
     size_t len;
     size_t alloc_size;
 };
 
-DynamicArray *da_new(void) {
-    DynamicArray *da;
+CharArray *da_new(void) {
+    CharArray *da;
 
     da = malloc(sizeof *da);
     if (da == NULL) {
@@ -33,7 +33,7 @@ DynamicArray *da_new(void) {
     return da;
 }
 
-void da_free(DynamicArray *a) {
+void da_free(CharArray *a) {
     if (a == NULL) {
         return;
     }
@@ -42,7 +42,7 @@ void da_free(DynamicArray *a) {
     free(a);
 }
 
-size_t da_count(const DynamicArray *a) {
+size_t da_count(const CharArray *a) {
     if (a == NULL) {
         return 0;
     }
@@ -53,7 +53,7 @@ size_t da_count(const DynamicArray *a) {
 /* Moves a's data into a new block with room for capacity elements. If capacity is less than the
    total elements in a, then a won't be changed at all and the function will return true.
    Returns false if memory runs out or a is NULL. */
-static bool set_size_to(DynamicArray *a, size_t capacity) {
+static bool set_size_to(CharArray *a, size_t capacity) {
     if (a == NULL) {
         return false;
     }
@@ -62,7 +62,7 @@ static bool set_size_to(DynamicArray *a, size_t capacity) {
         return true;
     }
 
-    int *new_data;
+    char *new_data;
     new_data = malloc(sizeof(*new_data) * capacity);
     if (new_data == NULL) {
         return false;
@@ -84,7 +84,7 @@ static bool set_size_to(DynamicArray *a, size_t capacity) {
    to shrink the array. But if memory runs out, the array won't be shrunken and the removing
    functions still work as intended, never failing because of memory running out, keeping its
    promise. */
-static void shrink_array_when_small(DynamicArray *a) {
+static void shrink_array_when_small(CharArray *a) {
     if (a == NULL) {
         return;
     }
@@ -103,7 +103,7 @@ static void shrink_array_when_small(DynamicArray *a) {
     set_size_to(a, shrunken_size);
 }
 
-bool da_reserve(DynamicArray *a, size_t n) {
+bool da_reserve(CharArray *a, size_t n) {
     if (a == NULL) {
         return false;
     }
@@ -115,7 +115,7 @@ bool da_reserve(DynamicArray *a, size_t n) {
     return set_size_to(a, n);
 }
 
-bool da_add(DynamicArray *a, int value) {
+bool da_add(CharArray *a, char value) {
     if (a == NULL) {
         return false;
     }
@@ -174,7 +174,7 @@ bool da_add(DynamicArray *a, int value) {
     return true;
 }
 
-bool da_insert(DynamicArray *a, size_t i, int value) {
+bool da_insert(CharArray *a, size_t i, char value) {
     if (a == NULL) {
         return false;
     }
@@ -191,8 +191,8 @@ bool da_insert(DynamicArray *a, size_t i, int value) {
         return true;
     }
 
-    int prev_temp = value;
-    int curr_temp = a->data[i];
+    char prev_temp = value;
+    char curr_temp = a->data[i];
     for (size_t idx = i; idx < da_count(a) - 1; idx++) {
         a->data[idx] = prev_temp;
         prev_temp = curr_temp;
@@ -203,7 +203,7 @@ bool da_insert(DynamicArray *a, size_t i, int value) {
     return true;
 }
 
-bool da_get(const DynamicArray *a, size_t i, int *out) {
+bool da_get(const CharArray *a, size_t i, char *out) {
     if (a == NULL || out == NULL || i >= da_count(a)) {
         return false;
     }
@@ -213,7 +213,7 @@ bool da_get(const DynamicArray *a, size_t i, int *out) {
     return true;
 }
 
-bool da_set(DynamicArray *a, size_t i, int value) {
+bool da_set(CharArray *a, size_t i, char value) {
     if (a == NULL) {
         return false;
     }
@@ -226,7 +226,7 @@ bool da_set(DynamicArray *a, size_t i, int value) {
     return true;
 }
 
-bool da_copy_to(const DynamicArray *a, int *dest, size_t dest_len) {
+bool da_copy_to(const CharArray *a, char *dest, size_t dest_len) {
     if (a == NULL || dest == NULL) {
         return false;
     }
@@ -242,7 +242,7 @@ bool da_copy_to(const DynamicArray *a, int *dest, size_t dest_len) {
     return true;
 }
 
-bool da_index_of(const DynamicArray *a, int value, size_t *index) {
+bool da_index_of(const CharArray *a, char value, size_t *index) {
     if (a == NULL || index == NULL) {
         return false;
     }
@@ -257,12 +257,12 @@ bool da_index_of(const DynamicArray *a, int value, size_t *index) {
     return false;
 }
 
-bool da_contains(const DynamicArray *a, int value) {
+bool da_contains(const CharArray *a, char value) {
     size_t unused;
     return da_index_of(a, value, &unused);
 }
 
-bool da_remove_at(DynamicArray *a, size_t i, int *out) {
+bool da_remove_at(CharArray *a, size_t i, char *out) {
     if (a == NULL) {
         return false;
     }
@@ -283,7 +283,7 @@ bool da_remove_at(DynamicArray *a, size_t i, int *out) {
     return true;
 }
 
-bool da_remove(DynamicArray *a, int value) {
+bool da_remove(CharArray *a, char value) {
     size_t idx;
 
     if (!da_index_of(a, value, &idx)) {
@@ -296,7 +296,7 @@ bool da_remove(DynamicArray *a, int value) {
     return true;
 }
 
-void da_clear(DynamicArray *a) {
+void da_clear(CharArray *a) {
     if (a == NULL) {
         return;
     }
@@ -307,19 +307,19 @@ void da_clear(DynamicArray *a) {
 }
 
 /* My functions */
-size_t da_alloc_size(const DynamicArray *a) {
+size_t da_alloc_size(const CharArray *a) {
     if (a == NULL) {
         return 0;
     }
     return a->alloc_size;
 }
 
-DynamicArray *da_new_from_array(const int *values, size_t n) {
+CharArray *da_new_from_array(const char *values, size_t n) {
     if (values == NULL) {
         return NULL;
     }
 
-    DynamicArray *a = da_new();
+    CharArray *a = da_new();
 
     if (!da_reserve(a, n)) {
         da_free(a);
@@ -333,7 +333,7 @@ DynamicArray *da_new_from_array(const int *values, size_t n) {
     return a;
 }
 
-bool da_extend(DynamicArray *a, const DynamicArray *b) {
+bool da_extend(CharArray *a, const CharArray *b) {
     if (a == NULL || b == NULL) {
         return false;
     }
@@ -349,12 +349,12 @@ bool da_extend(DynamicArray *a, const DynamicArray *b) {
     return true;
 }
 
-DynamicArray *da_copy(const DynamicArray *a) {
+CharArray *da_copy(const CharArray *a) {
     if (a == NULL) {
         return NULL;
     }
 
-    DynamicArray *a_copy = da_new();
+    CharArray *a_copy = da_new();
 
     if (!da_reserve(a_copy, da_count(a))) {
         da_free(a_copy);
@@ -369,12 +369,12 @@ DynamicArray *da_copy(const DynamicArray *a) {
 }
 
 /* ---- Small ---- */
-DynamicArray *da_reverse(const DynamicArray *a) {
+CharArray *da_reverse(const CharArray *a) {
     if (a == NULL) {
         return NULL;
     }
 
-    DynamicArray *reversed_a = da_new();
+    CharArray *reversed_a = da_new();
 
     if (!da_reserve(reversed_a, da_count(a))) {
         da_free(reversed_a);
@@ -388,7 +388,7 @@ DynamicArray *da_reverse(const DynamicArray *a) {
     return reversed_a;
 }
 
-bool da_pop(DynamicArray *a, int *out) {
+bool da_pop(CharArray *a, char *out) {
     if (a == NULL) {
         return false;
     }
@@ -404,7 +404,7 @@ bool da_pop(DynamicArray *a, int *out) {
     return true;
 }
 
-bool da_add_all(DynamicArray *a, const int *values, size_t n) {
+bool da_add_all(CharArray *a, const char *values, size_t n) {
     if (a == NULL || values == NULL) {
         return false;
     }
@@ -420,7 +420,7 @@ bool da_add_all(DynamicArray *a, const int *values, size_t n) {
     return true;
 }
 
-bool da_count_of(const DynamicArray *a, int value, size_t *count) {
+bool da_count_of(const CharArray *a, char value, size_t *count) {
     if (a == NULL || count == NULL) {
         return false;
     }
@@ -439,7 +439,7 @@ bool da_count_of(const DynamicArray *a, int value, size_t *count) {
 }
 
 /* ---- Medium ---- */
-bool da_resize(DynamicArray *a, size_t n, int fill) {
+bool da_resize(CharArray *a, size_t n, char fill) {
     if (a == NULL) {
         return false;
     }
@@ -468,12 +468,12 @@ bool da_resize(DynamicArray *a, size_t n, int fill) {
     return true;
 }
 
-DynamicArray *da_slice_steps(const DynamicArray *a, size_t start, size_t end, int steps) {
+CharArray *da_slice_steps(const CharArray *a, size_t start, size_t end, char steps) {
     if (a == NULL || steps == 0) {
         return NULL;
     }
 
-    DynamicArray *sliced_array = da_new();
+    CharArray *sliced_array = da_new();
 
     if (da_count(a) == 0) {
         return sliced_array;
@@ -520,7 +520,7 @@ DynamicArray *da_slice_steps(const DynamicArray *a, size_t start, size_t end, in
     return sliced_array;
 }
 
-DynamicArray *da_slice(const DynamicArray *a, size_t start, size_t end) {
+CharArray *da_slice(const CharArray *a, size_t start, size_t end) {
     if (a == NULL) {
         return NULL;
     }
@@ -528,7 +528,7 @@ DynamicArray *da_slice(const DynamicArray *a, size_t start, size_t end) {
     return da_slice_steps(a, start, end, 1);
 }
 
-bool da_remove_all(DynamicArray *a, int value) {
+bool da_remove_all(CharArray *a, char value) {
     if (a == NULL) {
         return false;
     }
@@ -553,8 +553,8 @@ bool da_remove_all(DynamicArray *a, int value) {
 
 /* ---- Big ---- */
 static int ascending_compare(const void *a, const void *b) {
-    int a_int = *(const int *) a;
-    int b_int = *(const int *) b;
+    char a_int = *(const char *) a;
+    char b_int = *(const char *) b;
 
     if (a_int < b_int) {
         return -1;
@@ -567,8 +567,8 @@ static int ascending_compare(const void *a, const void *b) {
 }
 
 static int descending_compare(const void *a, const void *b) {
-    int a_int = *(const int *) a;
-    int b_int = *(const int *) b;
+    unsigned char a_int = *(const unsigned char *) a;
+    unsigned char b_int = *(const unsigned char *) b;
 
     if (a_int < b_int) {
         return 1;
@@ -580,7 +580,7 @@ static int descending_compare(const void *a, const void *b) {
     return 0;
 }
 
-bool da_sort(DynamicArray *a, bool ascending_order) {
+bool da_sort(CharArray *a, bool ascending_order) {
     if (a == NULL) {
         return false;
     }
@@ -589,15 +589,15 @@ bool da_sort(DynamicArray *a, bool ascending_order) {
     }
 
     if (ascending_order) {
-        qsort(a->data, a->len, sizeof(int), ascending_compare);
+        qsort(a->data, a->len, sizeof(char), ascending_compare);
     } else {
-        qsort(a->data, a->len, sizeof(int), descending_compare);
+        qsort(a->data, a->len, sizeof(char), descending_compare);
     }
 
     return true;
 }
 
-bool da_binary_search(const DynamicArray *a, int value, size_t *out) {
+bool da_binary_search(const CharArray *a, char value, size_t *out) {
     if (a == NULL) {
         return false;
     }
