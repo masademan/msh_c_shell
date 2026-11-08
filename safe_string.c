@@ -1,0 +1,679 @@
+/* safe_string.c - your implementation of safe_string.h.
+
+   The rule: no <string.h>, and no other library functions except malloc, calloc, realloc
+   and free. printf, fprintf and assert are allowed for debugging. `make check` enforces this.
+
+   Every function below is a stub. It compiles and returns something harmless, so
+   `make test` runs from the start. Replace each stub's body with your own code.
+
+   Until you do, gcc warns "unused parameter" for each of the stub's parameters. That's
+   expected: the warnings are a list of the functions you haven't written yet. */
+
+#include <stdlib.h>
+
+#include "safe_string.h"
+
+/* Define struct String here. "Getting Started" in README.md walks you through it. */
+struct String {
+    char *data;
+    size_t len;
+};
+
+String *ss_new(const char *text)
+{
+    size_t len = 0;
+    size_t i;
+
+    if (text == NULL) {
+        return NULL;
+    }
+
+    while (text[len] != '\0') {
+        ++len;
+    }
+
+    String *s = ss_new_length(len);
+    if (s == NULL) {
+        return NULL;
+    }
+
+    for (i = 0; i < len; i++) {
+        s->data[i] = text[i];
+    }
+    s->data[len] = '\0';
+
+    return s;
+}
+
+String *ss_copy(const String *s)
+{
+    if (s == NULL) {
+        return NULL;
+    }
+    return ss_new(s->data);
+}
+
+String *ss_concat(const String *a, const String *b)
+{
+    if (a == NULL || b == NULL) {
+        return NULL;
+    }
+
+    size_t len = a->len + b->len;
+    size_t i;
+
+    String *s = ss_new_length(len);
+    if (s == NULL) {
+        return NULL;
+    }
+
+    for (i = 0; i < a->len; i++) {
+        s->data[i] = a->data[i];
+    }
+    for (i = 0; i < b->len; i++) {
+        s->data[i + a->len] = b->data[i];
+    }
+
+    s->data[len] = '\0';
+
+    return s;
+}
+
+String *ss_substring(const String *s, size_t start, size_t len)
+{
+    if (s == NULL) {
+        return NULL;
+    }
+    /* Old:
+    if (start + len - 1 >= s->len && !(start == 0 && len == 0)) {
+        return NULL;
+    }
+    */
+    if (start > s->len || len > s->len - start) {
+        return NULL;
+    }
+
+    String *sub_s = ss_new_length(len);
+    if (sub_s == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < len; i++) {
+        sub_s->data[i] = s->data[i + start];
+    }
+    sub_s->data[len] = '\0';
+
+    return sub_s;
+}
+
+String *ss_to_upper(const String *s)
+{
+    if (s == NULL) {
+        return NULL;
+    }
+
+    String *upper_s = ss_new_length(s->len);
+    if (upper_s == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < s->len; i++) {
+        char current_char = s->data[i];
+
+        if ('a' <= current_char && current_char <= 'z') {
+            current_char -= 32;
+        }
+
+        upper_s->data[i] = current_char;
+    }
+    upper_s->data[s->len] = '\0';
+
+    return upper_s;
+}
+
+void ss_free(String *s)
+{
+    if (s == NULL) {
+        return;
+    }
+    free(s->data);
+    free(s);
+}
+
+size_t ss_length(const String *s)
+{
+    if (s == NULL) {
+        return 0;
+    }
+    return s->len;
+}
+
+bool ss_at(const String *s, size_t i, char *out)
+{
+    if (s == NULL || out == NULL || i >= ss_length(s)) {
+        return false;
+    }
+    *out = s->data[i];
+    return true;
+}
+
+const char *ss_cstr(const String *s)
+{
+    if (s == NULL) {
+        return "";
+    }
+    return s->data;
+}
+
+bool ss_equals(const String *a, const String *b)
+{
+    if (a == NULL && b == NULL) {
+        return true;
+    }
+    if (a == NULL || b == NULL) {
+        return false;
+    }
+    if (a->len != b->len) {
+        return false;
+    }
+
+    size_t i;
+    for (i = 0; i < a->len; i++) {
+        if (a->data[i] != b->data[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int ss_compare(const String *a, const String *b)
+{
+    // Check NULL cases
+    if (a == NULL && b == NULL) {
+        return 0;
+    }
+    if (a == NULL) {
+        return -1;
+    }
+    if (b == NULL) {
+        return 1;
+    }
+
+    size_t min_len = a->len;
+    if (b->len < min_len) {
+        min_len = b->len;
+    }
+
+    // Check chars
+    for (size_t i = 0; i < min_len; i++) {
+        unsigned char a_char = (unsigned char) a->data[i];
+        unsigned char b_char = (unsigned char) b->data[i];
+
+        if (a_char < b_char) {
+            return -1;
+        }
+        if (a_char > b_char) {
+            return 1;
+        }
+    }
+
+    // Check lens
+    if (a->len < b->len) {
+        return -1;
+    }
+    if (a->len > b->len) {
+        return 1;
+    }
+
+    return 0;
+}
+
+bool ss_starts_with(const String *s, const String *prefix)
+{
+    if (s == NULL || prefix == NULL) {
+        return false;
+    }
+    if (prefix->len == 0) {
+        return true;
+    }
+    if (prefix->len > s->len) {
+        return false;
+    }
+
+    for (size_t i = 0; i < prefix->len; i++) {
+        if (s->data[i] != prefix->data[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool ss_find(const String *haystack, const String *needle, size_t *index)
+{
+    if (haystack == NULL || needle == NULL || index == NULL) {
+        return false;
+    }
+    if (needle->len > haystack->len) {
+        return false;
+    }
+    if (needle->len == 0) {
+        *index = 0;
+        return true;
+    }
+
+    for (size_t idx = 0; idx <= haystack->len - needle->len; idx++) {
+        bool possible = true;
+        for (size_t needle_idx = 0; needle_idx < needle->len; needle_idx++) {
+            if (haystack->data[idx + needle_idx] != needle->data[needle_idx]) {
+                possible = false;
+                break;
+            }
+        }
+        if (possible) {
+            *index = idx;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/* ---- Your additions ---- */
+String *ss_new_length(size_t len)
+{
+    String *s;
+
+    s = malloc(sizeof *s);
+    if (s == NULL) {
+        return NULL;
+    }
+
+    s->data = malloc(sizeof(char) * (len + 1));
+    if (s->data == NULL) {
+        free(s);
+        return NULL;
+    }
+
+    s->len = len;
+
+    // Addition
+    s->data[len] = '\0';
+
+    return s;
+}
+
+String *ss_to_lower(const String *s)
+{
+    if (s == NULL) {
+        return NULL;
+    }
+
+    String *lower_s = ss_new_length(s->len);
+    if (lower_s == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < s->len; i++) {
+        char current_char = s->data[i];
+
+        if ('A' <= current_char && current_char <= 'Z') {
+            current_char += 32;
+        }
+
+        lower_s->data[i] = current_char;
+    }
+    lower_s->data[s->len] = '\0';
+
+    return lower_s;
+}
+
+String *ss_reverse(const String *s)
+{
+    if (s == NULL) {
+        return NULL;
+    }
+
+    String *reversed_s = ss_new_length(s->len);
+    if (reversed_s == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < s->len; i++) {
+        reversed_s->data[i] = s->data[s->len - i - 1];
+    }
+    reversed_s->data[s->len] = '\0';
+
+    return reversed_s;
+}
+
+int ss_compare_ignore_case(const String *a, const String *b)
+{
+    /**/
+    // Check NULL cases
+    if (a == NULL && b == NULL) {
+        return 0;
+    }
+    if (a == NULL) {
+        return -1;
+    }
+    if (b == NULL) {
+        return 1;
+    }
+
+    size_t min_len = a->len;
+    if (b->len < min_len) {
+        min_len = b->len;
+    }
+
+    // Check chars
+    for (size_t i = 0; i < min_len; i++) {
+        unsigned char a_char = a->data[i];
+        unsigned char b_char = b->data[i];
+
+        if ('A' <= a_char && a_char <= 'Z') {
+            a_char += 32;
+        }
+        if ('A' <= b_char && b_char <= 'Z') {
+            b_char += 32;
+        }
+
+        if (a_char < b_char) {
+            return -1;
+        }
+        if (a_char > b_char) {
+            return 1;
+        }
+    }
+
+    // Check lens
+    if (a->len < b->len) {
+        return -1;
+    }
+    if (a->len > b->len) {
+        return 1;
+    }
+
+    return 0;
+    /**/
+
+    /*
+    if (a == NULL && b == NULL) {
+        return 0;
+    }
+    if (a == NULL) {
+        return -1;
+    }
+    if (b == NULL) {
+        return 1;
+    }
+
+    String *lower_a = ss_to_lower(a);
+    String *lower_b = ss_to_lower(b);
+
+    int cmp_result = ss_compare(lower_a, lower_b);
+
+    ss_free(lower_a);
+    ss_free(lower_b);
+
+    return cmp_result;
+    */
+}
+
+String *ss_join(const String **str_arr, size_t str_arr_len, const String *separator)
+{
+    if (str_arr == NULL || separator == NULL) {
+        return NULL;
+    }
+
+    size_t len = 0;
+    for (size_t i = 0; i < str_arr_len; i++) {
+        // Addition
+        if (str_arr[i] == NULL) {
+            return NULL;
+        }
+        // End addition
+
+        len += ss_length(str_arr[i]);
+        len += separator->len;
+    }
+
+    // Addition
+    if (str_arr_len > 0) {
+        len -= separator->len;
+    }
+    // End addition
+
+    String *s = ss_new_length(len);
+    if (s == NULL) {
+        return NULL;
+    }
+
+    size_t offset = 0;
+    size_t str_i;
+    size_t sep_i;
+    for (size_t str_arr_i = 0; str_arr_i < str_arr_len; str_arr_i++) {
+        for (str_i = 0; str_i < str_arr[str_arr_i]->len; str_i++) {
+            s->data[str_i + offset] = str_arr[str_arr_i]->data[str_i];
+        }
+        offset += str_i;
+        if (str_arr_i + 1 < str_arr_len) {
+            for (sep_i = 0; sep_i < separator->len; sep_i++) {
+                s->data[sep_i + offset] = separator->data[sep_i];
+            }
+            offset += sep_i;
+        }
+    }
+
+    s->data[len] = '\0';
+
+    return s;
+}
+
+String **ss_split(const String *s, const String *separator, size_t *splits)
+{
+    if (s == NULL || separator == NULL || splits == NULL) {
+        return NULL;
+    }
+
+    if (separator->len > s->len) {
+        *splits = 1;
+
+        String **s_splits = malloc(sizeof(s));
+
+        if (s_splits == NULL) {
+            return NULL;
+        }
+
+        s_splits[0] = ss_copy(s);
+
+        if (s_splits[0] == NULL) {
+            free(s_splits);
+            return NULL;
+        }
+
+        return s_splits;
+    }
+
+    size_t count_splits = 1;
+    for (size_t i = 0; i < s->len - separator->len + 1; i++) {
+        bool possible = true;
+
+        for (size_t separator_i = 0; separator_i < separator->len; separator_i++) {
+            if (separator->data[separator_i] != s->data[i + separator_i]) {
+                possible = false;
+                break;
+            }
+        }
+        if (possible) {
+            count_splits++;
+        }
+    }
+    if (separator->len == 0) {
+        count_splits -= 2;
+    }
+    if (count_splits == 0) {
+        count_splits = 1;
+    }
+
+    String **s_splits = malloc(sizeof(s) * count_splits);
+    if (s_splits == NULL) {
+        return NULL;
+    }
+
+    if (count_splits == 1) {
+        *splits = 1;
+
+        String *s_copy = ss_copy(s);
+
+        if (s_copy == NULL) {
+            free(s_splits);
+            return NULL;
+        }
+
+        s_splits[0] = s_copy;
+
+        return s_splits;
+    }
+
+    size_t split_idx = 0;
+    size_t s_idx = 0;
+
+    while (split_idx < count_splits) {
+        /*
+         second loop from s_idx to end, checking if separator found
+         if found, then make a substring from s_idx to second idx and add
+           it to splits
+         then shift s_idx by the correct about to skip the separator
+         repeat
+        */
+        size_t possible_s_idx_end = s_idx;
+        while (possible_s_idx_end < s->len - separator->len + 1) {
+            bool possible = true;
+            for (size_t separator_i = 0; separator_i < separator->len; separator_i++) {
+                if (separator->data[separator_i] != s->data[possible_s_idx_end + separator_i]) {
+                    possible = false;
+                    break;
+                }
+            }
+
+            if (possible) {
+                break;
+            }
+
+            possible_s_idx_end++;
+        }
+
+        if (separator->len == 0) {
+            possible_s_idx_end++;
+        }
+        String *sub_s = ss_substring(s, s_idx, possible_s_idx_end - s_idx);
+        if (sub_s == NULL) {
+            ss_free_arr(s_splits, split_idx);
+            return NULL;
+        }
+        s_splits[split_idx] = sub_s;
+        split_idx++;
+        s_idx = possible_s_idx_end + separator->len;
+    }
+
+    *splits = count_splits;
+    return s_splits;
+}
+
+String *ss_replace(const String *s, const String *to_replace, const String *replace_with)
+{
+    if (s == NULL || to_replace == NULL || replace_with == NULL) {
+        return NULL;
+    }
+
+    if (to_replace->len > s->len) {
+        return ss_copy(s);
+    }
+
+    size_t len = s->len;
+    String *sub_s;
+
+    /* Old:
+    for (size_t i = 0; i < s->len - to_replace->len + 1; i++) {
+        sub_s = ss_substring(s, i, to_replace->len);
+        if (ss_equals(sub_s, to_replace)) {
+            len = len + replace_with->len - to_replace->len;
+        }
+        ss_free(sub_s);
+    }
+    */
+    size_t i = 0;
+    while (i < s->len - to_replace->len + 1) {
+        sub_s = ss_substring(s, i, to_replace->len);
+        if (ss_equals(sub_s, to_replace)) {
+            len = len + replace_with->len - to_replace->len;
+            i += to_replace->len > 0 ? to_replace->len : 1;
+        } else {
+            i++;
+        }
+        ss_free(sub_s);
+    }
+
+    String *replaced_s = ss_new_length(len);
+    if (replaced_s == NULL) {
+        return NULL;
+    }
+
+    size_t replaced_i = 0;
+    size_t s_i = 0;
+
+    while (s_i < s->len - to_replace->len + 1) {
+        sub_s = ss_substring(s, s_i, to_replace->len);
+        if (ss_equals(sub_s, to_replace)) {
+            if (replace_with->len > 0) {
+                size_t temp_idx = 0;
+                while (temp_idx < replace_with->len) {
+                    replaced_s->data[replaced_i] = replace_with->data[temp_idx];
+                    replaced_i++;
+                    temp_idx++;
+                }
+            }
+            s_i += to_replace->len;
+
+            if (to_replace->len == 0) {
+                replaced_s->data[replaced_i] = s->data[s_i];
+                replaced_i++;
+                s_i++;
+            }
+        } else {
+            replaced_s->data[replaced_i] = s->data[s_i];
+            replaced_i++;
+            s_i++;
+        }
+        ss_free(sub_s);
+    }
+
+    while (s_i < s->len) {
+        replaced_s->data[replaced_i] = s->data[s_i];
+        replaced_i++;
+        s_i++;
+    }
+
+    replaced_s->data[len] = '\0';
+
+    return replaced_s;
+}
+
+void ss_free_arr(String **s_arr, size_t arr_len)
+{
+    if (s_arr == NULL) {
+        return;
+    }
+
+    /* Old:
+    if (arr_len == 0) {
+        return;
+    }
+    */
+
+    for (size_t i = 0; i < arr_len; i++) {
+        ss_free(s_arr[i]);
+    }
+    free(s_arr);
+}

@@ -11,6 +11,9 @@
 #include "shell_helpers.h"
 #include "shell_read_command.h"
 
+// TODO: refactor to use safe strings and dynamic arrays from class
+//         a bit more work for better code, plus fun link back to those projects
+
 #define CONTINUE_CODE -2
 
 struct termios orig_termios;
@@ -229,7 +232,6 @@ static char *expand_command_malloced_memory(char *command, char *new_line, size_
 char *shell_read_command(void) {
     size_t size = 8;
     char *command = malloc(size * sizeof(char));
-    char *new_command;
     char *new_line;
     size_t command_size = 0;
     strcpy(command, "\0");

@@ -29,38 +29,72 @@ void move_cursor_to(size_t *curr_position, size_t end) {
     *curr_position = end;
 }
 
-/* Returns true if the input character (int) is an ASCII letter (like A-Z and a-z)
+/* Returns true if the input character (int) is a letter in a word (like A-Z and a-z, or numbers)
    Else, returns false */
-static bool is_ASCII_char(int c) { return (65 <= c && c <= 90) || (97 <= c && c <= 122); }
+static bool is_word_letter(int c) {
+    if ((65 <= c && c <= 90) || (97 <= c && c <= 122)) {  // English letters
+        return true;
+    }
+
+    if (48 <= c && c <= 57) {  // Numbers
+        return true;
+    }
+
+    return false;
+}
 
 size_t amount_to_move_cursor_to_next_left_word(const char *line, size_t line_length, size_t position) {
-    (void) line;
-    (void) line_length;
-    (void) position;
+    size_t i;
+    bool word_letter_seen = false;
 
-    return 0;
+    for (i = position; i > 0; i--) {
+        if (word_letter_seen && i < line_length && !is_word_letter(line[i])) {
+            break;
+        }
+
+        if (is_word_letter(line[i]) && i == position) {
+            continue;
+        }
+
+        word_letter_seen = word_letter_seen || is_word_letter(line[i]);
+    }
+
+    if (!is_word_letter(line[i])) {
+        i++;
+    }
+
+    return position - i;
 }
 
 size_t amount_to_move_cursor_to_next_right_word(const char *line, size_t line_length, size_t position) {
-    (void) line;
-    (void) line_length;
-    (void) position;
+    size_t i;
+    bool word_letter_seen = false;
 
-    return 0;
+    for (i = position; i < line_length; i++) {
+        if (word_letter_seen && !is_word_letter(line[i])) {
+            break;
+        }
+
+        word_letter_seen = word_letter_seen || is_word_letter(line[i]);
+    }
+
+    return i - position;
 }
 
 size_t move_cursor_to_next_left_word(const char *line, size_t line_length, size_t *position) {
-    (void) line;
-    (void) line_length;
-    (void) position;
+    size_t shift_amount = amount_to_move_cursor_to_next_left_word(line, line_length, *position);
 
-    return 0;
+    move_cursor_left_by(shift_amount);
+    *position = *position - shift_amount;
+
+    return shift_amount;
 }
 
 size_t move_cursor_to_next_right_word(const char *line, size_t line_length, size_t *position) {
-    (void) line;
-    (void) line_length;
-    (void) position;
+    size_t shift_amount = amount_to_move_cursor_to_next_right_word(line, line_length, *position);
 
-    return 0;
+    move_cursor_right_by(shift_amount);
+    *position = *position + shift_amount;
+
+    return shift_amount;
 }
