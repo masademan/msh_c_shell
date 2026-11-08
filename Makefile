@@ -90,7 +90,8 @@ valgrind:
 $(SHELL_NAME): main.o \
 	shell_loop.o shell_read_command.o shell_parse_command.o shell_execute.o \
 	get_sysinfo.o shell_helpers.o shell_command_check.o \
-	shell_command_move.o shell_command_edit.o
+	shell_command_move.o shell_command_edit.o \
+	safe_string.o dynamic_array.o
 	@printf "\nLinking the files to finish compiling...\n\n"
 	@$(CC) $(CFLAGS) $^ -o $@
 	@printf "Finished!\n"

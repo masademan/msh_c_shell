@@ -16,7 +16,7 @@ void shell_loop(void) {
     char *username;
     char *hostname;
     char *cwd;
-    char *line;
+    char *command;
     char **args;
     int status;
 
@@ -43,20 +43,26 @@ void shell_loop(void) {
         // Printing the starting point of the shell commands
         printf("%s ", shell_start);
 
-        line = shell_read_command();
-        args = shell_parse_line(line);
-        status = shell_execute(args);
+        // Read command
+        command = shell_read_command();
 
-        // TODO: REMOVE LATER
-        if (strlen(line) == 0) {
-            status = 0;
+        if (command != NULL) {
+            args = shell_parse_line(command);
+            status = shell_execute(args);
+
+            // TODO: REMOVE LATER
+            if (strlen(command) == 0) {
+                status = 0;
+            }
+        } else {
+            status = 1;
         }
 
         // Pointer clean-up
         free(username);
         free(hostname);
         free(cwd);
-        free(line);
+        free(command);
         arg_free(args);
     } while (status);
 }

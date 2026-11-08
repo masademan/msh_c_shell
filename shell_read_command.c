@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,6 +30,18 @@ static void enable_raw_mode(void) {
 
 // AI generated to allow for backspace, delete, and arrow keys (including history func)
 static void disable_raw_mode(void) { tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios); }
+
+// Ctrl + C handler
+static size_t ctrl_c_shift_right_amount;
+static bool keep_reading_command;
+static void sigint_handler(int signum) {
+    (void) signum;
+
+    keep_reading_command = false;
+    // Use this if you want the shell to look like BASH, with the ^C after doing Ctrl + C
+    // printf("^C");
+    printf("\n");
+}
 
 /* Handles arrow keys and the delete key */
 static void shell_handle_ANSI(char *line, size_t *line_length, size_t *position) {
@@ -101,7 +114,6 @@ static void shell_handle_ANSI(char *line, size_t *line_length, size_t *position)
 /* Reads a single character into memory, and also handles backspace, delete, and arrow keys */
 static int shell_read_char(char *line, size_t *line_length, size_t *position) {
     int c = getchar();
-    check_next_char(c);
 
     // printf("\n(%d)", c);
 
@@ -182,8 +194,10 @@ char *shell_read_line(void) {
     enable_raw_mode();
 
     // Line reading
-    while (1) {
+    while (keep_reading_command) {
         c = shell_read_char(line, &line_length, &position);
+
+        ctrl_c_shift_right_amount = line_length - position;
 
         if (c == CONTINUE_CODE) {
             continue;
@@ -208,6 +222,10 @@ char *shell_read_line(void) {
     }
 
     disable_raw_mode();
+
+    for (size_t i = 0; i < line_length; i++) {
+        check_next_char(line[i]);
+    }
 
     return line;
 }
@@ -236,6 +254,16 @@ char *shell_read_command(void) {
     size_t command_size = 0;
     strcpy(command, "\0");
 
+    keep_reading_command = true;
+
+    // AI generated code:
+    struct sigaction sa;
+    sa.sa_handler = sigint_handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, NULL);
+    // signal(SIGINT, sigint_handler);
+
     line_check_reset();
 
     do {
@@ -244,6 +272,12 @@ char *shell_read_command(void) {
         }
 
         new_line = shell_read_line();
+
+        if (!keep_reading_command) {
+            free(new_line);
+            break;
+        }
+
         command_size += strlen(new_line) + 1;
 
         if (command_size > size) {
@@ -258,6 +292,11 @@ char *shell_read_command(void) {
 
         free(new_line);
     } while (!is_complete_command());
+
+    if (!keep_reading_command) {
+        free(command);
+        return NULL;
+    }
 
     return command;
 }
