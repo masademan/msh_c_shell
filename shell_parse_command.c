@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "char_array_and_string_conversion.h"
+#include "dynamic_array_char.h"
+#include "safe_string.h"
 #include "shell_parse_command.h"
 
 // TODO: Make a "clean_line" function to remove '\' from the line to make parsing easier
@@ -15,8 +18,10 @@
    This is meant to make parsing easier, as well as allow for multi-line commands
    This function returns a new pointer that allocates memory
    The caller owns the pointer returned and has to use free() on it to free it */
-static char *shell_clean_line(char *line) {
-    printf("\n\"\"\"\n%s\n\"\"\"\n", line);
+static CharArray *shell_clean_line(CharArray *line) {
+    String *s_line = da_join_to_string(line);
+    printf("\n\"\"\"\n%s\n\"\"\"\n", ss_cstr(s_line));
+    ss_free(s_line);
 
     return NULL;
 }
@@ -28,25 +33,20 @@ static char *shell_clean_line(char *line) {
     pointers that allocate memory
     The caller owns the pointer returned, as well as each subpointer,
     and has to call arg_free() on it to free it */
-static char **shell_split_line(char *line) {
+static char **shell_split_line(CharArray *line) {
     (void) line;
 
     return NULL;
 }
 
-char **shell_parse_line(char *line) {
-    char *cleaned_line = shell_clean_line(line);
+char **shell_parse_line(CharArray *line) {
+    CharArray *cleaned_line = shell_clean_line(line);
     char **split_args = shell_split_line(cleaned_line);
 
-    printf("\n\"\"\"\n%s\n\"\"\"\n", cleaned_line);
+    String *s_cleaned_line = da_join_to_string(cleaned_line);
+    printf("\n\"\"\"\n%s\n\"\"\"\n", ss_cstr(s_cleaned_line));
+    ss_free(s_cleaned_line);
 
-    free(cleaned_line);
+    da_free_char(cleaned_line);
     return split_args;
-}
-
-// Maybe args can have a '\0' at the end of the list to know when it ends without having a length?
-void arg_free(char **args) {
-    if (args == NULL) {
-        return;
-    }
 }

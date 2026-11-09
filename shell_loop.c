@@ -38,7 +38,7 @@ void shell_loop(void) {
         }
         printf(HI_GREEN "%s" RESET ":" HI_BLUE "%s" RESET, hostname, cwd);
         */
-        printf(HI_BLUE "%s" RESET, cwd);
+        printf(HI_BLUE "testing directory" RESET);
 
         // Printing the starting point of the shell commands
         printf("%s ", shell_start);
@@ -46,7 +46,7 @@ void shell_loop(void) {
         // Read command
         command = shell_read_command();
 
-        if (command == NULL || da_count(command) == 0) {
+        if (command == NULL || da_count_char(command) == 0) {
             status = 1;
 
             // TODO: REMOVE LATER
@@ -62,7 +62,7 @@ void shell_loop(void) {
         free(username);
         free(hostname);
         free(cwd);
-        da_free(command);
-        arg_free(args);
+        da_free_char(command);
+        free(args);
     } while (status);
 }

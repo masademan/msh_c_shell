@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 
+#include "dynamic_array_char.h"
 #include "shell_command_move.h"
 
 void move_cursor_left(void) { printf("\033[D"); }
@@ -43,46 +45,58 @@ static bool is_word_letter(int c) {
     return false;
 }
 
-size_t amount_to_move_cursor_to_next_left_word(const char *line, size_t line_length, size_t position) {
+size_t amount_to_move_cursor_to_next_left_word(const CharArray *line, size_t position) {
     size_t i;
+    char c = 32;
     bool word_letter_seen = false;
 
     for (i = position; i > 0; i--) {
-        if (word_letter_seen && i < line_length && !is_word_letter(line[i])) {
+        if (i < da_count_char(line) && !da_get_char(line, i, &c)) {
+            perror("da_get error");
+            exit(EXIT_FAILURE);
+        }
+
+        if (word_letter_seen && i < da_count_char(line) && !is_word_letter(c)) {
             break;
         }
 
-        if (is_word_letter(line[i]) && i == position) {
+        if (is_word_letter(c) && i == position) {
             continue;
         }
 
-        word_letter_seen = word_letter_seen || is_word_letter(line[i]);
+        word_letter_seen = word_letter_seen || is_word_letter(c);
     }
 
-    if (!is_word_letter(line[i])) {
+    if (!is_word_letter(c)) {
         i++;
     }
 
     return position - i;
 }
 
-size_t amount_to_move_cursor_to_next_right_word(const char *line, size_t line_length, size_t position) {
+size_t amount_to_move_cursor_to_next_right_word(const CharArray *line, size_t position) {
+    char c;
     size_t i;
     bool word_letter_seen = false;
 
-    for (i = position; i < line_length; i++) {
-        if (word_letter_seen && !is_word_letter(line[i])) {
+    for (i = position; i < da_count_char(line); i++) {
+        if (!da_get_char(line, i, &c)) {
+            perror("da_get error");
+            exit(EXIT_FAILURE);
+        }
+
+        if (word_letter_seen && !is_word_letter(c)) {
             break;
         }
 
-        word_letter_seen = word_letter_seen || is_word_letter(line[i]);
+        word_letter_seen = word_letter_seen || is_word_letter(c);
     }
 
     return i - position;
 }
 
-size_t move_cursor_to_next_left_word(const char *line, size_t line_length, size_t *position) {
-    size_t shift_amount = amount_to_move_cursor_to_next_left_word(line, line_length, *position);
+size_t move_cursor_to_next_left_word(const CharArray *line, size_t *position) {
+    size_t shift_amount = amount_to_move_cursor_to_next_left_word(line, *position);
 
     move_cursor_left_by(shift_amount);
     *position = *position - shift_amount;
@@ -90,8 +104,8 @@ size_t move_cursor_to_next_left_word(const char *line, size_t line_length, size_
     return shift_amount;
 }
 
-size_t move_cursor_to_next_right_word(const char *line, size_t line_length, size_t *position) {
-    size_t shift_amount = amount_to_move_cursor_to_next_right_word(line, line_length, *position);
+size_t move_cursor_to_next_right_word(const CharArray *line, size_t *position) {
+    size_t shift_amount = amount_to_move_cursor_to_next_right_word(line, *position);
 
     move_cursor_right_by(shift_amount);
     *position = *position + shift_amount;

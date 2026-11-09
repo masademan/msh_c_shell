@@ -1,58 +1,50 @@
 #include <stdio.h>
+#include <stdlib.h>
 
+#include "dynamic_array_char.h"
 #include "shell_command_edit.h"
 #include "shell_command_move.h"
 
-void render_typed_command_after_removing_char(const char *line, size_t line_length, size_t position,
+void render_typed_command_after_removing_char(const CharArray *line, size_t position,
                                               size_t amount_removed) {
-    for (size_t i = position; i < line_length; i++) {
-        putchar(line[i]);
+    char c;
+    for (size_t i = position; i < da_count_char(line); i++) {
+        if (!da_get_char(line, i, &c)) {
+            perror("da_get error");
+            exit(EXIT_FAILURE);
+        }
+
+        putchar(c);
     }
 
     for (size_t removed = 0; removed < amount_removed; removed++) {
         putchar(' ');
     }
 
-    for (size_t i = position; i < line_length + amount_removed; i++) {
+    for (size_t i = position; i < da_count_char(line) + amount_removed; i++) {
         move_cursor_left();
     }
 }
 
-void delete_characters_at_position_in_line(char *line, size_t *line_length, size_t position,
-                                           size_t amount_to_remove) {
-    if (position >= *line_length) {
+void delete_characters_at_position_in_line(CharArray *line, size_t position, size_t amount_to_remove) {
+    if (position >= da_count_char(line)) {
         return;
     }
     if (amount_to_remove == 0) {
         return;
     }
-    if (*line_length - position < amount_to_remove) {
-        amount_to_remove = *line_length - position;
+    if (da_count_char(line) - position < amount_to_remove) {
+        amount_to_remove = da_count_char(line) - position;
     }
 
-    for (size_t i = position; i < *line_length - amount_to_remove; i++) {
-        line[i] = line[i + amount_to_remove];
-    }
-
-    *line_length = *line_length - amount_to_remove;
+    da_remove_n_char(line, position, amount_to_remove);
 }
 
-void insert_char_into_line(char *line, size_t *line_length, size_t *position, char c) {
-    if (*position != *line_length) {
-        for (size_t i = *line_length + 1; i > *position; i--) {
-            line[i] = line[i - 1];
-        }
-    }
-
-    line[*position] = c;
-}
-
-
-void show_line_changes(char *line, size_t *line_length, size_t *position, char c) {
-    if (*position == *line_length) {
+void show_line_changes(const CharArray *line, size_t *position, char c) {
+    if (*position == da_count_char(line)) {
         putchar(c);
     } else {
-        render_typed_command_after_removing_char(line, *line_length, *position - 1, 0);
+        render_typed_command_after_removing_char(line, *position - 1, 0);
         move_cursor_right();
     }
 }

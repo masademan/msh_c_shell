@@ -122,4 +122,10 @@ String *ss_replace(const String *s, const String *to_replace, const String *repl
    if s_arr is NULL. And if arr_len is 0, it'll only free the s_arr. */
 void ss_free_arr(String **s_arr, size_t arr_len);
 
+/* --- Unsafe functions --- */
+
+/* Sets the char at index i in us (unsafe string) to c. Does nothing is us is NULL, or if
+   i is out of bounds of the String. */
+void us_set_at(String *us, size_t i, char c);
+
 #endif

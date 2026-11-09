@@ -18,7 +18,7 @@ struct CharArray {
     size_t alloc_size;
 };
 
-CharArray *da_new(void) {
+CharArray *da_new_char(void) {
     CharArray *da;
 
     da = malloc(sizeof *da);
@@ -33,7 +33,7 @@ CharArray *da_new(void) {
     return da;
 }
 
-void da_free(CharArray *a) {
+void da_free_char(CharArray *a) {
     if (a == NULL) {
         return;
     }
@@ -42,7 +42,7 @@ void da_free(CharArray *a) {
     free(a);
 }
 
-size_t da_count(const CharArray *a) {
+size_t da_count_char(const CharArray *a) {
     if (a == NULL) {
         return 0;
     }
@@ -58,7 +58,7 @@ static bool set_size_to(CharArray *a, size_t capacity) {
         return false;
     }
 
-    if (capacity <= da_count(a)) {
+    if (capacity <= da_count_char(a)) {
         return true;
     }
 
@@ -68,7 +68,7 @@ static bool set_size_to(CharArray *a, size_t capacity) {
         return false;
     }
 
-    for (size_t i = 0; i < da_count(a); i++) {
+    for (size_t i = 0; i < da_count_char(a); i++) {
         new_data[i] = a->data[i];
     }
 
@@ -90,20 +90,20 @@ static void shrink_array_when_small(CharArray *a) {
     }
 
     // Edit shrinking condition here
-    bool shrink_cond = (da_count(a) << 2) <= da_alloc_size(a);
+    bool shrink_cond = (da_count_char(a) << 2) <= da_alloc_size_char(a);
     if (!shrink_cond) {
         return;
     }
 
     // Do array shrinking here
-    size_t shrunken_size = da_count(a) << 1;
+    size_t shrunken_size = da_count_char(a) << 1;
 
     // If the setting size fails, a doesn't change and the code just continues like nothing
     //   happened
     set_size_to(a, shrunken_size);
 }
 
-bool da_reserve(CharArray *a, size_t n) {
+bool da_reserve_char(CharArray *a, size_t n) {
     if (a == NULL) {
         return false;
     }
@@ -115,7 +115,7 @@ bool da_reserve(CharArray *a, size_t n) {
     return set_size_to(a, n);
 }
 
-bool da_add(CharArray *a, char value) {
+bool da_add_char(CharArray *a, char value) {
     if (a == NULL) {
         return false;
     }
@@ -130,12 +130,12 @@ bool da_add(CharArray *a, char value) {
 
         // Multiply alloc size by 2
         /**/
-        if (da_count(a) == 0) {
+        if (da_count_char(a) == 0) {
             if (!set_size_to(a, 1)) {
                 return false;
             }
         } else {
-            if (!set_size_to(a, da_count(a) << 1)) {
+            if (!set_size_to(a, da_count_char(a) << 1)) {
                 return false;
             }
         }
@@ -174,37 +174,37 @@ bool da_add(CharArray *a, char value) {
     return true;
 }
 
-bool da_insert(CharArray *a, size_t i, char value) {
+bool da_insert_char(CharArray *a, size_t i, char value) {
     if (a == NULL) {
         return false;
     }
-    if (i > da_count(a)) {
+    if (i > da_count_char(a)) {
         return false;
     }
 
-    if (!da_add(a, 0)) {
+    if (!da_add_char(a, 0)) {
         return false;
     }
 
-    if (da_count(a) == 1) {
+    if (da_count_char(a) == 1) {
         a->data[0] = value;
         return true;
     }
 
     char prev_temp = value;
     char curr_temp = a->data[i];
-    for (size_t idx = i; idx < da_count(a) - 1; idx++) {
+    for (size_t idx = i; idx < da_count_char(a) - 1; idx++) {
         a->data[idx] = prev_temp;
         prev_temp = curr_temp;
         curr_temp = a->data[idx + 1];
     }
-    a->data[da_count(a) - 1] = prev_temp;
+    a->data[da_count_char(a) - 1] = prev_temp;
 
     return true;
 }
 
-bool da_get(const CharArray *a, size_t i, char *out) {
-    if (a == NULL || out == NULL || i >= da_count(a)) {
+bool da_get_char(const CharArray *a, size_t i, char *out) {
+    if (a == NULL || out == NULL || i >= da_count_char(a)) {
         return false;
     }
 
@@ -213,12 +213,12 @@ bool da_get(const CharArray *a, size_t i, char *out) {
     return true;
 }
 
-bool da_set(CharArray *a, size_t i, char value) {
+bool da_set_char(CharArray *a, size_t i, char value) {
     if (a == NULL) {
         return false;
     }
 
-    if (i >= da_count(a)) {
+    if (i >= da_count_char(a)) {
         return false;
     }
 
@@ -226,28 +226,28 @@ bool da_set(CharArray *a, size_t i, char value) {
     return true;
 }
 
-bool da_copy_to(const CharArray *a, char *dest, size_t dest_len) {
+bool da_copy_to_char(const CharArray *a, char *dest, size_t dest_len) {
     if (a == NULL || dest == NULL) {
         return false;
     }
 
-    if (dest_len < da_count(a)) {
+    if (dest_len < da_count_char(a)) {
         return false;
     }
 
-    for (size_t idx = 0; idx < da_count(a); idx++) {
+    for (size_t idx = 0; idx < da_count_char(a); idx++) {
         dest[idx] = a->data[idx];
     }
 
     return true;
 }
 
-bool da_index_of(const CharArray *a, char value, size_t *index) {
+bool da_index_of_char(const CharArray *a, char value, size_t *index) {
     if (a == NULL || index == NULL) {
         return false;
     }
 
-    for (size_t idx = 0; idx < da_count(a); idx++) {
+    for (size_t idx = 0; idx < da_count_char(a); idx++) {
         if (a->data[idx] == value) {
             *index = idx;
             return true;
@@ -257,22 +257,22 @@ bool da_index_of(const CharArray *a, char value, size_t *index) {
     return false;
 }
 
-bool da_contains(const CharArray *a, char value) {
+bool da_contains_char(const CharArray *a, char value) {
     size_t unused;
-    return da_index_of(a, value, &unused);
+    return da_index_of_char(a, value, &unused);
 }
 
-bool da_remove_at(CharArray *a, size_t i, char *out) {
+bool da_remove_at_char(CharArray *a, size_t i, char *out) {
     if (a == NULL) {
         return false;
     }
-    if (i >= da_count(a)) {
+    if (i >= da_count_char(a)) {
         return false;
     }
 
-    da_get(a, i, out);
+    da_get_char(a, i, out);
 
-    for (size_t idx = i; idx < da_count(a) - 1; idx++) {
+    for (size_t idx = i; idx < da_count_char(a) - 1; idx++) {
         a->data[idx] = a->data[idx + 1];
     }
 
@@ -283,20 +283,20 @@ bool da_remove_at(CharArray *a, size_t i, char *out) {
     return true;
 }
 
-bool da_remove(CharArray *a, char value) {
+bool da_remove_char(CharArray *a, char value) {
     size_t idx;
 
-    if (!da_index_of(a, value, &idx)) {
+    if (!da_index_of_char(a, value, &idx)) {
         return false;
     }
 
-    da_remove_at(a, idx, NULL);
+    da_remove_at_char(a, idx, NULL);
     shrink_array_when_small(a);
 
     return true;
 }
 
-void da_clear(CharArray *a) {
+void da_clear_char(CharArray *a) {
     if (a == NULL) {
         return;
     }
@@ -307,96 +307,96 @@ void da_clear(CharArray *a) {
 }
 
 /* My functions */
-size_t da_alloc_size(const CharArray *a) {
+size_t da_alloc_size_char(const CharArray *a) {
     if (a == NULL) {
         return 0;
     }
     return a->alloc_size;
 }
 
-CharArray *da_new_from_array(const char *values, size_t n) {
+CharArray *da_new_from_array_char(const char *values, size_t n) {
     if (values == NULL) {
         return NULL;
     }
 
-    CharArray *a = da_new();
+    CharArray *a = da_new_char();
 
-    if (!da_reserve(a, n)) {
-        da_free(a);
+    if (!da_reserve_char(a, n)) {
+        da_free_char(a);
         return NULL;
     }
 
     for (size_t i = 0; i < n; i++) {
-        da_add(a, values[i]);
+        da_add_char(a, values[i]);
     }
 
     return a;
 }
 
-bool da_extend(CharArray *a, const CharArray *b) {
+bool da_extend_char(CharArray *a, const CharArray *b) {
     if (a == NULL || b == NULL) {
         return false;
     }
 
-    if (!da_reserve(a, da_count(a) + da_count(b))) {
+    if (!da_reserve_char(a, da_count_char(a) + da_count_char(b))) {
         return false;
     }
 
-    for (size_t b_idx = 0; b_idx < da_count(b); b_idx++) {
-        da_add(a, b->data[b_idx]);
+    for (size_t b_idx = 0; b_idx < da_count_char(b); b_idx++) {
+        da_add_char(a, b->data[b_idx]);
     }
 
     return true;
 }
 
-CharArray *da_copy(const CharArray *a) {
+CharArray *da_copy_char(const CharArray *a) {
     if (a == NULL) {
         return NULL;
     }
 
-    CharArray *a_copy = da_new();
+    CharArray *a_copy = da_new_char();
 
-    if (!da_reserve(a_copy, da_count(a))) {
-        da_free(a_copy);
+    if (!da_reserve_char(a_copy, da_count_char(a))) {
+        da_free_char(a_copy);
         return NULL;
     }
 
-    for (size_t idx = 0; idx < da_count(a); idx++) {
-        da_add(a_copy, a->data[idx]);
+    for (size_t idx = 0; idx < da_count_char(a); idx++) {
+        da_add_char(a_copy, a->data[idx]);
     }
 
     return a_copy;
 }
 
 /* ---- Small ---- */
-CharArray *da_reverse(const CharArray *a) {
+CharArray *da_reverse_char(const CharArray *a) {
     if (a == NULL) {
         return NULL;
     }
 
-    CharArray *reversed_a = da_new();
+    CharArray *reversed_a = da_new_char();
 
-    if (!da_reserve(reversed_a, da_count(a))) {
-        da_free(reversed_a);
+    if (!da_reserve_char(reversed_a, da_count_char(a))) {
+        da_free_char(reversed_a);
         return NULL;
     }
 
-    for (size_t idx = 0; idx < da_count(a); idx++) {
-        da_add(reversed_a, a->data[da_count(a) - idx - 1]);
+    for (size_t idx = 0; idx < da_count_char(a); idx++) {
+        da_add_char(reversed_a, a->data[da_count_char(a) - idx - 1]);
     }
 
     return reversed_a;
 }
 
-bool da_pop(CharArray *a, char *out) {
+bool da_pop_char(CharArray *a, char *out) {
     if (a == NULL) {
         return false;
     }
-    if (da_count(a) == 0) {
+    if (da_count_char(a) == 0) {
         return false;
     }
 
-    da_get(a, da_count(a) - 1, out);
+    da_get_char(a, da_count_char(a) - 1, out);
     a->len--;
 
     shrink_array_when_small(a);
@@ -404,30 +404,30 @@ bool da_pop(CharArray *a, char *out) {
     return true;
 }
 
-bool da_add_all(CharArray *a, const char *values, size_t n) {
+bool da_add_all_char(CharArray *a, const char *values, size_t n) {
     if (a == NULL || values == NULL) {
         return false;
     }
 
-    if (!da_reserve(a, da_count(a) + n)) {
+    if (!da_reserve_char(a, da_count_char(a) + n)) {
         return false;
     }
 
     for (size_t idx = 0; idx < n; idx++) {
-        da_add(a, values[idx]);
+        da_add_char(a, values[idx]);
     }
 
     return true;
 }
 
-bool da_count_of(const CharArray *a, char value, size_t *count) {
+bool da_count_of_char(const CharArray *a, char value, size_t *count) {
     if (a == NULL || count == NULL) {
         return false;
     }
 
     size_t count_of = 0;
 
-    for (size_t idx = 0; idx < da_count(a); idx++) {
+    for (size_t idx = 0; idx < da_count_char(a); idx++) {
         if (a->data[idx] == value) {
             count_of++;
         }
@@ -439,27 +439,27 @@ bool da_count_of(const CharArray *a, char value, size_t *count) {
 }
 
 /* ---- Medium ---- */
-bool da_resize(CharArray *a, size_t n, char fill) {
+bool da_resize_char(CharArray *a, size_t n, char fill) {
     if (a == NULL) {
         return false;
     }
 
-    if (da_count(a) == n) {
+    if (da_count_char(a) == n) {
         return true;
     }
 
-    if (n < da_count(a)) {
+    if (n < da_count_char(a)) {
         // Shrinking a
         a->len = n;
     } else {
         // Growing a
-        if (!da_reserve(a, n)) {
+        if (!da_reserve_char(a, n)) {
             return false;
         }
 
-        size_t fills_needed = n - da_count(a);
+        size_t fills_needed = n - da_count_char(a);
         for (size_t i = 0; i < fills_needed; i++) {
-            da_add(a, fill);
+            da_add_char(a, fill);
         }
     }
 
@@ -468,28 +468,28 @@ bool da_resize(CharArray *a, size_t n, char fill) {
     return true;
 }
 
-CharArray *da_slice_steps(const CharArray *a, size_t start, size_t end, char steps) {
+CharArray *da_slice_steps_char(const CharArray *a, size_t start, size_t end, char steps) {
     if (a == NULL || steps == 0) {
         return NULL;
     }
 
-    CharArray *sliced_array = da_new();
+    CharArray *sliced_array = da_new_char();
 
-    if (da_count(a) == 0) {
+    if (da_count_char(a) == 0) {
         return sliced_array;
     }
 
     size_t true_start = start;
     size_t true_end = end;
 
-    if (start > da_count(a) - 1) {
-        true_start = da_count(a) - 1;
+    if (start > da_count_char(a) - 1) {
+        true_start = da_count_char(a) - 1;
     }
-    if (end > da_count(a) - 1) {
-        true_end = da_count(a) - 1;
+    if (end > da_count_char(a) - 1) {
+        true_end = da_count_char(a) - 1;
     }
 
-    if (start > da_count(a) - 1 && end > da_count(a) - 1) {
+    if (start > da_count_char(a) - 1 && end > da_count_char(a) - 1) {
         return sliced_array;
     }
 
@@ -508,13 +508,13 @@ CharArray *da_slice_steps(const CharArray *a, size_t start, size_t end, char ste
 
     sliced_size++;
 
-    if (!da_reserve(sliced_array, sliced_size)) {
-        da_free(sliced_array);
+    if (!da_reserve_char(sliced_array, sliced_size)) {
+        da_free_char(sliced_array);
         return NULL;
     }
 
     for (size_t i = 0; i < sliced_size; i++) {
-        da_add(sliced_array, a->data[true_start + i * steps]);
+        da_add_char(sliced_array, a->data[true_start + i * steps]);
     }
 
     return sliced_array;
@@ -525,7 +525,7 @@ CharArray *da_slice(const CharArray *a, size_t start, size_t end) {
         return NULL;
     }
 
-    return da_slice_steps(a, start, end, 1);
+    return da_slice_steps_char(a, start, end, 1);
 }
 
 bool da_remove_all(CharArray *a, char value) {
@@ -534,12 +534,12 @@ bool da_remove_all(CharArray *a, char value) {
     }
 
     size_t offset = 0;
-    for (size_t idx = 0; idx + offset < da_count(a); idx++) {
-        while (idx + offset < da_count(a) && a->data[idx + offset] == value) {
+    for (size_t idx = 0; idx + offset < da_count_char(a); idx++) {
+        while (idx + offset < da_count_char(a) && a->data[idx + offset] == value) {
             offset++;
         }
 
-        if (idx + offset < da_count(a)) {
+        if (idx + offset < da_count_char(a)) {
             a->data[idx] = a->data[idx + offset];
         }
     }
@@ -580,7 +580,7 @@ static int descending_compare(const void *a, const void *b) {
     return 0;
 }
 
-bool da_sort(CharArray *a, bool ascending_order) {
+bool da_sort_char(CharArray *a, bool ascending_order) {
     if (a == NULL) {
         return false;
     }
@@ -597,16 +597,16 @@ bool da_sort(CharArray *a, bool ascending_order) {
     return true;
 }
 
-bool da_binary_search(const CharArray *a, char value, size_t *out) {
+bool da_binary_search_char(const CharArray *a, char value, size_t *out) {
     if (a == NULL) {
         return false;
     }
-    if (da_count(a) == 0) {
+    if (da_count_char(a) == 0) {
         return false;
     }
 
     size_t left = 0;
-    size_t right = da_count(a) - 1;
+    size_t right = da_count_char(a) - 1;
     size_t mid;
 
     while (left <= right) {
@@ -630,4 +630,27 @@ bool da_binary_search(const CharArray *a, char value, size_t *out) {
     }
 
     return false;
+}
+
+
+/* --- Shell added --- */
+void da_remove_n_char(CharArray *a, size_t i, size_t remove_count) {
+    if (a == NULL) {
+        return;
+    }
+    if (remove_count == 0) {
+        return;
+    }
+    if (i + remove_count >=
+        da_count_char(a) + 1) {  // almost equivalent to i + remove_count - 1 >= da_count_char(a)
+        return;
+    }
+
+    for (size_t idx = i + remove_count; idx < da_count_char(a); idx++) {
+        a->data[idx - remove_count] = a->data[idx];
+    }
+
+    a->len -= remove_count;
+
+    shrink_array_when_small(a);
 }

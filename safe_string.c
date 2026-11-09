@@ -19,8 +19,7 @@ struct String {
     size_t len;
 };
 
-String *ss_new(const char *text)
-{
+String *ss_new(const char *text) {
     size_t len = 0;
     size_t i;
 
@@ -45,16 +44,14 @@ String *ss_new(const char *text)
     return s;
 }
 
-String *ss_copy(const String *s)
-{
+String *ss_copy(const String *s) {
     if (s == NULL) {
         return NULL;
     }
     return ss_new(s->data);
 }
 
-String *ss_concat(const String *a, const String *b)
-{
+String *ss_concat(const String *a, const String *b) {
     if (a == NULL || b == NULL) {
         return NULL;
     }
@@ -79,8 +76,7 @@ String *ss_concat(const String *a, const String *b)
     return s;
 }
 
-String *ss_substring(const String *s, size_t start, size_t len)
-{
+String *ss_substring(const String *s, size_t start, size_t len) {
     if (s == NULL) {
         return NULL;
     }
@@ -106,8 +102,7 @@ String *ss_substring(const String *s, size_t start, size_t len)
     return sub_s;
 }
 
-String *ss_to_upper(const String *s)
-{
+String *ss_to_upper(const String *s) {
     if (s == NULL) {
         return NULL;
     }
@@ -131,8 +126,7 @@ String *ss_to_upper(const String *s)
     return upper_s;
 }
 
-void ss_free(String *s)
-{
+void ss_free(String *s) {
     if (s == NULL) {
         return;
     }
@@ -140,16 +134,14 @@ void ss_free(String *s)
     free(s);
 }
 
-size_t ss_length(const String *s)
-{
+size_t ss_length(const String *s) {
     if (s == NULL) {
         return 0;
     }
     return s->len;
 }
 
-bool ss_at(const String *s, size_t i, char *out)
-{
+bool ss_at(const String *s, size_t i, char *out) {
     if (s == NULL || out == NULL || i >= ss_length(s)) {
         return false;
     }
@@ -157,16 +149,14 @@ bool ss_at(const String *s, size_t i, char *out)
     return true;
 }
 
-const char *ss_cstr(const String *s)
-{
+const char *ss_cstr(const String *s) {
     if (s == NULL) {
         return "";
     }
     return s->data;
 }
 
-bool ss_equals(const String *a, const String *b)
-{
+bool ss_equals(const String *a, const String *b) {
     if (a == NULL && b == NULL) {
         return true;
     }
@@ -186,8 +176,7 @@ bool ss_equals(const String *a, const String *b)
     return true;
 }
 
-int ss_compare(const String *a, const String *b)
-{
+int ss_compare(const String *a, const String *b) {
     // Check NULL cases
     if (a == NULL && b == NULL) {
         return 0;
@@ -228,8 +217,7 @@ int ss_compare(const String *a, const String *b)
     return 0;
 }
 
-bool ss_starts_with(const String *s, const String *prefix)
-{
+bool ss_starts_with(const String *s, const String *prefix) {
     if (s == NULL || prefix == NULL) {
         return false;
     }
@@ -249,8 +237,7 @@ bool ss_starts_with(const String *s, const String *prefix)
     return true;
 }
 
-bool ss_find(const String *haystack, const String *needle, size_t *index)
-{
+bool ss_find(const String *haystack, const String *needle, size_t *index) {
     if (haystack == NULL || needle == NULL || index == NULL) {
         return false;
     }
@@ -280,8 +267,7 @@ bool ss_find(const String *haystack, const String *needle, size_t *index)
 }
 
 /* ---- Your additions ---- */
-String *ss_new_length(size_t len)
-{
+String *ss_new_length(size_t len) {
     String *s;
 
     s = malloc(sizeof *s);
@@ -303,8 +289,7 @@ String *ss_new_length(size_t len)
     return s;
 }
 
-String *ss_to_lower(const String *s)
-{
+String *ss_to_lower(const String *s) {
     if (s == NULL) {
         return NULL;
     }
@@ -328,8 +313,7 @@ String *ss_to_lower(const String *s)
     return lower_s;
 }
 
-String *ss_reverse(const String *s)
-{
+String *ss_reverse(const String *s) {
     if (s == NULL) {
         return NULL;
     }
@@ -347,8 +331,7 @@ String *ss_reverse(const String *s)
     return reversed_s;
 }
 
-int ss_compare_ignore_case(const String *a, const String *b)
-{
+int ss_compare_ignore_case(const String *a, const String *b) {
     /**/
     // Check NULL cases
     if (a == NULL && b == NULL) {
@@ -420,8 +403,7 @@ int ss_compare_ignore_case(const String *a, const String *b)
     */
 }
 
-String *ss_join(const String **str_arr, size_t str_arr_len, const String *separator)
-{
+String *ss_join(const String **str_arr, size_t str_arr_len, const String *separator) {
     if (str_arr == NULL || separator == NULL) {
         return NULL;
     }
@@ -470,8 +452,7 @@ String *ss_join(const String **str_arr, size_t str_arr_len, const String *separa
     return s;
 }
 
-String **ss_split(const String *s, const String *separator, size_t *splits)
-{
+String **ss_split(const String *s, const String *separator, size_t *splits) {
     if (s == NULL || separator == NULL || splits == NULL) {
         return NULL;
     }
@@ -479,7 +460,7 @@ String **ss_split(const String *s, const String *separator, size_t *splits)
     if (separator->len > s->len) {
         *splits = 1;
 
-        String **s_splits = malloc(sizeof(s));
+        String **s_splits = malloc(sizeof(String *));
 
         if (s_splits == NULL) {
             return NULL;
@@ -516,7 +497,7 @@ String **ss_split(const String *s, const String *separator, size_t *splits)
         count_splits = 1;
     }
 
-    String **s_splits = malloc(sizeof(s) * count_splits);
+    String **s_splits = malloc(sizeof(String *) * count_splits);
     if (s_splits == NULL) {
         return NULL;
     }
@@ -581,8 +562,7 @@ String **ss_split(const String *s, const String *separator, size_t *splits)
     return s_splits;
 }
 
-String *ss_replace(const String *s, const String *to_replace, const String *replace_with)
-{
+String *ss_replace(const String *s, const String *to_replace, const String *replace_with) {
     if (s == NULL || to_replace == NULL || replace_with == NULL) {
         return NULL;
     }
@@ -660,8 +640,7 @@ String *ss_replace(const String *s, const String *to_replace, const String *repl
     return replaced_s;
 }
 
-void ss_free_arr(String **s_arr, size_t arr_len)
-{
+void ss_free_arr(String **s_arr, size_t arr_len) {
     if (s_arr == NULL) {
         return;
     }
@@ -676,4 +655,16 @@ void ss_free_arr(String **s_arr, size_t arr_len)
         ss_free(s_arr[i]);
     }
     free(s_arr);
+}
+
+/* --- Unsafe functions --- */
+void us_set_at(String *us, size_t i, char c) {
+    if (us == NULL) {
+        return;
+    }
+    if (i >= ss_length(us)) {
+        return;
+    }
+
+    us->data[i] = c;
 }
