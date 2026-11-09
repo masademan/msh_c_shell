@@ -355,7 +355,7 @@ bool da_extend_string(StringArray *a, const StringArray *b) {
     }
 
     for (size_t b_idx = 0; b_idx < da_count_string(b); b_idx++) {
-        da_add_string(a, b->data[b_idx]);
+        da_add_string(a, ss_copy(b->data[b_idx]));
     }
 
     return true;

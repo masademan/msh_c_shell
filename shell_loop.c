@@ -12,6 +12,26 @@
 
 static const char *shell_start = ">>";
 
+static void free_vars(char **username, char **hostname, char **cwd, CharArray **command) {
+    // Shell prompt
+    free(*username);
+    free(*hostname);
+    free(*cwd);
+
+    *username = NULL;
+    *hostname = NULL;
+    *cwd = NULL;
+
+
+    // Command
+    da_free_char(*command);
+
+    *command = NULL;
+
+
+    // Parsed command arguments
+}
+
 void shell_loop(void) {
     char *username;
     char *hostname;
@@ -51,18 +71,16 @@ void shell_loop(void) {
 
             // TODO: REMOVE LATER
             if (command != NULL) {
-                status = 0;
+                free_vars(&username, &hostname, &cwd, &command);
+                break;
             }
 
         } else {
             args = shell_parse_line(command);
             status = shell_execute(args);
         }
+
         // Pointer clean-up
-        free(username);
-        free(hostname);
-        free(cwd);
-        da_free_char(command);
-        free(args);
+        free_vars(&username, &hostname, &cwd, &command);
     } while (status);
 }

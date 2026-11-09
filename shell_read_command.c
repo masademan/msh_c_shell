@@ -13,6 +13,7 @@
 #include "shell_read_command.h"
 
 // TODO: make shell history work
+//       maybe tab complete
 
 #define CONTINUE_CODE -2
 
@@ -42,29 +43,43 @@ static void sigint_handler(int signum) {
 }
 
 /* Handles arrow keys and the delete key */
-static void shell_handle_ANSI(CharArray *line, size_t *position) {
+static CharArray *shell_handle_ANSI(CharArray *line, size_t *position) {
     int c = getchar();
+    CharArray *char_a = da_new_char();
 
     // printf("\n(%d)", c);
 
     if (c == 'A') {  // Up arrow
         // TODO:
         // get prev history
+
+        da_free_char(char_a);
+        return NULL;
     } else if (c == 'B') {  // Down arrow
         // TODO:
         // load next history
+
+        da_free_char(char_a);
+        return NULL;
     } else if (c == 'C') {  // Right arrow
         if (*position < da_count_char(line)) {
             move_cursor_right();
             *position = *position + 1;
         }
+
+        da_free_char(char_a);
+        return NULL;
     } else if (c == 'D') {  // Left arrow
         if (*position > 0) {
             move_cursor_left();
             *position = *position - 1;
         }
+
+        da_free_char(char_a);
+        return NULL;
     } else if (c == '3') {  // Maybe Del key
         c = getchar();
+        da_add_char(char_a, c);
 
         if (c == '~') {  // Del key
             if (*position < da_count_char(line)) {
@@ -72,40 +87,72 @@ static void shell_handle_ANSI(CharArray *line, size_t *position) {
 
                 render_typed_command_after_removing_char(line, *position, 1);
             }
+
+            da_free_char(char_a);
+            return NULL;
         } else if (c == ';') {
             c = getchar();
+            da_add_char(char_a, c);
+
             if (c == '5') {
                 c = getchar();
-                if (c == '~') {  // Ctrl + Del key
-                    size_t shift_amount = amount_to_move_cursor_to_next_right_word(line, *position);
+                da_add_char(char_a, c);
 
-                    delete_characters_at_position_in_line(line, *position, shift_amount);
+                if (c == '~') {  // Ctrl + Del key
+                    if (*position < da_count_char(line)) {
+                        size_t shift_amount = amount_to_move_cursor_to_next_right_word(line, *position);
+                        delete_characters_at_position_in_line(line, *position, shift_amount);
+                        render_typed_command_after_removing_char(line, *position, shift_amount);
+                    }
+
+                    da_free_char(char_a);
+                    return NULL;
                 }
             }
         }
     } else if (c == '1') {  // Maybe home key
         c = getchar();
+        da_add_char(char_a, c);
 
         if (c == '~') {  // Home key
             move_cursor_to(position, 0);
+
+            da_free_char(char_a);
+            return NULL;
         } else if (c == ';') {
             c = getchar();
+            da_add_char(char_a, c);
+
             if (c == '5') {
                 c = getchar();
+                da_add_char(char_a, c);
+
                 if (c == 'D') {  // Ctrl + Left arrow
                     move_cursor_to_next_left_word(line, position);
+
+                    da_free_char(char_a);
+                    return NULL;
                 } else if (c == 'C') {  // Ctrl + Right arrow
                     move_cursor_to_next_right_word(line, position);
+
+                    da_free_char(char_a);
+                    return NULL;
                 }
             }
         }
     } else if (c == '4') {  // Maybe end key
         c = getchar();
+        da_add_char(char_a, c);
 
         if (c == '~') {  // End key
             move_cursor_to(position, da_count_char(line));
+
+            da_free_char(char_a);
+            return NULL;
         }
     }
+
+    return char_a;
 }
 
 /* Reads a single character into memory, and also handles backspace, delete, and arrow keys */
@@ -116,7 +163,15 @@ static int shell_read_char(CharArray *line, size_t *position) {
 
     if (c == '\033') {  // ANSI
         getchar();      // Skips the [ part of the ANSI code
-        shell_handle_ANSI(line, position);
+
+        CharArray *char_a = shell_handle_ANSI(line, position);
+        if (char_a != NULL) {
+            da_add_char(line, '\033');
+            da_add_char(line, '[');
+            da_extend_char(line, char_a);
+            da_free_char(char_a);
+        }
+
         return CONTINUE_CODE;
     } else if (c == 127) {  // Backspace key
         if (*position > 0) {
@@ -133,13 +188,14 @@ static int shell_read_char(CharArray *line, size_t *position) {
         if (*position > 0) {
             size_t shift_amount = move_cursor_to_next_left_word(line, position);
             delete_characters_at_position_in_line(line, *position, shift_amount);
+            render_typed_command_after_removing_char(line, *position, shift_amount);
         }
 
         return CONTINUE_CODE;
     } else if (c == 4) {  // Ctrl + D (Like ctrl + del)
         size_t shift_amount = amount_to_move_cursor_to_next_right_word(line, *position);
-
         delete_characters_at_position_in_line(line, *position, shift_amount);
+        render_typed_command_after_removing_char(line, *position, shift_amount);
         return CONTINUE_CODE;
     } else if (c == 1) {  // Ctrl + A (Like the home key)
         move_cursor_to(position, 0);
@@ -152,6 +208,9 @@ static int shell_read_char(CharArray *line, size_t *position) {
         return CONTINUE_CODE;
     } else if (c == 102) {  // Alt + F (Like ctrl + right arrow)
         move_cursor_to_next_right_word(line, position);
+        return CONTINUE_CODE;
+    } else if (c == 9) {  // Tab
+        // do stuff
         return CONTINUE_CODE;
     }
 
