@@ -113,6 +113,10 @@ static void check_for_backslash(int chr) {
     }
 
     unfinished_backslash = open_backslashes && chr == '\n';
+
+    if (unfinished_backslash) {
+        open_backslashes = false;
+    }
 }
 
 

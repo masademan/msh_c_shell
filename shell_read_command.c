@@ -262,6 +262,8 @@ CharArray *shell_read_line(void) {
         check_next_char(ith_char);
     }
 
+    check_next_char('\n');
+
     return line;
 }
 
