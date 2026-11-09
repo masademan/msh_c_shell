@@ -12,8 +12,7 @@
 #include "shell_command_move.h"
 #include "shell_read_command.h"
 
-// TODO: refactor to use safe strings and dynamic arrays from class
-//         a bit more work for better code, plus fun link back to those projects
+// TODO: make shell history work
 
 #define CONTINUE_CODE -2
 

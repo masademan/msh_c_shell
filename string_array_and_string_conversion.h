@@ -1,0 +1,6 @@
+#ifndef STRING_ARRAY_AND_STRING_CONVERSION_H
+#define STRING_ARRAY_AND_STRING_CONVERSION_H
+
+// do stuff
+
+#endif

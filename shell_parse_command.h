@@ -1,5 +1,5 @@
-#ifndef SHELL_PARSE_LINE_H
-#define SHELL_PARSE_LINE_H
+#ifndef SHELL_PARSE_COMMAND_H
+#define SHELL_PARSE_COMMAND_H
 
 #include "dynamic_array_char.h"
 

@@ -1,5 +1,5 @@
-#ifndef SHELL_LINE_CHECK_H
-#define SHELL_LINE_CHECK_H
+#ifndef SHELL_COMMAND_CHECK_H
+#define SHELL_COMMAND_CHECK_H
 
 #include <stdbool.h>
 

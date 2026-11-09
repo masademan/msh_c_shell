@@ -1,5 +1,5 @@
-#ifndef DYNAMIC_ARRAY_H
-#define DYNAMIC_ARRAY_H
+#ifndef DYNAMIC_ARRAY_INT_H
+#define DYNAMIC_ARRAY_INT_H
 
 #include <stdbool.h>
 #include <stddef.h>

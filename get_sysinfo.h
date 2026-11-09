@@ -1,5 +1,5 @@
-#ifndef GET_DIR_H
-#define GET_DIR_H
+#ifndef GET_SYSINFO_H
+#define GET_SYSINFO_H
 
 /* Returns a string (pointer to chars) that gives the username of the active
    user running the program

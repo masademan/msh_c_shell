@@ -1,5 +1,5 @@
-#ifndef SHELL_READ_LINE_H
-#define SHELL_READ_LINE_H
+#ifndef SHELL_READ_COMMAND_H
+#define SHELL_READ_COMMAND_H
 
 #include "dynamic_array_char.h"
 

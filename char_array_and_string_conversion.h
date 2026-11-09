@@ -1,5 +1,5 @@
-#ifndef CHAR_ARRAY_AND_STRING_CONVERSION
-#define CHAR_ARRAY_AND_STRING_CONVERSION
+#ifndef CHAR_ARRAY_AND_STRING_CONVERSION_H
+#define CHAR_ARRAY_AND_STRING_CONVERSION_H
 
 #include "dynamic_array_char.h"
 #include "safe_string.h"
