@@ -4,8 +4,8 @@
 
 // Built-in function prototypes
 // Example:
-//   int shell_cd(char **args);
-int shell_cd(char **args);
+//   int shell_cd(StringArray *args);
+int shell_cd(StringArray *args);
 
 // Built-in setup
 static char *built_in_command_names[] = {
@@ -14,7 +14,7 @@ static char *built_in_command_names[] = {
     "help",
 };
 
-static int (*built_in_command_funcs[])(char **) = {
+static int (*built_in_command_funcs[])(StringArray *) = {
     &shell_cd,
 };
 
@@ -24,7 +24,7 @@ static size_t num_built_ins(void) { return sizeof(built_in_command_names) / size
 
 // Built-in functions
 // Copy of the prototypes, but finished
-int shell_cd(char **args) {
+int shell_cd(StringArray *args) {
     // TODO: finish implementation
     (void) args;
 
@@ -32,7 +32,7 @@ int shell_cd(char **args) {
 }
 
 // Global functions
-int shell_execute(char **args) {
+int shell_execute(StringArray *args) {
     (void) args;
     (void) built_in_command_funcs;
     num_built_ins();
@@ -40,13 +40,13 @@ int shell_execute(char **args) {
     return 1;
 }
 
-int shell_launch_program(char **args) {
+int shell_launch_program(StringArray *args) {
     (void) args;
 
     return 0;
 }
 
-int run_shell_command(char **args) {
+int run_shell_command(StringArray *args) {
     (void) args;
 
     return 0;

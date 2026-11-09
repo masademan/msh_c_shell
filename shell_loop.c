@@ -3,6 +3,7 @@
 
 #include "ansi_colors.h"
 #include "dynamic_array_char.h"
+#include "dynamic_array_string.h"
 #include "get_sysinfo.h"
 #include "shell_execute.h"
 #include "shell_helpers.h"
@@ -37,7 +38,7 @@ void shell_loop(void) {
     char *hostname;
     char *cwd;
     CharArray *command;
-    char **args;
+    StringArray *args;
     int status;
 
     clear_terminal();

@@ -4,6 +4,7 @@
 
 #include "char_array_and_string_conversion.h"
 #include "dynamic_array_char.h"
+#include "dynamic_array_string.h"
 #include "safe_string.h"
 #include "shell_parse_command.h"
 
@@ -33,15 +34,15 @@ static CharArray *shell_clean_line(CharArray *line) {
     pointers that allocate memory
     The caller owns the pointer returned, as well as each subpointer,
     and has to call arg_free() on it to free it */
-static char **shell_split_line(CharArray *line) {
+static StringArray *shell_split_line(CharArray *line) {
     (void) line;
 
     return NULL;
 }
 
-char **shell_parse_line(CharArray *line) {
+StringArray *shell_parse_line(CharArray *line) {
     CharArray *cleaned_line = shell_clean_line(line);
-    char **split_args = shell_split_line(cleaned_line);
+    StringArray *split_args = shell_split_line(cleaned_line);
 
     String *s_cleaned_line = da_join_to_string(cleaned_line);
     printf("\n\"\"\"\n%s\n\"\"\"\n", ss_cstr(s_cleaned_line));
