@@ -1,4 +1,8 @@
+#include <signal.h>
+#include <stdio.h>
+
 #include "shell_command_check.h"
+#include "shell_globals.h"
 
 // Static internal vars
 static bool open_single_quotes;
@@ -45,6 +49,11 @@ static void check_for_parens(int chr) {
     } else if (chr == ')') {
         --open_parens;
     }
+
+    if (open_parens < 0) {
+        fprintf(stderr, "-%s: unexpected ')'", SHELL_NAME);
+        raise(SIGINT);
+    }
 }
 
 static void check_for_braces(int chr) {
@@ -60,6 +69,11 @@ static void check_for_braces(int chr) {
         ++open_braces;
     } else if (chr == '}') {
         --open_braces;
+    }
+
+    if (open_braces < 0) {
+        fprintf(stderr, "-%s: unexpected '}'", SHELL_NAME);
+        raise(SIGINT);
     }
 }
 
