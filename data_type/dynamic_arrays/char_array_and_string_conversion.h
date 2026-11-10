@@ -1,8 +1,8 @@
 #ifndef CHAR_ARRAY_AND_STRING_CONVERSION_H
 #define CHAR_ARRAY_AND_STRING_CONVERSION_H
 
-#include "dynamic_array_char.h"
-#include "safe_string.h"
+#include "char_array.h"
+#include "data_type/safe_string/safe_string.h"
 
 /* Joins a DynamicArray of chars into a single string
    Useful for printing and string manipulations

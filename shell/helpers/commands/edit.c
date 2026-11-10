@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "dynamic_array_char.h"
-#include "shell_command_edit.h"
-#include "shell_command_move.h"
-#include "shell_globals.h"
+#include "data_type/dynamic_arrays/char_array.h"
+#include "edit.h"
+#include "macros/shell_globals.h"
+#include "move.h"
 
 void render_typed_command_after_removing_char(const CharArray *line, size_t position,
                                               size_t amount_removed) {

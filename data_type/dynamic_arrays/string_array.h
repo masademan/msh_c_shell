@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "safe_string.h"
+#include "data_type/safe_string/safe_string.h"
 
 /* An ordered array of Strings that grows as you add to it. */
 typedef struct StringArray StringArray;

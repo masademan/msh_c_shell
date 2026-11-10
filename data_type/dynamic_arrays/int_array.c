@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "dynamic_array_int.h"
+#include "int_array.h"
 
 /* Define struct IntArray here. */
 struct IntArray {

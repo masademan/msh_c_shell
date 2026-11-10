@@ -1,7 +1,7 @@
 #ifndef SHELL_READ_COMMAND_H
 #define SHELL_READ_COMMAND_H
 
-#include "dynamic_array_char.h"
+#include "data_type/dynamic_arrays/char_array.h"
 
 /* Reads the single line command the user types in character by character
    Returns a string (pointer to a char) built in that way

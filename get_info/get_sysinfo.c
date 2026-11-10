@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #include "get_sysinfo.h"
-#include "shell_helpers.h"
+#include "shell/helpers/helpers.h"
 
 char *get_username(void) {
     size_t size = 4;

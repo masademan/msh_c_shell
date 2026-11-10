@@ -3,13 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "char_array_and_string_conversion.h"
-#include "dynamic_array_char.h"
-#include "dynamic_array_string.h"
-#include "safe_string.h"
-#include "shell_command_check.h"
-#include "shell_globals.h"
-#include "shell_parse_command.h"
+#include "data_type/dynamic_arrays/char_array.h"
+#include "data_type/dynamic_arrays/char_array_and_string_conversion.h"
+#include "data_type/dynamic_arrays/string_array.h"
+#include "data_type/safe_string/safe_string.h"
+#include "helpers/commands/check.h"
+#include "macros/shell_globals.h"
+#include "parse_command.h"
 
 // TODO: Make a "clean_line" function to remove '\' from the line to make parsing easier
 //         This will also allow for more complex line-breaking rules in the reading stage

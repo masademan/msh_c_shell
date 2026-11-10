@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "dynamic_array_char.h"
-#include "shell_command_move.h"
-#include "shell_globals.h"
+#include "data_type/dynamic_arrays/char_array.h"
+#include "macros/shell_globals.h"
+#include "move.h"
 
 void move_cursor_left(void) { printf("\033[D"); }
 

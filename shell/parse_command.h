@@ -1,8 +1,8 @@
 #ifndef SHELL_PARSE_COMMAND_H
 #define SHELL_PARSE_COMMAND_H
 
-#include "dynamic_array_char.h"
-#include "dynamic_array_string.h"
+#include "data_type/dynamic_arrays/char_array.h"
+#include "data_type/dynamic_arrays/string_array.h"
 
 /* Takes in a string from the shell_read_line function and parses it into
    individual tokens This returns a dynamic array of string (pointer to a

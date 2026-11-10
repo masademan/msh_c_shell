@@ -13,11 +13,17 @@ VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --errors-for-leak-ki
 
 SHELL_NAME = msh
 
-OBJS = main.o \
-	shell_loop.o shell_read_command.o shell_parse_command.o shell_execute.o \
-	get_sysinfo.o shell_helpers.o shell_command_check.o \
-	shell_command_move.o shell_command_edit.o \
-	safe_string.o char_array_and_string_conversion.o dynamic_array_char.o
+SRCS = main.c \
+			 shell/loop.c shell/read_command.c shell/parse_command.c shell/execute.c \
+			 shell/helpers/helpers.c \
+			 shell/helpers/commands/check.c shell/helpers/commands/edit.c shell/helpers/commands/move.c \
+			 shell/history/history.c \
+			 get_info/get_sysinfo.c \
+			 data_type/dynamic_arrays/char_array.c data_type/dynamic_arrays/string_array.c \
+			 data_type/dynamic_arrays/char_array_and_string_conversion.c \
+			 data_type/safe_string/safe_string.c
+
+OBJS = $(SRCS:%.c=objs/%.o)
 
 
 #  Parameters
@@ -99,9 +105,10 @@ $(SHELL_NAME): $(OBJS)
 	@printf "Finished!\n"
 	@printf $(MSG)
 
-%.o: %.c
+objs/%.o: %.c
 	@printf "Compiling $<...\n"
-	@$(CC) $(CFLAGS) -c $<
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	@printf "Cleaning up files...\n"
@@ -110,7 +117,9 @@ clean:
 	@printf "\nFinished!\n"
 
 clean_objs:
-	@rm -f *.o
+	@rm -rf objs/
+	@#rm -f *.o
+	@#find . -name "*.o" -type f -delete
 
 clean_shell:
 	@rm -f $(SHELL_NAME)

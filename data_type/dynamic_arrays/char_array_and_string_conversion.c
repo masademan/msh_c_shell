@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "char_array.h"
 #include "char_array_and_string_conversion.h"
-#include "dynamic_array_char.h"
-#include "safe_string.h"
+#include "data_type/safe_string/safe_string.h"
 
 String *da_join_to_string(const CharArray *da) {
     String *s = ss_new_length(da_count_char(da));

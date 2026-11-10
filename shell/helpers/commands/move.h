@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "dynamic_array_char.h"
+#include "data_type/dynamic_arrays/char_array.h"
 
 /* Uses ANSI codes and printf to move the cursor one character space to the left */
 void move_cursor_left(void);

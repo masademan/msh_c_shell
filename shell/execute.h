@@ -1,7 +1,7 @@
 #ifndef SHELL_EXECUTE_H
 #define SHELL_EXECUTE_H
 
-#include "dynamic_array_string.h"
+#include "data_type/dynamic_arrays/string_array.h"
 
 /* Takes in a dynamic array of strings (pointer to a pointer to a char) and
    starts a process based on the args given

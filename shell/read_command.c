@@ -6,12 +6,12 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include "dynamic_array_char.h"
-#include "shell_command_check.h"
-#include "shell_command_edit.h"
-#include "shell_command_move.h"
-#include "shell_globals.h"
-#include "shell_read_command.h"
+#include "data_type/dynamic_arrays/char_array.h"
+#include "helpers/commands/check.h"
+#include "helpers/commands/edit.h"
+#include "helpers/commands/move.h"
+#include "macros/shell_globals.h"
+#include "read_command.h"
 
 // TODO: make shell history work
 //       maybe tab complete

@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "dynamic_array_char.h"
+#include "char_array.h"
 
 /* Define struct CharArray here. */
 struct CharArray {

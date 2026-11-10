@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "shell_loop.h"
+#include "shell/loop.h"
 
 int main(int arg_c, char **arg_v) {
     // arg_c = argument count

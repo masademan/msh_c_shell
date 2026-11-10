@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "ansi_colors.h"
-#include "dynamic_array_char.h"
-#include "dynamic_array_string.h"
-#include "get_sysinfo.h"
-#include "shell_execute.h"
-#include "shell_helpers.h"
-#include "shell_loop.h"
-#include "shell_parse_command.h"
-#include "shell_read_command.h"
+#include "data_type/dynamic_arrays/char_array.h"
+#include "data_type/dynamic_arrays/string_array.h"
+#include "execute.h"
+#include "get_info/get_sysinfo.h"
+#include "helpers/helpers.h"
+#include "loop.h"
+#include "macros/ansi_colors.h"
+#include "parse_command.h"
+#include "read_command.h"
 
 static const char *shell_start = ">>";
 

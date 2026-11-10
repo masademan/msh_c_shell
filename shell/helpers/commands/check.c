@@ -1,8 +1,8 @@
 #include <signal.h>
 #include <stdio.h>
 
-#include "shell_command_check.h"
-#include "shell_globals.h"
+#include "check.h"
+#include "macros/shell_globals.h"
 
 // Static internal vars
 static bool open_single_quotes;

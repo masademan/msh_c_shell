@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "dynamic_array_string.h"
-#include "safe_string.h"
+#include "data_type/safe_string/safe_string.h"
+#include "string_array.h"
 
 /* Define struct StringArray here. */
 struct StringArray {

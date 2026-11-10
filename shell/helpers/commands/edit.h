@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-#include "dynamic_array_char.h"
+#include "data_type/dynamic_arrays/char_array.h"
 
 /* Used to show the changes after a backspace, delete, or mid-line character insert
    Prints all the chars from position until the end of the array
