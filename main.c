@@ -19,7 +19,7 @@ int main(int arg_c, char **arg_v) {
     //      max dir length (int, and is how many directories up to show, replace rest with ...,
     //          0 means show all)
     //      allow for arrow keys to reselect commands (also to save memory)
-    //      rename project folder to "c shell - final project"
+    //      maybe allow the ansi colors.h to be used in printf in this shell
     //      maybe in the future do conditionals and loops in the shell (currently unused)
 
     // Run shell loop
