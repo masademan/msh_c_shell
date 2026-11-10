@@ -1,6 +1,6 @@
 #  Vars
 # BASE_CFLAGS = -std=c11 -Wall -Wextra -O0 -pedantic -g
-BASE_CFLAGS = -std=gnu11 -Wall -Wextra -pedantic
+BASE_CFLAGS = -std=gnu11 -Wall -Wextra -pedantic -I.
 FAST_FLAGS = -O2
 NORMAL_FLAGS = -O0 -g
 CFLAGS ?= $(BASE_CFLAGS) $(NORMAL_FLAGS)
@@ -12,6 +12,12 @@ VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --errors-for-leak-ki
 					 --track-origins=yes --error-exitcode=1
 
 SHELL_NAME = msh
+
+OBJS = main.o \
+	shell_loop.o shell_read_command.o shell_parse_command.o shell_execute.o \
+	get_sysinfo.o shell_helpers.o shell_command_check.o \
+	shell_command_move.o shell_command_edit.o \
+	safe_string.o char_array_and_string_conversion.o dynamic_array_char.o
 
 
 #  Parameters
@@ -87,11 +93,7 @@ valgrind:
 	@printf "\n\n--- Running '$(SHELL_NAME)' with Valgrind ---\n\n"
 	$(VALGRIND) ./$(SHELL_NAME)
 
-$(SHELL_NAME): main.o \
-	shell_loop.o shell_read_command.o shell_parse_command.o shell_execute.o \
-	get_sysinfo.o shell_helpers.o shell_command_check.o \
-	shell_command_move.o shell_command_edit.o \
-	safe_string.o char_array_and_string_conversion.o dynamic_array_char.o
+$(SHELL_NAME): $(OBJS)
 	@printf "\nLinking the files to finish compiling...\n\n"
 	@$(CC) $(CFLAGS) $^ -o $@
 	@printf "Finished!\n"

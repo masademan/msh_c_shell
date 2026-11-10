@@ -83,18 +83,85 @@ static CharArray *shell_clean_line(CharArray *line) {
 
     // Clean up double spaces
     if (!da_remove_duplicate_char(cleaned_line, ' ')) {
-        fprintf(stderr, "-%s: da_remove_duplicate_char error", SHELL_NAME);
+        fprintf(stderr, "-%s: da_remove_duplicate error", SHELL_NAME);
         raise(SIGINT);
     }
 
     if (!da_replace_char(cleaned_line, SPACE_REPLACEMENT, ' ')) {
-        fprintf(stderr, "-%s: da_replace_char error", SHELL_NAME);
+        fprintf(stderr, "-%s: da_replace error", SHELL_NAME);
         raise(SIGINT);
     }
 
     // Add spaces between parts as necessary (after ;, around &&, around ||, around |)
+    CharArray *spaced_line = da_new_char();
 
-    return cleaned_line;
+    if (!da_get_char(cleaned_line, 0, &c)) {
+        fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+        raise(SIGINT);
+    }
+    if (!da_add_char(spaced_line, c)) {
+        fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+        raise(SIGINT);
+    }
+
+    line_check_reset();
+    check_next_char(c);
+
+    char prev_c, next_c;
+    for (size_t i = 1; i < da_count_char(cleaned_line) - 1; i++) {
+        // Getting chars
+        if (!da_get_char(cleaned_line, i - 1, &prev_c)) {
+            fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+            raise(SIGINT);
+        }
+        if (!da_get_char(cleaned_line, i, &c)) {
+            fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+            raise(SIGINT);
+        }
+        if (!da_get_char(cleaned_line, i + 1, &next_c)) {
+            fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+            raise(SIGINT);
+        }
+
+        check_next_char(c);
+
+        // Before adding char
+        if (!has_open_quotes()) {
+            if ((c == '&' && prev_c != ' ' && prev_c != '&') ||
+                (c == '|' && prev_c != ' ' && prev_c != '|')) {
+                if (!da_add_char(spaced_line, ' ')) {
+                    fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+                    raise(SIGINT);
+                }
+            }
+        }
+
+        // Adding char
+        if (!da_add_char(spaced_line, c)) {
+            fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+            raise(SIGINT);
+        }
+
+        // After adding char
+        if (!has_open_quotes()) {
+            if ((c == '&' && next_c != ' ' && next_c != '&') ||
+                (c == '|' && next_c != ' ' && next_c != '|') || (c == ';' && next_c != ' ')) {
+                if (!da_add_char(spaced_line, ' ')) {
+                    fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+                    raise(SIGINT);
+                }
+            }
+        }
+    }
+
+    if (da_count_char(cleaned_line) > 1) {
+        if (!da_add_char(spaced_line, next_c)) {
+            fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+            raise(SIGINT);
+        }
+    }
+
+    return spaced_line;
 }
 
 /* This splits the line that comes from shell_clean_line and returns a

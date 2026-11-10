@@ -220,6 +220,7 @@ static int shell_read_char(CharArray *line, size_t *position) {
         move_cursor_to(position, da_count_char(line));
         return CONTINUE_CODE;
     } else if (c == 9) {  // Tab
+        // Maybe auto complete
         // do stuff
         return CONTINUE_CODE;
     }

@@ -20,6 +20,8 @@ static unsigned int unfinished_logic_and;
 static bool open_backslashes;
 static bool unfinished_backslash;
 
+static unsigned int spaces_seen;
+
 
 // Static internal funcs
 static void check_for_quotes(int chr) {
@@ -83,6 +85,11 @@ static void check_for_loops(int chr) { (void) chr; }
 
 static void check_for_pipes_and_OR_logic_ops(int chr) {
     if (has_open_quotes() || open_backslashes || chr != '|') {
+        if (chr == '&' && unfinished_pipes != 0) {
+            fprintf(stderr, "-%s: unexpected '&' near '|'", SHELL_NAME);
+            raise(SIGINT);
+        }
+
         if (chr != '\n' && chr != ' ') {
             unfinished_pipes = 0;
         }
@@ -94,10 +101,20 @@ static void check_for_pipes_and_OR_logic_ops(int chr) {
         return;
     }
 
+    if (spaces_seen != 0 && unfinished_pipes != 0) {
+        fprintf(stderr, "-%s: syntax error near token '|'", SHELL_NAME);
+        raise(SIGINT);
+    }
+
     ++unfinished_pipes;
 
+    if (unfinished_logic_and != 0) {
+        fprintf(stderr, "-%s: unexpected '|' near '&'", SHELL_NAME);
+        raise(SIGINT);
+    }
+
     if (unfinished_pipes == 3) {
-        fprintf(stderr, "-%s: unexpected '|'", SHELL_NAME);
+        fprintf(stderr, "-%s: unexpected '|' near '||'", SHELL_NAME);
         raise(SIGINT);
     }
 }
@@ -115,7 +132,17 @@ static void check_for_AND_logic_ops(int chr) {
         return;
     }
 
+    if (spaces_seen != 0 && unfinished_logic_and != 0) {
+        fprintf(stderr, "-%s: syntax error near token '&'", SHELL_NAME);
+        raise(SIGINT);
+    }
+
     ++unfinished_logic_and;
+
+    if (unfinished_logic_and == 3) {
+        fprintf(stderr, "-%s: unexpected '&' near '&&'", SHELL_NAME);
+        raise(SIGINT);
+    }
 }
 
 static void check_for_backslash(int chr) {
@@ -129,6 +156,14 @@ static void check_for_backslash(int chr) {
 
     if (unfinished_backslash) {
         open_backslashes = false;
+    }
+}
+
+static void check_for_spaces(int chr) {
+    if (chr == ' ') {
+        spaces_seen++;
+    } else {
+        spaces_seen = 0;
     }
 }
 
@@ -158,6 +193,9 @@ void check_next_char(int chr) {
 
     // Explicit backslash newline check
     check_for_backslash(chr);
+
+    // Check spaces (error detection)
+    check_for_spaces(chr);
 }
 
 void line_check_reset(void) {
@@ -175,6 +213,8 @@ void line_check_reset(void) {
 
     open_backslashes = false;
     unfinished_backslash = false;
+
+    spaces_seen = 0;
 }
 
 bool is_complete_command(void) {

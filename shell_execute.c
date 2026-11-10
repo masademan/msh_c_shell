@@ -32,6 +32,8 @@ int shell_cd(StringArray *args) {
 }
 
 // Global functions
+// make it so that ctrl + c kills the child process, end the execution in the parent, and return 1
+//  should bring user back to shell
 int shell_execute(StringArray *args) {
     (void) args;
     (void) built_in_command_funcs;
