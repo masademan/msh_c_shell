@@ -520,7 +520,7 @@ CharArray *da_slice_steps_char(const CharArray *a, size_t start, size_t end, cha
     return sliced_array;
 }
 
-CharArray *da_slice(const CharArray *a, size_t start, size_t end) {
+CharArray *da_slice_char(const CharArray *a, size_t start, size_t end) {
     if (a == NULL) {
         return NULL;
     }
@@ -528,7 +528,7 @@ CharArray *da_slice(const CharArray *a, size_t start, size_t end) {
     return da_slice_steps_char(a, start, end, 1);
 }
 
-bool da_remove_all(CharArray *a, char value) {
+bool da_remove_all_char(CharArray *a, char value) {
     if (a == NULL) {
         return false;
     }
@@ -609,18 +609,22 @@ bool da_binary_search_char(const CharArray *a, char value, size_t *out) {
     size_t right = da_count_char(a) - 1;
     size_t mid;
 
+    unsigned char curr;
+    unsigned char val = (unsigned char) value;
+
     while (left <= right) {
         mid = (left + right) >> 1;
+        curr = (unsigned char) a->data[mid];
 
-        if (a->data[mid] == value) {
+        if (curr == val) {
             if (out != NULL) {
                 *out = mid;
             }
 
             return true;
-        } else if (a->data[mid] < value) {
+        } else if (curr < val) {
             left = mid + 1;
-        } else if (a->data[mid] > value) {
+        } else if (curr > val) {
             if (mid == 0) {
                 return false;
             }
@@ -653,4 +657,42 @@ void da_remove_n_char(CharArray *a, size_t i, size_t remove_count) {
     a->len -= remove_count;
 
     shrink_array_when_small(a);
+}
+
+bool da_remove_duplicate_char(CharArray *a, char c) {
+    if (a == NULL) {
+        return false;
+    }
+
+    size_t offset = 0;
+    for (size_t idx = 1; idx + offset < da_count_char(a); idx++) {
+        while (idx + offset < da_count_char(a) && a->data[idx + offset - 1] == c &&
+               a->data[idx + offset] == c) {
+            offset++;
+        }
+
+        if (idx + offset < da_count_char(a)) {
+            a->data[idx] = a->data[idx + offset];
+        }
+    }
+
+    a->len -= offset;
+
+    shrink_array_when_small(a);
+
+    return true;
+}
+
+bool da_replace_char(CharArray *a, char to_replace, char replace_with) {
+    if (a == NULL) {
+        return false;
+    }
+
+    for (size_t i = 0; i < da_count_char(a); i++) {
+        if (a->data[i] == to_replace) {
+            a->data[i] = replace_with;
+        }
+    }
+
+    return true;
 }

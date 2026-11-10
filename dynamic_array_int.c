@@ -654,3 +654,41 @@ void da_remove_n_int(IntArray *a, size_t i, size_t remove_count) {
 
     shrink_array_when_small(a);
 }
+
+bool da_remove_duplicate_int(IntArray *a, int val) {
+    if (a == NULL) {
+        return false;
+    }
+
+    size_t offset = 0;
+    for (size_t idx = 1; idx + offset < da_count_int(a); idx++) {
+        while (idx + offset < da_count_int(a) && a->data[idx + offset - 1] == val &&
+               a->data[idx + offset] == val) {
+            offset++;
+        }
+
+        if (idx + offset < da_count_int(a)) {
+            a->data[idx] = a->data[idx + offset];
+        }
+    }
+
+    a->len -= offset;
+
+    shrink_array_when_small(a);
+
+    return true;
+}
+
+bool da_replace_int(IntArray *a, int to_replace, int replace_with) {
+    if (a == NULL) {
+        return false;
+    }
+
+    for (size_t i = 0; i < da_count_int(a); i++) {
+        if (a->data[i] == to_replace) {
+            a->data[i] = replace_with;
+        }
+    }
+
+    return true;
+}

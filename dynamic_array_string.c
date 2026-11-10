@@ -692,3 +692,43 @@ void da_remove_n_string(StringArray *a, size_t i, size_t remove_count) {
 
     shrink_array_when_small(a);
 }
+
+bool da_remove_duplicate_string(StringArray *a, const String *s) {
+    if (a == NULL) {
+        return false;
+    }
+
+    size_t offset = 0;
+    for (size_t idx = 1; idx + offset < da_count_string(a); idx++) {
+        while (idx + offset < da_count_string(a) && ss_equals(a->data[idx + offset - 1], s) &&
+               ss_equals(a->data[idx + offset], s)) {
+            ss_free(a->data[idx + offset]);
+            offset++;
+        }
+
+        if (idx + offset < da_count_string(a)) {
+            a->data[idx] = a->data[idx + offset];
+        }
+    }
+
+    a->len -= offset;
+
+    shrink_array_when_small(a);
+
+    return true;
+}
+
+bool da_replace_string(StringArray *a, const String *to_replace, const String *replace_with) {
+    if (a == NULL) {
+        return false;
+    }
+
+    for (size_t i = 0; i < da_count_string(a); i++) {
+        if (ss_equals(a->data[i], to_replace)) {
+            ss_free(a->data[i]);
+            a->data[i] = ss_copy(replace_with);
+        }
+    }
+
+    return true;
+}

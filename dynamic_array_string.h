@@ -174,4 +174,14 @@ bool da_binary_search_string(const StringArray *a, const String *value, size_t *
    or i + remove_count - 1 goes past the end of the array */
 void da_remove_n_string(StringArray *a, size_t i, size_t remove_count);
 
+/* Removes consecutive duplicates of s
+   Returns false if a is NULL
+   Else, returns true */
+bool da_remove_duplicate_string(StringArray *a, const String *s);
+
+/* Replaces all instances of to_replace with replace_with
+   Returns false if a is NULL
+   Else, return true */
+bool da_replace_string(StringArray *a, const String *to_replace, const String *replace_with);
+
 #endif

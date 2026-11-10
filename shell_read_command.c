@@ -10,6 +10,7 @@
 #include "shell_command_check.h"
 #include "shell_command_edit.h"
 #include "shell_command_move.h"
+#include "shell_globals.h"
 #include "shell_read_command.h"
 
 // TODO: make shell history work
@@ -44,112 +45,129 @@ static void sigint_handler(int signum) {
 
 /* Handles arrow keys and the delete key */
 static CharArray *shell_handle_ANSI(CharArray *line, size_t *position) {
-    int c = getchar();
     CharArray *char_a = da_new_char();
+    int c = getchar();
+    da_add_char(char_a, c);
 
     // printf("\n(%d)", c);
 
-    if (c == 'A') {  // Up arrow
-        // TODO:
-        // get prev history
-
-        da_free_char(char_a);
-        return NULL;
-    } else if (c == 'B') {  // Down arrow
-        // TODO:
-        // load next history
-
-        da_free_char(char_a);
-        return NULL;
-    } else if (c == 'C') {  // Right arrow
-        if (*position < da_count_char(line)) {
-            move_cursor_right();
-            *position = *position + 1;
-        }
-
-        da_free_char(char_a);
-        return NULL;
-    } else if (c == 'D') {  // Left arrow
-        if (*position > 0) {
-            move_cursor_left();
-            *position = *position - 1;
-        }
-
-        da_free_char(char_a);
-        return NULL;
-    } else if (c == '3') {  // Maybe Del key
+    if (c == '[') {
         c = getchar();
         da_add_char(char_a, c);
 
-        if (c == '~') {  // Del key
+        if (c == 'A') {  // Up arrow
+            // TODO:
+            // get prev history
+
+            da_free_char(char_a);
+            return NULL;
+        } else if (c == 'B') {  // Down arrow
+            // TODO:
+            // load next history
+
+            da_free_char(char_a);
+            return NULL;
+        } else if (c == 'C') {  // Right arrow
             if (*position < da_count_char(line)) {
-                delete_characters_at_position_in_line(line, *position, 1);
-
-                render_typed_command_after_removing_char(line, *position, 1);
+                move_cursor_right();
+                *position = *position + 1;
             }
 
             da_free_char(char_a);
             return NULL;
-        } else if (c == ';') {
+        } else if (c == 'D') {  // Left arrow
+            if (*position > 0) {
+                move_cursor_left();
+                *position = *position - 1;
+            }
+
+            da_free_char(char_a);
+            return NULL;
+        } else if (c == '3') {  // Maybe Del key
             c = getchar();
             da_add_char(char_a, c);
 
-            if (c == '5') {
+            if (c == '~') {  // Del key
+                if (*position < da_count_char(line)) {
+                    delete_characters_at_position_in_line(line, *position, 1);
+
+                    render_typed_command_after_removing_char(line, *position, 1);
+                }
+
+                da_free_char(char_a);
+                return NULL;
+            } else if (c == ';') {
                 c = getchar();
                 da_add_char(char_a, c);
 
-                if (c == '~') {  // Ctrl + Del key
-                    if (*position < da_count_char(line)) {
-                        size_t shift_amount = amount_to_move_cursor_to_next_right_word(line, *position);
-                        delete_characters_at_position_in_line(line, *position, shift_amount);
-                        render_typed_command_after_removing_char(line, *position, shift_amount);
+                if (c == '5') {
+                    c = getchar();
+                    da_add_char(char_a, c);
+
+                    if (c == '~') {  // Ctrl + Del key
+                        if (*position < da_count_char(line)) {
+                            size_t shift_amount =
+                                amount_to_move_cursor_to_next_right_word(line, *position);
+                            delete_characters_at_position_in_line(line, *position, shift_amount);
+                            render_typed_command_after_removing_char(line, *position, shift_amount);
+                        }
+
+                        da_free_char(char_a);
+                        return NULL;
                     }
-
-                    da_free_char(char_a);
-                    return NULL;
                 }
             }
-        }
-    } else if (c == '1') {  // Maybe home key
-        c = getchar();
-        da_add_char(char_a, c);
-
-        if (c == '~') {  // Home key
-            move_cursor_to(position, 0);
-
-            da_free_char(char_a);
-            return NULL;
-        } else if (c == ';') {
+        } else if (c == '1') {  // Maybe home key
             c = getchar();
             da_add_char(char_a, c);
 
-            if (c == '5') {
+            if (c == '~') {  // Home key
+                move_cursor_to(position, 0);
+
+                da_free_char(char_a);
+                return NULL;
+            } else if (c == ';') {
                 c = getchar();
                 da_add_char(char_a, c);
 
-                if (c == 'D') {  // Ctrl + Left arrow
-                    move_cursor_to_next_left_word(line, position);
+                if (c == '5') {
+                    c = getchar();
+                    da_add_char(char_a, c);
 
-                    da_free_char(char_a);
-                    return NULL;
-                } else if (c == 'C') {  // Ctrl + Right arrow
-                    move_cursor_to_next_right_word(line, position);
+                    if (c == 'D') {  // Ctrl + Left arrow
+                        move_cursor_to_next_left_word(line, position);
 
-                    da_free_char(char_a);
-                    return NULL;
+                        da_free_char(char_a);
+                        return NULL;
+                    } else if (c == 'C') {  // Ctrl + Right arrow
+                        move_cursor_to_next_right_word(line, position);
+
+                        da_free_char(char_a);
+                        return NULL;
+                    }
                 }
             }
-        }
-    } else if (c == '4') {  // Maybe end key
-        c = getchar();
-        da_add_char(char_a, c);
+        } else if (c == '4') {  // Maybe end key
+            c = getchar();
+            da_add_char(char_a, c);
 
-        if (c == '~') {  // End key
-            move_cursor_to(position, da_count_char(line));
+            if (c == '~') {  // End key
+                move_cursor_to(position, da_count_char(line));
 
-            da_free_char(char_a);
-            return NULL;
+                da_free_char(char_a);
+                return NULL;
+            }
         }
+    } else if (c == 98) {  // Alt + B (Like ctrl + left arrow)
+        move_cursor_to_next_left_word(line, position);
+
+        da_free_char(char_a);
+        return NULL;
+    } else if (c == 102) {  // Alt + F (Like ctrl + right arrow)
+        move_cursor_to_next_right_word(line, position);
+
+        da_free_char(char_a);
+        return NULL;
     }
 
     return char_a;
@@ -161,9 +179,7 @@ static int shell_read_char(CharArray *line, size_t *position) {
 
     // printf("\n(%d)", c);
 
-    if (c == '\033') {  // ANSI
-        getchar();      // Skips the [ part of the ANSI code
-
+    if (c == '\033') {  // Handle ANSI
         CharArray *char_a = shell_handle_ANSI(line, position);
         if (char_a != NULL) {
             da_add_char(line, '\033');
@@ -202,12 +218,6 @@ static int shell_read_char(CharArray *line, size_t *position) {
         return CONTINUE_CODE;
     } else if (c == 5) {  // Ctrl + E (Like the end key)
         move_cursor_to(position, da_count_char(line));
-        return CONTINUE_CODE;
-    } else if (c == 27) {  // Alt + B (Like ctrl + left arrow)
-        move_cursor_to_next_left_word(line, position);
-        return CONTINUE_CODE;
-    } else if (c == 102) {  // Alt + F (Like ctrl + right arrow)
-        move_cursor_to_next_right_word(line, position);
         return CONTINUE_CODE;
     } else if (c == 9) {  // Tab
         // do stuff
@@ -256,8 +266,8 @@ CharArray *shell_read_line(void) {
     char ith_char;
     for (size_t i = 0; i < da_count_char(line); i++) {
         if (!da_get_char(line, i, &ith_char)) {
-            perror("line da_get");
-            exit(EXIT_FAILURE);
+            fprintf(stderr, "-%s: line da_get error", SHELL_NAME);
+            raise(SIGINT);
         }
         check_next_char(ith_char);
     }

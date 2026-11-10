@@ -172,4 +172,15 @@ bool da_binary_search_char(const CharArray *a, char value, size_t *out);
    or i + remove_count - 1 goes past the end of the array */
 void da_remove_n_char(CharArray *a, size_t i, size_t remove_count);
 
+/* Removes consecutive duplicates of c.
+   Useful for trimming long amounts of spaces to a single space
+   Returns false if a is NULL
+   Else, returns true */
+bool da_remove_duplicate_char(CharArray *a, char c);
+
+/* Replaces all instances of to_replace with replace_with
+   Returns false if a is NULL
+   Else, return true */
+bool da_replace_char(CharArray *a, char to_replace, char replace_with);
+
 #endif

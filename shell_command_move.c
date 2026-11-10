@@ -1,8 +1,10 @@
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "dynamic_array_char.h"
 #include "shell_command_move.h"
+#include "shell_globals.h"
 
 void move_cursor_left(void) { printf("\033[D"); }
 
@@ -52,8 +54,8 @@ size_t amount_to_move_cursor_to_next_left_word(const CharArray *line, size_t pos
 
     for (i = position; i > 0; i--) {
         if (i < da_count_char(line) && !da_get_char(line, i, &c)) {
-            perror("da_get error");
-            exit(EXIT_FAILURE);
+            fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+            raise(SIGINT);
         }
 
         if (word_letter_seen && i < da_count_char(line) && !is_word_letter(c)) {
@@ -81,8 +83,8 @@ size_t amount_to_move_cursor_to_next_right_word(const CharArray *line, size_t po
 
     for (i = position; i < da_count_char(line); i++) {
         if (!da_get_char(line, i, &c)) {
-            perror("da_get error");
-            exit(EXIT_FAILURE);
+            fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+            raise(SIGINT);
         }
 
         if (word_letter_seen && !is_word_letter(c)) {

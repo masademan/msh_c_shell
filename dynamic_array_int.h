@@ -172,4 +172,14 @@ bool da_binary_search_int(const IntArray *a, int value, size_t *out);
    or i + remove_count - 1 goes past the end of the array */
 void da_remove_n_int(IntArray *a, size_t i, size_t remove_count);
 
+/* Removes consecutive duplicates of val
+   Returns false if a is NULL
+   Else, returns true */
+bool da_remove_duplicate_int(IntArray *a, int val);
+
+/* Replaces all instances of to_replace with replace_with
+   Returns false if a is NULL
+   Else, return true */
+bool da_replace_int(IntArray *a, int to_replace, int replace_with);
+
 #endif

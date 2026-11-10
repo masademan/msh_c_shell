@@ -1,17 +1,19 @@
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "dynamic_array_char.h"
 #include "shell_command_edit.h"
 #include "shell_command_move.h"
+#include "shell_globals.h"
 
 void render_typed_command_after_removing_char(const CharArray *line, size_t position,
                                               size_t amount_removed) {
     char c;
     for (size_t i = position; i < da_count_char(line); i++) {
         if (!da_get_char(line, i, &c)) {
-            perror("da_get error");
-            exit(EXIT_FAILURE);
+            fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+            raise(SIGINT);
         }
 
         putchar(c);

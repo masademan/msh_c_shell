@@ -82,21 +82,34 @@ static void check_for_conds(int chr) { (void) chr; }
 static void check_for_loops(int chr) { (void) chr; }
 
 static void check_for_pipes_and_OR_logic_ops(int chr) {
-    if (has_open_quotes() || chr != '|') {
+    if (has_open_quotes() || open_backslashes || chr != '|') {
         if (chr != '\n' && chr != ' ') {
             unfinished_pipes = 0;
+        }
+
+        if (chr == '|') {
+            open_backslashes = false;
         }
 
         return;
     }
 
     ++unfinished_pipes;
+
+    if (unfinished_pipes == 3) {
+        fprintf(stderr, "-%s: unexpected '|'", SHELL_NAME);
+        raise(SIGINT);
+    }
 }
 
 static void check_for_AND_logic_ops(int chr) {
-    if (has_open_quotes() || chr != '&') {
+    if (has_open_quotes() || open_backslashes || chr != '&') {
         if (chr != '\n' && chr != ' ') {
             unfinished_logic_and = 0;
+        }
+
+        if (chr == '&') {
+            open_backslashes = false;
         }
 
         return;
