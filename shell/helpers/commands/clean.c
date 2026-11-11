@@ -26,6 +26,7 @@ static void shell_clean_most(CharArray *cleaned_line, const CharArray *line,
 
             fprintf(stderr, "-%s: da_get error", SHELL_NAME);
             raise(SIGINT);
+            return;
         }
 
         check_next_char(c);
@@ -49,6 +50,7 @@ static void shell_clean_most(CharArray *cleaned_line, const CharArray *line,
 
                     fprintf(stderr, "-%s: da_set error", SHELL_NAME);
                     raise(SIGINT);
+                    return;
                 }
 
                 last_c_written = ';';
@@ -61,6 +63,7 @@ static void shell_clean_most(CharArray *cleaned_line, const CharArray *line,
 
                 fprintf(stderr, "-%s: da_set error", SHELL_NAME);
                 raise(SIGINT);
+                return;
             }
         } else {
             if (last_c_written == ';' && (c == ')' || c == '}')) {
@@ -72,6 +75,7 @@ static void shell_clean_most(CharArray *cleaned_line, const CharArray *line,
 
                 fprintf(stderr, "-%s: da_set error", SHELL_NAME);
                 raise(SIGINT);
+                return;
             }
 
             last_c_written = c;
@@ -84,6 +88,7 @@ static void shell_clean_most(CharArray *cleaned_line, const CharArray *line,
 
         fprintf(stderr, "-%s: da_remove_duplicate error", SHELL_NAME);
         raise(SIGINT);
+        return;
     }
 
     if (!da_replace_char(cleaned_line, SPACE_REPLACEMENT, ' ')) {
@@ -91,6 +96,7 @@ static void shell_clean_most(CharArray *cleaned_line, const CharArray *line,
 
         fprintf(stderr, "-%s: da_replace error", SHELL_NAME);
         raise(SIGINT);
+        return;
     }
 }
 
@@ -104,6 +110,7 @@ static void shell_clean_syntax(CharArray *spaced_line, CharArray *cleaned_line) 
 
         fprintf(stderr, "-%s: da_get error", SHELL_NAME);
         raise(SIGINT);
+        return;
     }
     if (!da_add_char(spaced_line, c)) {
         da_free_char(cleaned_line);
@@ -111,6 +118,7 @@ static void shell_clean_syntax(CharArray *spaced_line, CharArray *cleaned_line) 
 
         fprintf(stderr, "-%s: da_add error", SHELL_NAME);
         raise(SIGINT);
+        return;
     }
 
     line_check_reset();
@@ -125,6 +133,7 @@ static void shell_clean_syntax(CharArray *spaced_line, CharArray *cleaned_line) 
 
             fprintf(stderr, "-%s: da_get error", SHELL_NAME);
             raise(SIGINT);
+            return;
         }
         if (!da_get_char(cleaned_line, i, &c)) {
             da_free_char(cleaned_line);
@@ -132,6 +141,7 @@ static void shell_clean_syntax(CharArray *spaced_line, CharArray *cleaned_line) 
 
             fprintf(stderr, "-%s: da_get error", SHELL_NAME);
             raise(SIGINT);
+            return;
         }
         if (!da_get_char(cleaned_line, i + 1, &next_c)) {
             da_free_char(cleaned_line);
@@ -139,6 +149,7 @@ static void shell_clean_syntax(CharArray *spaced_line, CharArray *cleaned_line) 
 
             fprintf(stderr, "-%s: da_get error", SHELL_NAME);
             raise(SIGINT);
+            return;
         }
 
         check_next_char(c);
@@ -153,6 +164,7 @@ static void shell_clean_syntax(CharArray *spaced_line, CharArray *cleaned_line) 
 
                     fprintf(stderr, "-%s: da_add error", SHELL_NAME);
                     raise(SIGINT);
+                    return;
                 }
             }
         }
@@ -164,6 +176,7 @@ static void shell_clean_syntax(CharArray *spaced_line, CharArray *cleaned_line) 
 
             fprintf(stderr, "-%s: da_add error", SHELL_NAME);
             raise(SIGINT);
+            return;
         }
 
         // After adding char
@@ -176,6 +189,7 @@ static void shell_clean_syntax(CharArray *spaced_line, CharArray *cleaned_line) 
 
                     fprintf(stderr, "-%s: da_add error", SHELL_NAME);
                     raise(SIGINT);
+                    return;
                 }
             }
         }
@@ -188,6 +202,7 @@ static void shell_clean_syntax(CharArray *spaced_line, CharArray *cleaned_line) 
 
             fprintf(stderr, "-%s: da_get error", SHELL_NAME);
             raise(SIGINT);
+            return;
         }
     }
 
@@ -199,6 +214,7 @@ static void shell_clean_syntax(CharArray *spaced_line, CharArray *cleaned_line) 
 
             fprintf(stderr, "-%s: da_add error", SHELL_NAME);
             raise(SIGINT);
+            return;
         }
     }
 
@@ -209,6 +225,7 @@ static void shell_clean_syntax(CharArray *spaced_line, CharArray *cleaned_line) 
 
         fprintf(stderr, "-%s: da_add error", SHELL_NAME);
         raise(SIGINT);
+        return;
     }
 
     if (ending_c == ' ') {
@@ -217,6 +234,7 @@ static void shell_clean_syntax(CharArray *spaced_line, CharArray *cleaned_line) 
 
             fprintf(stderr, "-%s: da_pop error", SHELL_NAME);
             raise(SIGINT);
+            return;
         }
     }
 }

@@ -56,6 +56,7 @@ size_t amount_to_move_cursor_to_next_left_word(const CharArray *line, size_t pos
         if (i < da_count_char(line) && !da_get_char(line, i, &c)) {
             fprintf(stderr, "-%s: da_get error", SHELL_NAME);
             raise(SIGINT);
+            return 0;
         }
 
         if (word_letter_seen && i < da_count_char(line) && !is_word_letter(c)) {
@@ -85,6 +86,7 @@ size_t amount_to_move_cursor_to_next_right_word(const CharArray *line, size_t po
         if (!da_get_char(line, i, &c)) {
             fprintf(stderr, "-%s: da_get error", SHELL_NAME);
             raise(SIGINT);
+            return 0;
         }
 
         if (word_letter_seen && !is_word_letter(c)) {

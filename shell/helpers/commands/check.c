@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "check.h"
+#include "data_type/dynamic_arrays/char_array.h"
 #include "macros/shell_globals.h"
 
 // Static internal vars
@@ -21,6 +22,8 @@ static bool open_backslashes;
 static bool unfinished_backslash;
 
 static unsigned int spaces_seen;
+
+static CharArray *paren_brace_stack;
 
 
 // Static internal funcs
@@ -48,13 +51,38 @@ static void check_for_parens(int chr) {
 
     if (chr == '(') {
         ++open_parens;
+
+        if (!da_add_char(paren_brace_stack, ')')) {
+            fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+            raise(SIGINT);
+            return;
+        }
     } else if (chr == ')') {
         --open_parens;
+
+        char c = ')';
+        if (da_count_char(paren_brace_stack) > 0 && !da_pop_char(paren_brace_stack, &c)) {
+            fprintf(stderr, "-%s: da_pop error", SHELL_NAME);
+            raise(SIGINT);
+            return;
+        }
+        if (c != ')') {
+            if (!da_add_char(paren_brace_stack, '}')) {
+                fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+                raise(SIGINT);
+                return;
+            }
+
+            fprintf(stderr, "-%s: expected '}' instead of ')'", SHELL_NAME);
+            raise(SIGINT);
+            return;
+        }
     }
 
     if (open_parens < 0) {
         fprintf(stderr, "-%s: unexpected ')'", SHELL_NAME);
         raise(SIGINT);
+        return;
     }
 }
 
@@ -69,13 +97,38 @@ static void check_for_braces(int chr) {
 
     if (chr == '{') {
         ++open_braces;
+
+        if (!da_add_char(paren_brace_stack, '}')) {
+            fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+            raise(SIGINT);
+            return;
+        }
     } else if (chr == '}') {
         --open_braces;
+
+        char c = '}';
+        if (da_count_char(paren_brace_stack) > 0 && !da_pop_char(paren_brace_stack, &c)) {
+            fprintf(stderr, "-%s: da_pop error", SHELL_NAME);
+            raise(SIGINT);
+            return;
+        }
+        if (c != '}') {
+            if (!da_add_char(paren_brace_stack, ')')) {
+                fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+                raise(SIGINT);
+                return;
+            }
+
+            fprintf(stderr, "-%s: expected ')' instead of '}'", SHELL_NAME);
+            raise(SIGINT);
+            return;
+        }
     }
 
     if (open_braces < 0) {
         fprintf(stderr, "-%s: unexpected '}'", SHELL_NAME);
         raise(SIGINT);
+        return;
     }
 }
 
@@ -88,6 +141,7 @@ static void check_for_pipes_and_OR_logic_ops(int chr) {
         if (chr == '&' && unfinished_pipes != 0) {
             fprintf(stderr, "-%s: unexpected '&' near '|'", SHELL_NAME);
             raise(SIGINT);
+            return;
         }
 
         if (chr != '\n' && chr != ' ') {
@@ -104,6 +158,7 @@ static void check_for_pipes_and_OR_logic_ops(int chr) {
     if (spaces_seen != 0 && unfinished_pipes != 0) {
         fprintf(stderr, "-%s: syntax error near token '|'", SHELL_NAME);
         raise(SIGINT);
+        return;
     }
 
     ++unfinished_pipes;
@@ -111,11 +166,13 @@ static void check_for_pipes_and_OR_logic_ops(int chr) {
     if (unfinished_logic_and != 0) {
         fprintf(stderr, "-%s: unexpected '|' near '&'", SHELL_NAME);
         raise(SIGINT);
+        return;
     }
 
     if (unfinished_pipes == 3) {
         fprintf(stderr, "-%s: unexpected '|' near '||'", SHELL_NAME);
         raise(SIGINT);
+        return;
     }
 }
 
@@ -135,6 +192,7 @@ static void check_for_AND_logic_ops(int chr) {
     if (spaces_seen != 0 && unfinished_logic_and != 0) {
         fprintf(stderr, "-%s: syntax error near token '&'", SHELL_NAME);
         raise(SIGINT);
+        return;
     }
 
     ++unfinished_logic_and;
@@ -142,6 +200,7 @@ static void check_for_AND_logic_ops(int chr) {
     if (unfinished_logic_and == 3) {
         fprintf(stderr, "-%s: unexpected '&' near '&&'", SHELL_NAME);
         raise(SIGINT);
+        return;
     }
 }
 
@@ -215,7 +274,12 @@ void line_check_reset(void) {
     unfinished_backslash = false;
 
     spaces_seen = 0;
+
+    da_free_char(paren_brace_stack);
+    paren_brace_stack = da_new_char();
 }
+
+void clean_up_check(void) { da_free_char(paren_brace_stack); }
 
 bool is_complete_command(void) {
     if (has_open_quotes()) {

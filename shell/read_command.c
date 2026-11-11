@@ -269,6 +269,7 @@ CharArray *shell_read_line(void) {
         if (!da_get_char(line, i, &ith_char)) {
             fprintf(stderr, "-%s: line da_get error", SHELL_NAME);
             raise(SIGINT);
+            return line;
         }
         check_next_char(ith_char);
     }

@@ -14,6 +14,7 @@ void render_typed_command_after_removing_char(const CharArray *line, size_t posi
         if (!da_get_char(line, i, &c)) {
             fprintf(stderr, "-%s: da_get error", SHELL_NAME);
             raise(SIGINT);
+            return;
         }
 
         putchar(c);

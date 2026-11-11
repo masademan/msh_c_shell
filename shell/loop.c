@@ -5,6 +5,7 @@
 #include "data_type/dynamic_arrays/string_array.h"
 #include "execute.h"
 #include "get_info/get_sysinfo.h"
+#include "helpers/commands/check.h"
 #include "helpers/helpers.h"
 #include "loop.h"
 #include "macros/ansi_colors.h"
@@ -84,4 +85,6 @@ void shell_loop(void) {
         // Pointer clean-up
         free_vars(&username, &hostname, &cwd, &command);
     } while (status);
+
+    clean_up_check();
 }

@@ -5,11 +5,17 @@
 
 /* Takes in a character in int form (to allow EOF) and reads it
    Then it edits internal static variables, like whether or not there are open quotes,
-   lines breaks, incomplete instructions, etc. */
+   lines breaks, incomplete instructions, etc.
+   If a character is read that makes the command invalid, the code will raise
+   SIGINT and run whatever function is linked to that (hopefully an error message in the shell) */
 void check_next_char(int chr);
 
-/* Resets all the static internal variables */
+/* Resets all the static internal variables
+   MUST be run at least once before check_next_char */
 void line_check_reset(void);
+
+/* Cleans up any memory used by the command checking */
+void clean_up_check(void);
 
 /* All the following functions use internal static variables to check their respective
    parts of the inputted command */
