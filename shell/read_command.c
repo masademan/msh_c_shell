@@ -271,7 +271,12 @@ CharArray *shell_read_line(void) {
             raise(SIGINT);
             return line;
         }
+
         check_next_char(ith_char);
+
+        if (!keep_reading_command) {
+            return line;
+        }
     }
 
     check_next_char('\n');

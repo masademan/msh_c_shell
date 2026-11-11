@@ -317,16 +317,16 @@ void line_check_reset(void) {
     if (non_command_chars == NULL) {
         non_command_chars = da_new_char();
 
-        da_add_char(non_command_chars, '(');
-        da_add_char(non_command_chars, ')');
-        da_add_char(non_command_chars, '{');
-        da_add_char(non_command_chars, '}');
+        // da_add_char(non_command_chars, '(');
+        // da_add_char(non_command_chars, ')');
+        // da_add_char(non_command_chars, '{');
+        // da_add_char(non_command_chars, '}');
         da_add_char(non_command_chars, '|');
         da_add_char(non_command_chars, '&');
         da_add_char(non_command_chars, ' ');
         da_add_char(non_command_chars, '\n');
 
-        if (da_count_char(non_command_chars) != 8) {
+        if (da_count_char(non_command_chars) != 4) {
             fprintf(stderr, "-%s: da_add error", SHELL_NAME);
             raise(SIGINT);
             return;
