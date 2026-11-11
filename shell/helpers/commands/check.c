@@ -17,6 +17,7 @@ static bool open_loops;
 
 static unsigned int unfinished_pipes;
 static unsigned int unfinished_logic_and;
+static bool seen_command_chars;
 
 static bool open_backslashes;
 static bool unfinished_backslash;
@@ -24,6 +25,8 @@ static bool unfinished_backslash;
 static unsigned int spaces_seen;
 
 static CharArray *paren_brace_stack;
+
+static CharArray *non_command_chars;
 
 
 // Static internal funcs
@@ -148,10 +151,26 @@ static void check_for_pipes_and_OR_logic_ops(int chr) {
             unfinished_pipes = 0;
         }
 
+        if (!has_open_quotes()) {
+            if (chr == '\n' && !open_backslashes) {
+                seen_command_chars = false;
+            }
+
+            if (!da_contains_char(non_command_chars, chr)) {
+                seen_command_chars = true;
+            }
+        }
+
         if (chr == '|') {
             open_backslashes = false;
         }
 
+        return;
+    }
+
+    if (!seen_command_chars) {
+        fprintf(stderr, "-%s: syntax error near token '|'", SHELL_NAME);
+        raise(SIGINT);
         return;
     }
 
@@ -182,10 +201,26 @@ static void check_for_AND_logic_ops(int chr) {
             unfinished_logic_and = 0;
         }
 
+        if (!has_open_quotes()) {
+            if (chr == '\n' && !open_backslashes) {
+                seen_command_chars = false;
+            }
+
+            if (!da_contains_char(non_command_chars, chr)) {
+                seen_command_chars = true;
+            }
+        }
+
         if (chr == '&') {
             open_backslashes = false;
         }
 
+        return;
+    }
+
+    if (!seen_command_chars) {
+        fprintf(stderr, "-%s: syntax error near token '&'", SHELL_NAME);
+        raise(SIGINT);
         return;
     }
 
@@ -269,6 +304,7 @@ void line_check_reset(void) {
 
     unfinished_pipes = 0;
     unfinished_logic_and = 0;
+    seen_command_chars = false;
 
     open_backslashes = false;
     unfinished_backslash = false;
@@ -277,9 +313,31 @@ void line_check_reset(void) {
 
     da_free_char(paren_brace_stack);
     paren_brace_stack = da_new_char();
+
+    if (non_command_chars == NULL) {
+        non_command_chars = da_new_char();
+
+        da_add_char(non_command_chars, '(');
+        da_add_char(non_command_chars, ')');
+        da_add_char(non_command_chars, '{');
+        da_add_char(non_command_chars, '}');
+        da_add_char(non_command_chars, '|');
+        da_add_char(non_command_chars, '&');
+        da_add_char(non_command_chars, ' ');
+        da_add_char(non_command_chars, '\n');
+
+        if (da_count_char(non_command_chars) != 8) {
+            fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+            raise(SIGINT);
+            return;
+        }
+    }
 }
 
-void clean_up_check(void) { da_free_char(paren_brace_stack); }
+void clean_up_check(void) {
+    da_free_char(paren_brace_stack);
+    da_free_char(non_command_chars);
+}
 
 bool is_complete_command(void) {
     if (has_open_quotes()) {

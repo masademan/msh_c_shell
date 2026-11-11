@@ -18,6 +18,7 @@ SRCS = main.c \
 			 shell/helpers/helpers.c \
 			 shell/helpers/commands/check.c shell/helpers/commands/edit.c shell/helpers/commands/move.c \
 			 shell/helpers/commands/clean.c \
+			 shell/helpers/arguments/clean.c \
 			 shell/history/history.c \
 			 get_info/get_sysinfo.c \
 			 data_type/dynamic_arrays/char_array.c data_type/dynamic_arrays/string_array.c \

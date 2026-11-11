@@ -27,10 +27,6 @@ StringArray *shell_parse_line(CharArray *line) {
     CharArray *cleaned_line = shell_clean_line(line);
     StringArray *split_args = shell_split_line(cleaned_line);
 
-    String *s_line = da_join_to_string(line);
-    printf("\n\"\"\"\n%s\n\"\"\"\n", ss_cstr(s_line));
-    ss_free(s_line);
-
     String *s_cleaned_line = da_join_to_string(cleaned_line);
     printf("\n\"\"\"\n%s\n\"\"\"\n", ss_cstr(s_cleaned_line));
     ss_free(s_cleaned_line);
