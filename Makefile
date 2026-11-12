@@ -17,7 +17,7 @@ SRCS = main.c \
 			 shell/loop.c shell/read_command.c shell/parse_command.c shell/execute.c \
 			 shell/helpers/helpers.c \
 			 shell/helpers/commands/check.c shell/helpers/commands/edit.c shell/helpers/commands/move.c \
-			 shell/helpers/commands/clean.c \
+			 shell/helpers/commands/clean.c shell/helpers/commands/split.c \
 			 shell/helpers/arguments/clean.c \
 			 shell/history/history.c \
 			 get_info/get_sysinfo.c \

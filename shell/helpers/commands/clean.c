@@ -6,6 +6,9 @@
 #include "clean.h"
 #include "macros/shell_globals.h"
 
+// To implement an AST for more complex commands (conditionals + loops)
+//  this function needs to be revised
+
 /* Cleans most of the line in shell_clean_line
    Cleans the newlines, backslashes, spaces, parens, braces, etc... */
 static void shell_clean_most(CharArray *cleaned_line, const CharArray *line,

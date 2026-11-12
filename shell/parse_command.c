@@ -19,6 +19,7 @@ StringArray *shell_parse_line(CharArray *line) {
     printf("\n\"\"\"\n%s\n\"\"\"\n\n", ss_cstr(s_cleaned_line));
     ss_free(s_cleaned_line);
 
+    printf("Args:\n");
     String *s_argument;
     for (size_t arg_i = 0; arg_i < da_count_string(split_args); arg_i++) {
         if (!da_get_string(split_args, arg_i, &s_argument)) {
@@ -30,7 +31,7 @@ StringArray *shell_parse_line(CharArray *line) {
             return NULL;
         }
 
-        printf("arg %zu: ⟨%s⟩\n", arg_i + 1, ss_cstr(s_argument));
+        printf(" - arg %zu: ⟨%s⟩\n", arg_i + 1, ss_cstr(s_argument));
     }
 
     da_free_char(cleaned_line);

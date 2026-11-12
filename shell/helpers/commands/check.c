@@ -196,6 +196,7 @@ static void check_for_pipes_and_OR_logic_ops(int chr) {
 }
 
 static void check_for_AND_logic_ops(int chr) {
+    unsigned int prev_unfinished_logic_and = unfinished_logic_and;
     if (has_open_quotes() || open_backslashes || chr != '&') {
         if (chr != '\n' && chr != ' ') {
             unfinished_logic_and = 0;
@@ -208,6 +209,12 @@ static void check_for_AND_logic_ops(int chr) {
 
             if (!da_contains_char(non_command_chars, chr)) {
                 seen_command_chars = true;
+
+                if (prev_unfinished_logic_and == 1) {
+                    fprintf(stderr, "-%s: unexpected '&'", SHELL_NAME);
+                    raise(SIGINT);
+                    return;
+                }
             }
         }
 
