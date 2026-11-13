@@ -277,7 +277,7 @@ bool da_remove_at_string(StringArray *a, size_t i, String **out) {
 
     da_get_string(a, i, out);
     if (out == NULL) {
-        ss_free(a->data[da_count_string(a) - 1]);
+        ss_free(a->data[i]);
     }
 
     for (size_t idx = i; idx < da_count_string(a) - 1; idx++) {
@@ -553,15 +553,10 @@ bool da_remove_all_string(StringArray *a, const String *value) {
         return false;
     }
 
-    for (size_t i = 0; i < da_count_string(a); i++) {
-        if (ss_equals(a->data[i], value)) {
-            ss_free(a->data[i]);
-        }
-    }
-
     size_t offset = 0;
     for (size_t idx = 0; idx + offset < da_count_string(a); idx++) {
         while (idx + offset < da_count_string(a) && ss_equals(a->data[idx + offset], value)) {
+            ss_free(a->data[idx + offset]);
             offset++;
         }
 

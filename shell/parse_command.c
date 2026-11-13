@@ -24,10 +24,10 @@ StringArray *shell_parse_line(CharArray *line) {
     for (size_t arg_i = 0; arg_i < da_count_string(split_args); arg_i++) {
         if (!da_get_string(split_args, arg_i, &s_argument)) {
             da_free_char(cleaned_line);
+            da_free_string(split_args);
 
             fprintf(stderr, "-%s: da_get error", SHELL_NAME);
             raise(SIGINT);
-            da_free_string(split_args);
             return NULL;
         }
 

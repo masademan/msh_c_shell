@@ -14,7 +14,8 @@
 
 static const char *shell_start = ">>";
 
-static void free_vars(char **username, char **hostname, char **cwd, CharArray **command) {
+static void free_vars(char **username, char **hostname, char **cwd, CharArray **command,
+                      StringArray **args) {
     // Shell prompt
     free(*username);
     free(*hostname);
@@ -32,6 +33,9 @@ static void free_vars(char **username, char **hostname, char **cwd, CharArray **
 
 
     // Parsed command arguments
+    da_free_string(*args);
+
+    *args = NULL;
 }
 
 void shell_loop(void) {
@@ -73,7 +77,7 @@ void shell_loop(void) {
 
             // TODO: REMOVE LATER
             if (command != NULL) {
-                free_vars(&username, &hostname, &cwd, &command);
+                free_vars(&username, &hostname, &cwd, &command, &args);
                 break;
             }
 
@@ -83,7 +87,7 @@ void shell_loop(void) {
         }
 
         // Pointer clean-up
-        free_vars(&username, &hostname, &cwd, &command);
+        free_vars(&username, &hostname, &cwd, &command, &args);
     } while (status);
 
     clean_up_check();
