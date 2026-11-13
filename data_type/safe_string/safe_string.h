@@ -122,6 +122,30 @@ String *ss_replace(const String *s, const String *to_replace, const String *repl
    if s_arr is NULL. And if arr_len is 0, it'll only free the s_arr. */
 void ss_free_arr(String **s_arr, size_t arr_len);
 
+/* --- Shell added functions --- */
+
+/* Strips the beginning whitespace in the string (if it exists)
+   Whitespace are spaces, tabs, or newlines (' ', '\t', '\n')
+   Returns NULL if s is NULL, or if memory runs out
+   A new String pointer is returned, and the caller owns it
+   The caller must call ss_free() on it to free it */
+String *ss_lstrip(const String *s);
+
+/* Strips the ending whitespace in the string (if it exists)
+   Whitespace are spaces, tabs, or newlines (' ', '\t', '\n')
+   Returns NULL if s is NULL, or if memory runs out
+   A new String pointer is returned, and the caller owns it
+   The caller must call ss_free() on it to free it */
+String *ss_rstrip(const String *s);
+
+/* Strips the beginning and ending whitespace in the string (if it exists)
+   Whitespace are spaces, tabs, or newlines (' ', '\t', '\n')
+   Returns NULL if s is NULL, or if memory runs out
+   A new String pointer is returned, and the caller owns it
+   The caller must call ss_free() on it to free it */
+String *ss_strip(const String *s);
+
+
 /* --- Unsafe functions --- */
 
 /* Sets the char at index i in us (unsafe string) to c. Does nothing is us is NULL, or if

@@ -19,7 +19,7 @@ static bool check_char_c(char c, char c_checked, const char *str_to_add, StringA
                          CharArray *temp_arg) {
     if (c == c_checked) {
         String *joined_string = da_join_to_string(temp_arg);
-        String *trimmed_string = ss_copy(joined_string);  // TODO: do trim here
+        String *trimmed_string = ss_strip(joined_string);
 
         if (ss_length(trimmed_string) > 0) {
             if (!da_add_string(args, trimmed_string)) {
@@ -32,21 +32,24 @@ static bool check_char_c(char c, char c_checked, const char *str_to_add, StringA
                 raise(SIGINT);
                 return true;
             }
-        } else {
-            ss_free(trimmed_string);
         }
 
+        ss_free(trimmed_string);
         ss_free(joined_string);
         da_clear_char(temp_arg);
 
-        if (!da_add_string(args, ss_new(str_to_add))) {
+        String *str_added = ss_new(str_to_add);
+        if (!da_add_string(args, str_added)) {
             da_free_string(args);
             da_free_char(temp_arg);
+            ss_free(str_added);
 
             fprintf(stderr, "-%s: da_add error", SHELL_NAME);
             raise(SIGINT);
             return true;
         }
+
+        ss_free(str_added);
 
         found_token_edge = true;
     }
@@ -149,19 +152,26 @@ StringArray *shell_split_line(CharArray *line) {
             }
         }
     }
-    // TODO: add ltrim, rtrim, and trim to safe_string
-
-    (void) next_c;
 
     if (da_count_char(temp_argument) > 0) {
-        if (!da_add_string(arguments, da_join_to_string(temp_argument))) {
-            da_free_string(arguments);
-            da_free_char(temp_argument);
+        String *joined_string = da_join_to_string(temp_argument);
+        String *trimmed_string = ss_strip(joined_string);
 
-            fprintf(stderr, "-%s: da_add error", SHELL_NAME);
-            raise(SIGINT);
-            return NULL;
+        if (ss_length(trimmed_string) > 0) {
+            if (!da_add_string(arguments, trimmed_string)) {
+                da_free_string(arguments);
+                da_free_char(temp_argument);
+                ss_free(joined_string);
+                ss_free(trimmed_string);
+
+                fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+                raise(SIGINT);
+                return NULL;
+            }
         }
+
+        ss_free(trimmed_string);
+        ss_free(joined_string);
     }
 
     da_free_char(temp_argument);

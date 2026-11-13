@@ -120,7 +120,7 @@ bool da_reserve_string(StringArray *a, size_t n) {
     return set_size_to(a, n);
 }
 
-bool da_add_string(StringArray *a, String *value) {
+bool da_add_string(StringArray *a, const String *value) {
     if (a == NULL) {
         return false;
     }
@@ -173,13 +173,13 @@ bool da_add_string(StringArray *a, String *value) {
         */
     }
 
-    a->data[a->len] = value;
+    a->data[a->len] = ss_copy(value);
     a->len++;
 
     return true;
 }
 
-bool da_insert_string(StringArray *a, size_t i, String *value) {
+bool da_insert_string(StringArray *a, size_t i, const String *value) {
     if (a == NULL) {
         return false;
     }
@@ -187,16 +187,16 @@ bool da_insert_string(StringArray *a, size_t i, String *value) {
         return false;
     }
 
-    if (!da_add_string(a, 0)) {
+    if (!da_add_string(a, NULL)) {
         return false;
     }
 
     if (da_count_string(a) == 1) {
-        a->data[0] = value;
+        a->data[0] = ss_copy(value);
         return true;
     }
 
-    String *prev_temp = value;
+    String *prev_temp = ss_copy(value);
     String *curr_temp = a->data[i];
     for (size_t idx = i; idx < da_count_string(a) - 1; idx++) {
         a->data[idx] = prev_temp;
@@ -218,7 +218,7 @@ bool da_get_string(const StringArray *a, size_t i, String **out) {
     return true;
 }
 
-bool da_set_string(StringArray *a, size_t i, String *value) {
+bool da_set_string(StringArray *a, size_t i, const String *value) {
     if (a == NULL) {
         return false;
     }
@@ -227,7 +227,7 @@ bool da_set_string(StringArray *a, size_t i, String *value) {
         return false;
     }
 
-    a->data[i] = value;
+    a->data[i] = ss_copy(value);
     return true;
 }
 

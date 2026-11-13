@@ -657,6 +657,89 @@ void ss_free_arr(String **s_arr, size_t arr_len) {
     free(s_arr);
 }
 
+/* --- Shell added functions --- */
+/* Returns true if c is a whitespace character (' ', '\t', '\n')
+   Else, returns false */
+static bool is_whitespace_char(char c) {
+    if (c == ' ') {
+        return true;
+    }
+    if (c == '\t') {
+        return true;
+    }
+    if (c == '\n') {
+        return true;
+    }
+
+    return false;
+}
+
+String *ss_lstrip(const String *s) {
+    if (s == NULL) {
+        return NULL;
+    }
+
+    size_t s_len = ss_length(s);
+    size_t beginning_whitespace_count = 0;
+    for (size_t i = 0; i < s_len; i++) {
+        if (is_whitespace_char(s->data[i])) {
+            beginning_whitespace_count++;
+        } else {
+            break;
+        }
+    }
+
+    return ss_substring(s, beginning_whitespace_count, s_len - beginning_whitespace_count);
+}
+String *ss_rstrip(const String *s) {
+    if (s == NULL) {
+        return NULL;
+    }
+
+    size_t s_len = ss_length(s);
+    size_t ending_whitespace_count = 0;
+    for (size_t i = 0; i < s_len; i++) {
+        if (is_whitespace_char(s->data[s_len - 1 - i])) {
+            ending_whitespace_count++;
+        } else {
+            break;
+        }
+    }
+
+    return ss_substring(s, 0, s_len - ending_whitespace_count);
+}
+
+String *ss_strip(const String *s) {
+    if (s == NULL) {
+        return NULL;
+    }
+
+    size_t i;
+    size_t s_len = ss_length(s);
+
+    size_t beginning_whitespace_count = 0;
+    for (i = 0; i < s_len; i++) {
+        if (is_whitespace_char(s->data[i])) {
+            beginning_whitespace_count++;
+        } else {
+            break;
+        }
+    }
+
+    size_t ending_whitespace_count = 0;
+    for (i = 0; i < s_len - beginning_whitespace_count; i++) {
+        if (is_whitespace_char(s->data[s_len - 1 - i])) {
+            ending_whitespace_count++;
+        } else {
+            break;
+        }
+    }
+
+    return ss_substring(s, beginning_whitespace_count,
+                        s_len - beginning_whitespace_count - ending_whitespace_count);
+}
+
+
 /* --- Unsafe functions --- */
 void us_set_at(String *us, size_t i, char c) {
     if (us == NULL) {

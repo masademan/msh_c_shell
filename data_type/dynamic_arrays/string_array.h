@@ -32,12 +32,12 @@ bool da_reserve_string(StringArray *a, size_t n);
 
 /* Adds value to the end of a and returns true. Returns false, and leaves a unchanged,
    if a is NULL or memory runs out. */
-bool da_add_string(StringArray *a, String *value);
+bool da_add_string(StringArray *a, const String *value);
 
 /* Inserts value at index i, shifting the Strings at i and after up one index, and returns
    true. i may equal da_count_string(a), which adds to the end. Returns false, and leaves a
    unchanged, if a is NULL, i > da_count_string(a), or memory runs out. */
-bool da_insert_string(StringArray *a, size_t i, String *value);
+bool da_insert_string(StringArray *a, size_t i, const String *value);
 
 /* ---- Reading and writing ---- */
 
@@ -47,7 +47,7 @@ bool da_get_string(const StringArray *a, size_t i, String **out);
 
 /* Replaces the String * at index i with value and returns true. Returns false, and leaves a
    unchanged, if a is NULL or i is not less than da_count_string(a). */
-bool da_set_string(StringArray *a, size_t i, String *value);
+bool da_set_string(StringArray *a, size_t i, const String *value);
 
 /* Copies a's Strings, in order, into dest[0 .. da_count_string(a) - 1] and returns true.
    Returns false, and writes nothing, if a or dest is NULL or dest_len < da_count_string(a). */
