@@ -5,6 +5,9 @@
 #include "char_array_and_string_conversion.h"
 #include "data_type/safe_string/safe_string.h"
 
+// TODO: copy da_join_to_string, but instead of creating a new da,
+//         it takes in a da as input, and adds the chars to it one by one
+
 String *da_join_to_string(const CharArray *da) {
     String *s = ss_new_length(da_count_char(da));
 

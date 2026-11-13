@@ -35,5 +35,6 @@ StringArray *shell_parse_line(CharArray *line) {
     }
 
     da_free_char(cleaned_line);
+
     return split_args;
 }

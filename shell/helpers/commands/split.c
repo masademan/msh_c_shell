@@ -18,21 +18,25 @@ static bool found_token_edge = false;
 static bool check_char_c(char c, char c_checked, const char *str_to_add, StringArray *args,
                          CharArray *temp_arg) {
     if (c == c_checked) {
-        if (da_count_char(temp_arg) > 0) {
-            String *joined_string = da_join_to_string(temp_arg);
+        String *joined_string = da_join_to_string(temp_arg);
+        String *trimmed_string = ss_copy(joined_string);  // TODO: do trim here
 
-            if (!da_add_string(args, ss_copy(joined_string))) {  // TODO: do trim here
+        if (ss_length(trimmed_string) > 0) {
+            if (!da_add_string(args, trimmed_string)) {
                 da_free_string(args);
                 da_free_char(temp_arg);
                 ss_free(joined_string);
+                ss_free(trimmed_string);
 
                 fprintf(stderr, "-%s: da_add error", SHELL_NAME);
                 raise(SIGINT);
                 return true;
             }
-
-            ss_free(joined_string);
+        } else {
+            ss_free(trimmed_string);
         }
+
+        ss_free(joined_string);
         da_clear_char(temp_arg);
 
         if (!da_add_string(args, ss_new(str_to_add))) {
@@ -98,9 +102,23 @@ StringArray *shell_split_line(CharArray *line) {
             } else if (check_char_c(c, '&', "&&", arguments, temp_argument)) {
                 return NULL;
             } else if (c == '|') {
-                if (next_c == ' ') {         // single |
+                if (next_c == ' ') {  // single |
+                    if (check_char_c(c, '|', "|", arguments, temp_argument)) {
+                        return NULL;
+                    }
+
+                    i++;
                 } else if (next_c == '|') {  // double ||
+                    if (check_char_c(c, '|', "||", arguments, temp_argument)) {
+                        return NULL;
+                    }
+
+                    check_next_char('|');
+
+                    i += 2;
                 }
+
+                check_next_char(' ');
             } else if (check_char_c(c, ';', ";", arguments, temp_argument)) {
                 return NULL;
             } else if (!found_token_edge) {
