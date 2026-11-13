@@ -288,8 +288,6 @@ CharArray *shell_read_command(void) {
     CharArray *command = da_new_char();
     CharArray *new_line;
 
-    da_reserve_char(command, 8);
-
     keep_reading_command = true;
 
     // AI generated code:

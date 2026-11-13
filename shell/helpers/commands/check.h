@@ -14,6 +14,9 @@ void check_next_char(int chr);
    MUST be run at least once before check_next_char */
 void line_check_reset(void);
 
+/* Let's you set whether or not to make errors happen */
+void set_do_error(bool change);
+
 /* Cleans up any memory used by the command checking */
 void clean_up_check(void);
 

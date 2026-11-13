@@ -28,6 +28,8 @@ static CharArray *paren_brace_stack;
 
 static CharArray *non_command_chars;
 
+static bool do_errors = true;
+
 
 // Static internal funcs
 static void check_for_quotes(int chr) {
@@ -76,13 +78,15 @@ static void check_for_parens(int chr) {
                 return;
             }
 
-            fprintf(stderr, "-%s: expected '}' instead of ')'", SHELL_NAME);
-            raise(SIGINT);
-            return;
+            if (do_errors) {
+                fprintf(stderr, "-%s: expected '}' instead of ')'", SHELL_NAME);
+                raise(SIGINT);
+                return;
+            }
         }
     }
 
-    if (open_parens < 0) {
+    if (do_errors && open_parens < 0) {
         fprintf(stderr, "-%s: unexpected ')'", SHELL_NAME);
         raise(SIGINT);
         return;
@@ -122,13 +126,15 @@ static void check_for_braces(int chr) {
                 return;
             }
 
-            fprintf(stderr, "-%s: expected ')' instead of '}'", SHELL_NAME);
-            raise(SIGINT);
-            return;
+            if (do_errors) {
+                fprintf(stderr, "-%s: expected ')' instead of '}'", SHELL_NAME);
+                raise(SIGINT);
+                return;
+            }
         }
     }
 
-    if (open_braces < 0) {
+    if (do_errors && open_braces < 0) {
         fprintf(stderr, "-%s: unexpected '}'", SHELL_NAME);
         raise(SIGINT);
         return;
@@ -141,7 +147,7 @@ static void check_for_loops(int chr) { (void) chr; }
 
 static void check_for_pipes_and_OR_logic_ops(int chr) {
     if (has_open_quotes() || open_backslashes || chr != '|') {
-        if (chr == '&' && unfinished_pipes != 0) {
+        if (do_errors && chr == '&' && unfinished_pipes != 0) {
             fprintf(stderr, "-%s: unexpected '&' near '|'", SHELL_NAME);
             raise(SIGINT);
             return;
@@ -168,13 +174,13 @@ static void check_for_pipes_and_OR_logic_ops(int chr) {
         return;
     }
 
-    if (!seen_command_chars) {
+    if (do_errors && !seen_command_chars) {
         fprintf(stderr, "-%s: syntax error near token '|'", SHELL_NAME);
         raise(SIGINT);
         return;
     }
 
-    if (spaces_seen != 0 && unfinished_pipes != 0) {
+    if (do_errors && spaces_seen != 0 && unfinished_pipes != 0) {
         fprintf(stderr, "-%s: syntax error near token '|'", SHELL_NAME);
         raise(SIGINT);
         return;
@@ -182,13 +188,13 @@ static void check_for_pipes_and_OR_logic_ops(int chr) {
 
     ++unfinished_pipes;
 
-    if (unfinished_logic_and != 0) {
+    if (do_errors && unfinished_logic_and != 0) {
         fprintf(stderr, "-%s: unexpected '|' near '&'", SHELL_NAME);
         raise(SIGINT);
         return;
     }
 
-    if (unfinished_pipes == 3) {
+    if (do_errors && unfinished_pipes == 3) {
         fprintf(stderr, "-%s: unexpected '|' near '||'", SHELL_NAME);
         raise(SIGINT);
         return;
@@ -210,7 +216,7 @@ static void check_for_AND_logic_ops(int chr) {
             if (!da_contains_char(non_command_chars, chr)) {
                 seen_command_chars = true;
 
-                if (prev_unfinished_logic_and == 1) {
+                if (do_errors && prev_unfinished_logic_and == 1) {
                     fprintf(stderr, "-%s: unexpected '&'", SHELL_NAME);
                     raise(SIGINT);
                     return;
@@ -225,13 +231,13 @@ static void check_for_AND_logic_ops(int chr) {
         return;
     }
 
-    if (!seen_command_chars) {
+    if (do_errors && !seen_command_chars) {
         fprintf(stderr, "-%s: syntax error near token '&'", SHELL_NAME);
         raise(SIGINT);
         return;
     }
 
-    if (spaces_seen != 0 && unfinished_logic_and != 0) {
+    if (do_errors && spaces_seen != 0 && unfinished_logic_and != 0) {
         fprintf(stderr, "-%s: syntax error near token '&'", SHELL_NAME);
         raise(SIGINT);
         return;
@@ -239,7 +245,7 @@ static void check_for_AND_logic_ops(int chr) {
 
     ++unfinished_logic_and;
 
-    if (unfinished_logic_and == 3) {
+    if (do_errors && unfinished_logic_and == 3) {
         fprintf(stderr, "-%s: unexpected '&' near '&&'", SHELL_NAME);
         raise(SIGINT);
         return;
@@ -339,7 +345,11 @@ void line_check_reset(void) {
             return;
         }
     }
+
+    do_errors = true;
 }
+
+void set_do_error(bool change) { do_errors = change; }
 
 void clean_up_check(void) {
     da_free_char(paren_brace_stack);
