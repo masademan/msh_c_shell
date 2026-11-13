@@ -5,15 +5,11 @@
 #include "char_array_and_string_conversion.h"
 #include "data_type/safe_string/safe_string.h"
 
-// TODO: copy da_join_to_string, but instead of creating a new da,
-//         it takes in a da as input, and adds the chars to it one by one
-
 String *da_join_to_string(const CharArray *da) {
     String *s = ss_new_length(da_count_char(da));
 
+    char c;
     for (size_t i = 0; i < da_count_char(da); i++) {
-        char c;
-
         if (!da_get_char(da, i, &c)) {
             perror("da_get error");
             exit(EXIT_FAILURE);
@@ -25,14 +21,28 @@ String *da_join_to_string(const CharArray *da) {
     return s;
 }
 
+void ss_split_copy_to_char_array(const String *ss, CharArray *da) {
+    da_clear_char(da);
+    da_reserve_char(da, ss_length(ss));
+
+    char c;
+    for (size_t i = 0; i < ss_length(ss); i++) {
+        if (!ss_at(ss, i, &c)) {
+            perror("ss_at error");
+            exit(EXIT_FAILURE);
+        }
+
+        da_add_char(da, c);
+    }
+}
+
 CharArray *ss_split_to_char_array(const String *ss) {
     CharArray *da = da_new_char();
 
     da_reserve_char(da, ss_length(ss));
 
+    char c;
     for (size_t i = 0; i < ss_length(ss); i++) {
-        char c;
-
         if (!ss_at(ss, i, &c)) {
             perror("ss_at error");
             exit(EXIT_FAILURE);

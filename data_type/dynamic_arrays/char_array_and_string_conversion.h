@@ -9,6 +9,12 @@
    Caller owns the returned String and has to call ss_free() on it to free it */
 String *da_join_to_string(const CharArray *da);
 
+/* Splits a String into a DynamicArray of chars, which are
+   copied into the da array inputted
+   Useful for using array operations on a string
+   First is clears da, then adds the chars in ss one by one */
+void ss_split_copy_to_char_array(const String *ss, CharArray *da);
+
 /* Splits a String into a DynamicArray of chars
    Useful for using array operations on a string
    Caller owns the returned DynamicArray and has to call da_free_char() on it to free it */

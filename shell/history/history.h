@@ -3,4 +3,7 @@
 
 // do stuff
 
+/* does nothing, just to stop warnings */
+void filler(void);
+
 #endif

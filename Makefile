@@ -138,5 +138,9 @@ pull:
 	@printf "Pulling from main branch...\n"
 	@git pull origin main
 
+count:
+	@printf "Counting lines of code...\n"
+	@cloc get_info/ macros/ shell/ Makefile main.c
 
-.PHONY: all clean clean_objs clean_shell commit push pull check fast trial asan valgrind
+
+.PHONY: all clean clean_objs clean_shell commit push pull check fast trial asan valgrind count

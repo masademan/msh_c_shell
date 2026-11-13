@@ -15,7 +15,7 @@
 static const char *shell_start = ">>";
 
 static void free_vars(char **username, char **hostname, char **cwd, CharArray **command,
-                      StringArray **args) {
+                      StringArray **tokens) {
     // Shell prompt
     free(*username);
     free(*hostname);
@@ -33,9 +33,9 @@ static void free_vars(char **username, char **hostname, char **cwd, CharArray **
 
 
     // Parsed command arguments
-    da_free_string(*args);
+    da_free_string(*tokens);
 
-    *args = NULL;
+    *tokens = NULL;
 }
 
 void shell_loop(void) {
@@ -43,7 +43,7 @@ void shell_loop(void) {
     char *hostname;
     char *cwd;
     CharArray *command;
-    StringArray *args;
+    StringArray *tokens;
     int status;
 
     clear_terminal();
@@ -60,11 +60,11 @@ void shell_loop(void) {
 
         /*
         if (username[0] != '\0') {  // Has username
-            printf(HI_GREEN "%s@" RESET, username);
+            printf(RESET HI_GREEN "%s@" RESET, username);
         }
-        printf(HI_GREEN "%s" RESET ":" HI_BLUE "%s" RESET, hostname, cwd);
+        printf(RESET HI_GREEN "%s" RESET ":" HI_BLUE "%s" RESET, hostname, cwd);
         */
-        printf(HI_BLUE "testing directory" RESET);
+        printf(RESET HI_BLUE "testing directory" RESET);
 
         // Printing the starting point of the shell commands
         printf("%s ", shell_start);
@@ -77,17 +77,17 @@ void shell_loop(void) {
 
             // TODO: REMOVE LATER
             if (command != NULL) {
-                free_vars(&username, &hostname, &cwd, &command, &args);
+                free_vars(&username, &hostname, &cwd, &command, &tokens);
                 break;
             }
 
         } else {
-            args = shell_parse_line(command);
-            status = shell_execute(args);
+            tokens = shell_parse_line(command);
+            status = shell_execute(tokens);
         }
 
         // Pointer clean-up
-        free_vars(&username, &hostname, &cwd, &command, &args);
+        free_vars(&username, &hostname, &cwd, &command, &tokens);
     } while (status);
 
     clean_up_check();
