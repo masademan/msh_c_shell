@@ -92,6 +92,8 @@ static CharArray *shell_handle_ANSI(CharArray *line, size_t *position) {
                     delete_characters_at_position_in_line(line, *position, 1);
 
                     render_typed_command_after_removing_char(line, *position, 1);
+                } else {
+                    printf("\a");
                 }
 
                 da_free_char(char_a);
@@ -110,6 +112,8 @@ static CharArray *shell_handle_ANSI(CharArray *line, size_t *position) {
                                 amount_to_move_cursor_to_next_right_word(line, *position);
                             delete_characters_at_position_in_line(line, *position, shift_amount);
                             render_typed_command_after_removing_char(line, *position, shift_amount);
+                        } else {
+                            printf("\a");
                         }
 
                         da_free_char(char_a);
@@ -197,6 +201,8 @@ static int shell_read_char(CharArray *line, size_t *position) {
             *position = *position - 1;
 
             render_typed_command_after_removing_char(line, *position, 1);
+        } else {
+            printf("\a");
         }
 
         return CONTINUE_CODE;
@@ -205,6 +211,8 @@ static int shell_read_char(CharArray *line, size_t *position) {
             size_t shift_amount = move_cursor_to_next_left_word(line, position);
             delete_characters_at_position_in_line(line, *position, shift_amount);
             render_typed_command_after_removing_char(line, *position, shift_amount);
+        } else {
+            printf("\a");
         }
 
         return CONTINUE_CODE;
@@ -212,6 +220,11 @@ static int shell_read_char(CharArray *line, size_t *position) {
         size_t shift_amount = amount_to_move_cursor_to_next_right_word(line, *position);
         delete_characters_at_position_in_line(line, *position, shift_amount);
         render_typed_command_after_removing_char(line, *position, shift_amount);
+
+        if (shift_amount == 0) {
+            printf("\a");
+        }
+
         return CONTINUE_CODE;
     } else if (c == 1) {  // Ctrl + A (Like the home key)
         move_cursor_to(position, 0);
@@ -222,6 +235,9 @@ static int shell_read_char(CharArray *line, size_t *position) {
     } else if (c == 9) {  // Tab
         // Maybe auto complete
         // do stuff
+
+        printf("\a");
+
         return CONTINUE_CODE;
     }
 

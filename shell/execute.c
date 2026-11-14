@@ -1,6 +1,9 @@
+#include <errno.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include "data_type/dynamic_arrays/string_array.h"
@@ -11,8 +14,8 @@
 
 // Built-in function prototypes
 // Example:
-//   int shell_cd(const StringArray *args);
-static int shell_cd(const StringArray *args);
+//   int shell_cd(const char **args);
+static int shell_cd(const char **args);
 
 // Built-in setup
 static char *built_in_command_names[] = {
@@ -21,7 +24,7 @@ static char *built_in_command_names[] = {
     "help",
 };
 
-static int (*built_in_command_funcs[])(const StringArray *) = {
+static int (*built_in_command_funcs[])(const char **) = {
     &shell_cd,
 };
 
@@ -31,7 +34,7 @@ static size_t num_built_ins(void) { return sizeof(built_in_command_names) / size
 
 // Built-in functions
 // Copy of the prototypes, but finished
-static int shell_cd(const StringArray *args) {
+static int shell_cd(const char **args) {
     // TODO: finish implementation
     (void) args;
 
