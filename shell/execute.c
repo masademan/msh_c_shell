@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "data_type/dynamic_arrays/string_array.h"
 #include "data_type/safe_string/safe_string.h"

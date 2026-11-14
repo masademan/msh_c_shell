@@ -1,6 +1,7 @@
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "check.h"
 #include "data_type/dynamic_arrays/char_array.h"
@@ -22,7 +23,7 @@ static bool check_char_c(char c, char c_checked, const char *str_to_add, StringA
         String *trimmed_string = ss_strip(joined_string);
         ss_free(joined_string);
 
-        if (ss_length(trimmed_string) > 0) {
+        if (strlen(ss_cstr(trimmed_string)) > 0) {
             if (!da_add_string(tokens, trimmed_string)) {
                 da_free_string(tokens);
                 da_free_char(temp_token);
@@ -157,7 +158,7 @@ StringArray *shell_split_line(CharArray *line) {
         String *trimmed_string = ss_strip(joined_string);
         ss_free(joined_string);
 
-        if (ss_length(trimmed_string) > 0) {
+        if (strlen(ss_cstr(trimmed_string)) > 0) {
             if (!da_add_string(command_tokens, trimmed_string)) {
                 da_free_string(command_tokens);
                 da_free_char(temp_command_token);

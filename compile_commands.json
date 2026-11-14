@@ -10,10 +10,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/main.o",
       "main.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/main.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/main.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/main.o"
   },
   {
     "arguments": [
@@ -26,10 +29,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/shell/loop.o",
       "shell/loop.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/loop.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/loop.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/shell/loop.o"
   },
   {
     "arguments": [
@@ -42,10 +48,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/shell/read_command.o",
       "shell/read_command.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/read_command.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/read_command.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/shell/read_command.o"
   },
   {
     "arguments": [
@@ -58,10 +67,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/shell/parse_command.o",
       "shell/parse_command.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/parse_command.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/parse_command.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/shell/parse_command.o"
   },
   {
     "arguments": [
@@ -74,10 +86,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/shell/execute.o",
       "shell/execute.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/execute.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/execute.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/shell/execute.o"
   },
   {
     "arguments": [
@@ -90,10 +105,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/shell/helpers/helpers.o",
       "shell/helpers/helpers.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/helpers/helpers.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/helpers/helpers.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/shell/helpers/helpers.o"
   },
   {
     "arguments": [
@@ -106,10 +124,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/shell/helpers/commands/check.o",
       "shell/helpers/commands/check.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/helpers/commands/check.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/helpers/commands/check.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/shell/helpers/commands/check.o"
   },
   {
     "arguments": [
@@ -122,10 +143,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/shell/helpers/commands/edit.o",
       "shell/helpers/commands/edit.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/helpers/commands/edit.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/helpers/commands/edit.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/shell/helpers/commands/edit.o"
   },
   {
     "arguments": [
@@ -138,10 +162,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/shell/helpers/commands/move.o",
       "shell/helpers/commands/move.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/helpers/commands/move.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/helpers/commands/move.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/shell/helpers/commands/move.o"
   },
   {
     "arguments": [
@@ -154,10 +181,51 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/shell/helpers/commands/clean.o",
+      "shell/helpers/commands/clean.c"
+    ],
+    "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/helpers/commands/clean.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/shell/helpers/commands/clean.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-std=gnu11",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-I.",
+      "-O0",
+      "-g",
+      "-c",
+      "-o",
+      "objs/shell/helpers/commands/split.o",
+      "shell/helpers/commands/split.c"
+    ],
+    "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/helpers/commands/split.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/shell/helpers/commands/split.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-std=gnu11",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-I.",
+      "-O0",
+      "-g",
+      "-c",
+      "-o",
+      "objs/shell/history/history.o",
       "shell/history/history.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/history/history.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/shell/history/history.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/shell/history/history.o"
   },
   {
     "arguments": [
@@ -170,10 +238,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/get_info/get_sysinfo.o",
       "get_info/get_sysinfo.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/get_info/get_sysinfo.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/get_info/get_sysinfo.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/get_info/get_sysinfo.o"
   },
   {
     "arguments": [
@@ -186,10 +257,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/data_type/dynamic_arrays/char_array.o",
       "data_type/dynamic_arrays/char_array.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/data_type/dynamic_arrays/char_array.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/data_type/dynamic_arrays/char_array.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/data_type/dynamic_arrays/char_array.o"
   },
   {
     "arguments": [
@@ -202,10 +276,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/data_type/dynamic_arrays/string_array.o",
       "data_type/dynamic_arrays/string_array.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/data_type/dynamic_arrays/string_array.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/data_type/dynamic_arrays/string_array.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/data_type/dynamic_arrays/string_array.o"
   },
   {
     "arguments": [
@@ -218,10 +295,13 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/data_type/dynamic_arrays/char_array_and_string_conversion.o",
       "data_type/dynamic_arrays/char_array_and_string_conversion.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/data_type/dynamic_arrays/char_array_and_string_conversion.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/data_type/dynamic_arrays/char_array_and_string_conversion.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/data_type/dynamic_arrays/char_array_and_string_conversion.o"
   },
   {
     "arguments": [
@@ -234,9 +314,12 @@
       "-O0",
       "-g",
       "-c",
+      "-o",
+      "objs/data_type/safe_string/safe_string.o",
       "data_type/safe_string/safe_string.c"
     ],
     "directory": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project",
-    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/data_type/safe_string/safe_string.c"
+    "file": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/data_type/safe_string/safe_string.c",
+    "output": "/mnt/d/Science Homeschool/Astra Nova/Masa - Class Files - 2026-2027/Fall Term Class Files/C programming/shell - final project/objs/data_type/safe_string/safe_string.o"
   }
 ]
