@@ -31,12 +31,12 @@ bool da_reserve_string(StringArray *a, size_t n);
 /* ---- Adding ---- */
 
 /* Adds value to the end of a and returns true. Returns false, and leaves a unchanged,
-   if a is NULL or memory runs out. */
+   if a is NULL, value is NULL, or memory runs out. */
 bool da_add_string(StringArray *a, const String *value);
 
 /* Inserts value at index i, shifting the Strings at i and after up one index, and returns
    true. i may equal da_count_string(a), which adds to the end. Returns false, and leaves a
-   unchanged, if a is NULL, i > da_count_string(a), or memory runs out. */
+   unchanged, if a is NULL, value is NULL, i > da_count_string(a), or memory runs out. */
 bool da_insert_string(StringArray *a, size_t i, const String *value);
 
 /* ---- Reading and writing ---- */
@@ -46,7 +46,7 @@ bool da_insert_string(StringArray *a, size_t i, const String *value);
 bool da_get_string(const StringArray *a, size_t i, String **out);
 
 /* Replaces the String * at index i with value and returns true. Returns false, and leaves a
-   unchanged, if a is NULL or i is not less than da_count_string(a). */
+   unchanged, if a or value is NULL or i is not less than da_count_string(a). */
 bool da_set_string(StringArray *a, size_t i, const String *value);
 
 /* Copies a's Strings, in order, into dest[0 .. da_count_string(a) - 1] and returns true.
@@ -56,7 +56,7 @@ bool da_copy_to_string(const StringArray *a, String **dest, size_t dest_len);
 /* ---- Searching ---- */
 
 /* Finds the first index holding value: stores it in *index and returns true. Returns
-   false, and leaves *index alone, if value does not occur or a or index is NULL. */
+   false, and leaves *index alone, if value does not occur or a, value, or index is NULL. */
 bool da_index_of_string(const StringArray *a, const String *value, size_t *index);
 
 /* true if value occurs in a. false if a is NULL. */
@@ -72,7 +72,7 @@ bool da_contains_string(const StringArray *a, const String *value);
 bool da_remove_at_string(StringArray *a, size_t i, String **out);
 
 /* Removes the first occurrence of value from a, shifting later Strings down one index,
-   and returns true. Returns false if value does not occur or a is NULL. */
+   and returns true. Returns false if value does not occur, a is NULL, or value is NULL. */
 bool da_remove_string(StringArray *a, const String *value);
 
 /* Removes every String * from a, so its count is 0. Does nothing if a is NULL. */
@@ -118,13 +118,13 @@ bool da_pop_string(StringArray *a, String **out);
 bool da_add_all_string(StringArray *a, const String **values, size_t n);
 
 /* Counts all the instances of value in a and sets count to that number. Returns false and
-   leaves count alone, if a or count is NULL. Otherwise returns true. */
+   leaves count alone, if a, value, or count is NULL. Otherwise returns true. */
 bool da_count_of_string(const StringArray *a, const String *value, size_t *count);
 
 /* ---- Medium ---- */
 /* Sets the size of a to n, dropping elements from the end if shrinking the array, or adding
    copies of fill to the end if growing the array. Returns true if successful. Returns false
-   and leaves a unchanged, if a is NULL or memory runs out. */
+   and leaves a unchanged, if a or fill is NULL or memory runs out. */
 bool da_resize_string(StringArray *a, size_t n, const String *fill);
 
 /* Creates a new StringArray with every steps elements from a, starting at index start and ending
@@ -155,7 +155,7 @@ bool da_sort_string(StringArray *a, bool ascending_order);
    The inputted array must be sorted in ascending order for the binary search to work properly.
    The index that the value is found at is outputted through *out.
    If out is NULL, then the value won't be set.
-   Returns false, if a is NULL or the value isn't found */
+   Returns false, if a or value is NULL or the value isn't found */
 bool da_binary_search_string(const StringArray *a, const String *value, size_t *out);
 
 /* shrink_array_when_small */
@@ -174,13 +174,13 @@ bool da_binary_search_string(const StringArray *a, const String *value, size_t *
    or i + remove_count - 1 goes past the end of the array */
 void da_remove_n_string(StringArray *a, size_t i, size_t remove_count);
 
-/* Removes consecutive duplicates of s
-   Returns false if a is NULL
+/* Removes consecutive duplicates of s, only allowing one copy left
+   Returns false if a or s is NULL
    Else, returns true */
 bool da_remove_duplicate_string(StringArray *a, const String *s);
 
 /* Replaces all instances of to_replace with replace_with
-   Returns false if a is NULL
+   Returns false if a, to_replace, or replace_with is NULL
    Else, return true */
 bool da_replace_string(StringArray *a, const String *to_replace, const String *replace_with);
 

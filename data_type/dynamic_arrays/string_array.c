@@ -121,7 +121,7 @@ bool da_reserve_string(StringArray *a, size_t n) {
 }
 
 bool da_add_string(StringArray *a, const String *value) {
-    if (a == NULL) {
+    if (a == NULL || value == NULL) {
         return false;
     }
 
@@ -180,7 +180,7 @@ bool da_add_string(StringArray *a, const String *value) {
 }
 
 bool da_insert_string(StringArray *a, size_t i, const String *value) {
-    if (a == NULL) {
+    if (a == NULL || value == NULL) {
         return false;
     }
     if (i > da_count_string(a)) {
@@ -219,7 +219,7 @@ bool da_get_string(const StringArray *a, size_t i, String **out) {
 }
 
 bool da_set_string(StringArray *a, size_t i, const String *value) {
-    if (a == NULL) {
+    if (a == NULL || value == NULL) {
         return false;
     }
 
@@ -241,14 +241,14 @@ bool da_copy_to_string(const StringArray *a, String **dest, size_t dest_len) {
     }
 
     for (size_t idx = 0; idx < da_count_string(a); idx++) {
-        dest[idx] = a->data[idx];
+        dest[idx] = ss_copy(a->data[idx]);
     }
 
     return true;
 }
 
 bool da_index_of_string(const StringArray *a, const String *value, size_t *index) {
-    if (a == NULL || index == NULL) {
+    if (a == NULL || index == NULL || value == NULL) {
         return false;
     }
 
@@ -437,7 +437,7 @@ bool da_add_all_string(StringArray *a, const String **values, size_t n) {
 }
 
 bool da_count_of_string(const StringArray *a, const String *value, size_t *count) {
-    if (a == NULL || count == NULL) {
+    if (a == NULL || count == NULL || value == NULL) {
         return false;
     }
 
@@ -456,7 +456,7 @@ bool da_count_of_string(const StringArray *a, const String *value, size_t *count
 
 /* ---- Medium ---- */
 bool da_resize_string(StringArray *a, size_t n, const String *fill) {
-    if (a == NULL) {
+    if (a == NULL || fill == NULL) {
         return false;
     }
 
@@ -627,7 +627,7 @@ bool da_sort_string(StringArray *a, bool ascending_order) {
 }
 
 bool da_binary_search_string(const StringArray *a, const String *value, size_t *out) {
-    if (a == NULL) {
+    if (a == NULL || value == NULL) {
         return false;
     }
     if (da_count_string(a) == 0) {
@@ -689,7 +689,7 @@ void da_remove_n_string(StringArray *a, size_t i, size_t remove_count) {
 }
 
 bool da_remove_duplicate_string(StringArray *a, const String *s) {
-    if (a == NULL) {
+    if (a == NULL || s == NULL) {
         return false;
     }
 
@@ -714,7 +714,7 @@ bool da_remove_duplicate_string(StringArray *a, const String *s) {
 }
 
 bool da_replace_string(StringArray *a, const String *to_replace, const String *replace_with) {
-    if (a == NULL) {
+    if (a == NULL || to_replace == NULL || replace_with == NULL) {
         return false;
     }
 
