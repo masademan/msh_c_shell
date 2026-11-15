@@ -7,6 +7,7 @@
 #include "macros/shell_globals.h"
 #include "shell/helpers/commands/check.h"
 
+// still need to do escape chars (\\, \", \')
 void clean_argument(String **arg_string) {
     CharArray *arg_char_arr = ss_split_to_char_array(*arg_string);
     size_t offset = 0;

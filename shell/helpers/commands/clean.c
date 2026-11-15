@@ -78,12 +78,13 @@ static void shell_clean_most(CharArray *cleaned_line, const CharArray *line,
                 raise(SIGINT);
                 return;
             }
-        } else if (!has_open_quotes() && (c == '\"' || c == '\'') &&
-                   (next_c == '\"' || next_c == '\'')) {
-            check_next_char(next_c);
-            offset += 2;
-            i++;
-        } else {
+        } /* else if (!has_open_quotes() && (c == '\"' || c == '\'') &&
+                    (next_c == '\"' || next_c == '\'')) {
+             check_next_char(next_c);
+             offset += 2;
+             i++;
+         }*/
+        else {
             if (last_c_written == ';' && (c == ')' || c == '}')) {
                 offset++;
             }
