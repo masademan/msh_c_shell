@@ -74,16 +74,14 @@ void shell_loop(void) {
 
         if (command == NULL || da_count_char(command) == 0) {
             status = 1;
-
-            // TODO: REMOVE LATER
-            if (command != NULL) {
-                free_vars(&username, &hostname, &cwd, &command, &tokens);
-                break;
-            }
-
         } else {
             tokens = shell_parse_line(command);
-            status = shell_execute(tokens);
+
+            if (da_count_string(tokens) == 0) {
+                status = 1;
+            } else {
+                status = shell_execute(tokens);
+            }
         }
 
         // Pointer clean-up

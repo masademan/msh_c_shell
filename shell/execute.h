@@ -18,6 +18,6 @@ int shell_execute_command(const String *token);
 /* Takes in a dynamic array of strings and
    starts launching a program from the PATH
    An int is then returned, which is the status code after finishing */
-int shell_launch_program(char **args);
+int shell_launch_program(const char **args);
 
 #endif

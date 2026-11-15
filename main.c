@@ -21,6 +21,7 @@ int main(int arg_c, char **arg_v) {
     //      allow for arrow keys to reselect commands (also to save memory)
     //      maybe allow the ansi colors.h to be used in printf in this shell
     //      maybe in the future do conditionals and loops in the shell (currently unused)
+    //      do escape code + escape char + ansi code handling
 
     // Run shell loop
     shell_loop();

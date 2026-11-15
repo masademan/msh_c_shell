@@ -6,6 +6,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include "data_type/dynamic_arrays/char_array.h"
+#include "data_type/dynamic_arrays/char_array_and_string_conversion.h"
 #include "data_type/dynamic_arrays/string_array.h"
 #include "data_type/safe_string/safe_string.h"
 #include "execute.h"
@@ -14,10 +16,10 @@
 
 // Built-in function prototypes
 // Example:
-//   int shell_cd(char **args, size_t num_args);
-static int shell_cd(char **args, size_t num_args);
-static int shell_exit(char **args, size_t num_args);
-static int shell_help(char **args, size_t num_args);
+//   int shell_cd(const char **args, size_t num_args);
+static int shell_cd(const char **args, size_t num_args);
+static int shell_exit(const char **args, size_t num_args);
+static int shell_help(const char **args, size_t num_args);
 
 // Built-in setup
 static char *built_in_command_names[] = {
@@ -26,7 +28,7 @@ static char *built_in_command_names[] = {
     "help",
 };
 
-static int (*built_in_command_funcs[])(char **, size_t) = {
+static int (*built_in_command_funcs[])(const char **, size_t) = {
     &shell_cd,
     &shell_exit,
     &shell_help,
@@ -38,7 +40,7 @@ static size_t num_built_ins(void) { return sizeof(built_in_command_names) / size
 
 // Built-in functions
 // Copy of the prototypes, but finished
-static int shell_cd(char **args, size_t num_args) {
+static int shell_cd(const char **args, size_t num_args) {
     // TODO: finish implementation
     (void) args;
     (void) num_args;
@@ -46,15 +48,14 @@ static int shell_cd(char **args, size_t num_args) {
     return 1;
 }
 
-static int shell_exit(char **args, size_t num_args) {
+static int shell_exit(const char **args, size_t num_args) {
     (void) args;
     (void) num_args;
 
     return 0;
 }
 
-static int shell_help(char **args, size_t num_args) {
-    // TODO: finish implementation
+static int shell_help(const char **args, size_t num_args) {
     (void) args;
     (void) num_args;
 
@@ -80,29 +81,110 @@ static size_t offset_to_next_token(const StringArray *tokens, size_t curr_idx) {
    The first string is the command, and the following strings (if there are any)
    are the arguments for that command */
 static StringArray *shell_token_to_arguments(const String *token) {
-    (void) token;
+    StringArray *args = da_new_string();
+    CharArray *temp_arg_arr = da_new_char();
+    String *temp_arg_string;
+    char c;
+
+    line_check_reset();
+
+    for (size_t i = 0; i < ss_length(token); i++) {
+        if (!ss_at(token, i, &c)) {
+            da_free_char(temp_arg_arr);
+            da_free_string(args);
+
+            fprintf(stderr, "-%s: ss_at error", SHELL_NAME);
+            return 0;
+        }
+
+        check_next_char(c);
+
+        if (!has_open_quotes() && c == ' ') {
+            temp_arg_string = da_join_to_string(temp_arg_arr);
+
+            // do string formatting here
+            //   (escape code, escape chars, ansi codes, etc.)
+
+            if (!da_add_string(args, temp_arg_string)) {
+                ss_free(temp_arg_string);
+                da_free_char(temp_arg_arr);
+                da_free_string(args);
+
+                fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+                return 0;
+            }
+
+            ss_free(temp_arg_string);
+            da_clear_char(temp_arg_arr);
+        } else {
+            if (!da_add_char(temp_arg_arr, c)) {
+                da_free_char(temp_arg_arr);
+                da_free_string(args);
+
+                fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+                return 0;
+            }
+        }
+    }
+
+    if (da_count_char(temp_arg_arr) > 0) {
+        temp_arg_string = da_join_to_string(temp_arg_arr);
+
+        // do string formatting here
+        //   (escape code, escape chars, ansi codes, etc.)
+
+        if (!da_add_string(args, temp_arg_string)) {
+            ss_free(temp_arg_string);
+            da_free_char(temp_arg_arr);
+            da_free_string(args);
+
+            fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+            return 0;
+        }
+
+        ss_free(temp_arg_string);
+        da_clear_char(temp_arg_arr);
+    }
 
     // clean the arguments from backslashes (\)
     // like with \", \', \(, etc.
 
-    return NULL;
+    da_free_char(temp_arg_arr);
+
+    return args;
 }
 
 /* Takes an array of Strings and outputs an array of strings (array of chars) that's
    NULL terminated
    This is to make freeing much easier (just free the pointer returned, then free the StringArray later)
    The caller owns the returned pointer and has to call free() on it to free it */
-static char **string_arg_array_to_execvp_arg_array(const StringArray *string_args) {
-    (void) string_args;
+static const char **string_arg_array_to_execvp_arg_array(const StringArray *string_args) {
+    size_t num_args = da_count_string(string_args);
+    const char **char_args = malloc(sizeof(char *) * (num_args + 1));
 
-    return NULL;
+    String *string_arg;
+    for (size_t i = 0; i < num_args; i++) {
+        if (!da_get_string(string_args, i, &string_arg)) {
+            fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+            return 0;
+        }
+
+        char_args[i] = ss_cstr(string_arg);
+    }
+
+    char_args[num_args] = NULL;
+
+    return char_args;
 }
 
 // Global functions
 // make it so that ctrl + c kills the child process, end the execution in the parent, and return 1
 //  should bring user back to shell
 int shell_execute(const StringArray *tokens) {
-    (void) tokens;
+    if (da_count_string(tokens) == 0) {
+        return 1;
+    }
+
     offset_to_next_token(tokens, 0);
 
     printf("Tokens:\n");
@@ -116,15 +198,16 @@ int shell_execute(const StringArray *tokens) {
         printf(" - token %zu: ⟨%s⟩\n", token_i + 1, ss_cstr(s_token));
     }
 
-    // if (da_count_string(tokens) > 0) {
-    //     String *token;
-    //     if (!da_get_string(tokens, 0, &token)) {
-    //         fprintf(stderr, "-%s: da_get error", SHELL_NAME);
-    //         return 0;
-    //     }
-    //
-    //     return shell_execute_command(token);
-    // }
+    if (da_count_string(tokens) > 0) {
+        String *token;
+
+        if (!da_get_string(tokens, 0, &token)) {
+            fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+            return 0;
+        }
+
+        return shell_execute_command(token);
+    }
 
     return 1;
 }
@@ -136,10 +219,15 @@ int shell_execute(const StringArray *tokens) {
 
 int shell_execute_command(const String *token) {
     StringArray *string_args = shell_token_to_arguments(token);
-    char **args = string_arg_array_to_execvp_arg_array(string_args);
+    const char **args = string_arg_array_to_execvp_arg_array(string_args);
 
     int status = 1;
     bool built_in_done = false;
+
+    // printf("Token args:\n");
+    // for (size_t i = 0; args[i] != NULL; i++) {
+    //     printf(" - arg %zu: ⟨%s⟩\n", i + 1, args[i]);
+    // }
 
     for (size_t i = 0; i < num_built_ins(); i++) {
         if (strcmp(args[0], built_in_command_names[i]) == 0) {
@@ -159,7 +247,7 @@ int shell_execute_command(const String *token) {
     return status;
 }
 
-int shell_launch_program(char **args) {
+int shell_launch_program(const char **args) {
     (void) args;
 
     return 1;
