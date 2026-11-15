@@ -1,4 +1,4 @@
-// #include <errno.h>
+#include <errno.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -248,10 +248,10 @@ int shell_execute_command(const String *token) {
     int status = 1;
     bool built_in_done = false;
 
-    // printf("Token args:\n");
-    // for (size_t i = 0; args[i] != NULL; i++) {
-    //     printf(" - arg %zu: ⟨%s⟩\n", i + 1, args[i]);
-    // }
+    printf("Token args:\n");
+    for (size_t i = 0; args[i] != NULL; i++) {
+        printf(" - arg %zu: ⟨%s⟩\n", i + 1, args[i]);
+    }
 
     for (size_t i = 0; i < num_built_ins(); i++) {
         if (strcmp(args[0], built_in_command_names[i]) == 0) {
@@ -273,6 +273,39 @@ int shell_execute_command(const String *token) {
 
 int shell_launch_program(const char **args) {
     (void) args;
+
+    pid_t pid, wpid;
+    int status = 0;
+
+    pid = fork();
+    if (pid == 0) {
+        // Child process
+        //  add more execvp error checks with errno (like file not found, file had error, etc.)
+        if (execvp(args[0], (char **) args) == -1) {
+            fprintf(stderr, "-%s: Error executing '%s'\n", SHELL_NAME, args[0]);
+        }
+
+        exit(EXIT_FAILURE);
+    } else if (pid < 0) {
+        // Error forking
+        fprintf(stderr, "-%s: Error forking\n", SHELL_NAME);
+    } else {
+        // Parent process
+        do {
+            wpid = waitpid(pid, &status, WUNTRACED);
+
+            if (wpid == -1) {
+                if (errno == EINTR) {
+                    continue;
+                }
+
+                perror("waitpid");
+                break;
+            }
+        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+
+        return 1;
+    }
 
     return 1;
 }
