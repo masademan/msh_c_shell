@@ -273,39 +273,43 @@ int shell_execute_command(const String *token) {
 
 int shell_launch_program(const char **args) {
     (void) args;
-
-    pid_t pid, wpid;
-    int status = 0;
-
-    pid = fork();
-    if (pid == 0) {
-        // Child process
-        //  add more execvp error checks with errno (like file not found, file had error, etc.)
-        if (execvp(args[0], (char **) args) == -1) {
-            fprintf(stderr, "-%s: Error executing '%s'\n", SHELL_NAME, args[0]);
-        }
-
-        exit(EXIT_FAILURE);
-    } else if (pid < 0) {
-        // Error forking
-        fprintf(stderr, "-%s: Error forking\n", SHELL_NAME);
-    } else {
-        // Parent process
-        do {
-            wpid = waitpid(pid, &status, WUNTRACED);
-
-            if (wpid == -1) {
-                if (errno == EINTR) {
-                    continue;
-                }
-
-                perror("waitpid");
-                break;
-            }
-        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-
-        return 1;
-    }
+    (void) errno;
 
     return 1;
+
+    // pid_t pid, wpid;
+    // int status = 0;
+    //
+    // pid = fork();
+    // if (pid == 0) {
+    //     // Child process
+    //     //  add more execvp error checks with errno (like file not found, file had error, etc.)
+    //     //  test comment
+    //     if (execvp(args[0], (char **) args) == -1) {
+    //         fprintf(stderr, "-%s: Error executing '%s'\n", SHELL_NAME, args[0]);
+    //     }
+    //
+    //     exit(EXIT_FAILURE);
+    // } else if (pid < 0) {
+    //     // Error forking
+    //     fprintf(stderr, "-%s: Error forking\n", SHELL_NAME);
+    // } else {
+    //     // Parent process
+    //     do {
+    //         wpid = waitpid(pid, &status, WUNTRACED);
+    //
+    //         if (wpid == -1) {
+    //             if (errno == EINTR) {
+    //                 continue;
+    //             }
+    //
+    //             perror("waitpid");
+    //             break;
+    //         }
+    //     } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+    //
+    //     return 1;
+    // }
+    //
+    // return 1;
 }
