@@ -50,7 +50,7 @@ static void check_for_parens(int chr) {
         return;
     }
 
-    if (chr != '(' && chr != ')') {
+    if ((chr != '(' && chr != ')') || open_backslashes) {
         return;
     }
 
@@ -98,7 +98,7 @@ static void check_for_braces(int chr) {
         return;
     }
 
-    if (chr != '{' && chr != '}') {
+    if ((chr != '{' && chr != '}') || open_backslashes) {
         return;
     }
 
@@ -407,3 +407,5 @@ bool has_unfinished_pipe(void) { return unfinished_pipes == 1; }
 bool has_unfinished_logical_operator(void) { return unfinished_pipes == 2 || unfinished_logic_and == 2; }
 
 bool has_unfinished_backslash(void) { return unfinished_backslash; }
+
+bool has_open_backslash(void) { return open_backslashes; }

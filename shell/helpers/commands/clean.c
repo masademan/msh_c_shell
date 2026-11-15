@@ -16,7 +16,7 @@ static void shell_clean_most(CharArray *cleaned_line, const CharArray *line,
     size_t line_len = da_count_char(line);
 
     size_t i;
-    char c;
+    char c, next_c;
     char last_c_written = '\0';
     bool spaces_start = true;
 
@@ -30,6 +30,16 @@ static void shell_clean_most(CharArray *cleaned_line, const CharArray *line,
             fprintf(stderr, "-%s: da_get error", SHELL_NAME);
             raise(SIGINT);
             return;
+        }
+        next_c = '\0';
+        if (i + 1 < line_len) {
+            if (!da_get_char(line, i + 1, &next_c)) {
+                da_free_char(cleaned_line);
+
+                fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+                raise(SIGINT);
+                return;
+            }
         }
 
         check_next_char(c);
@@ -68,6 +78,11 @@ static void shell_clean_most(CharArray *cleaned_line, const CharArray *line,
                 raise(SIGINT);
                 return;
             }
+        } else if (!has_open_quotes() && (c == '\"' || c == '\'') &&
+                   (next_c == '\"' || next_c == '\'')) {
+            check_next_char(next_c);
+            offset += 2;
+            i++;
         } else {
             if (last_c_written == ';' && (c == ')' || c == '}')) {
                 offset++;
