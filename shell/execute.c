@@ -42,8 +42,10 @@ static size_t num_built_ins(void) { return sizeof(built_in_command_names) / size
 // Built-in functions
 // Copy of the prototypes, but finished
 static int shell_cd(const char **args, size_t num_args) {
-    if (num_args != 2) {
-        //
+    if (num_args > 2) {
+        fprintf(stderr, "-%s: cd: too many arguments\n", SHELL_NAME);
+
+        return 1;
     }
     // TODO: finish implementation
     (void) args;
@@ -98,7 +100,7 @@ static StringArray *shell_token_to_arguments(const String *token) {
             da_free_char(temp_arg_arr);
             da_free_string(args);
 
-            fprintf(stderr, "-%s: ss_at error", SHELL_NAME);
+            fprintf(stderr, "-%s: ss_at error\n", SHELL_NAME);
             return NULL;
         }
 
@@ -114,7 +116,7 @@ static StringArray *shell_token_to_arguments(const String *token) {
                 da_free_char(temp_arg_arr);
                 da_free_string(args);
 
-                fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+                fprintf(stderr, "-%s: da_add error\n", SHELL_NAME);
                 return NULL;
             }
 
@@ -125,7 +127,7 @@ static StringArray *shell_token_to_arguments(const String *token) {
                 da_free_char(temp_arg_arr);
                 da_free_string(args);
 
-                fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+                fprintf(stderr, "-%s: da_add error\n", SHELL_NAME);
                 return NULL;
             }
         }
@@ -141,7 +143,7 @@ static StringArray *shell_token_to_arguments(const String *token) {
             da_free_char(temp_arg_arr);
             da_free_string(args);
 
-            fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+            fprintf(stderr, "-%s: da_add error\n", SHELL_NAME);
             return NULL;
         }
 
@@ -166,7 +168,7 @@ static const char **string_arg_array_to_execvp_arg_array(const StringArray *stri
     size_t num_args = da_count_string(string_args);
     const char **char_args = malloc(sizeof(char *) * (num_args + 1));
     if (char_args == NULL) {
-        fprintf(stderr, "-%s: couldn't allocate mamoery for command arguments", SHELL_NAME);
+        fprintf(stderr, "-%s: couldn't allocate mamoery for command arguments\n", SHELL_NAME);
         return NULL;
     }
 
@@ -175,7 +177,7 @@ static const char **string_arg_array_to_execvp_arg_array(const StringArray *stri
         if (!da_get_string(string_args, i, &string_arg)) {
             free(char_args);
 
-            fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+            fprintf(stderr, "-%s: da_get error\n", SHELL_NAME);
             return NULL;
         }
 
@@ -201,7 +203,7 @@ int shell_execute(const StringArray *tokens) {
     String *s_token;
     for (size_t token_i = 0; token_i < da_count_string(tokens); token_i++) {
         if (!da_get_string(tokens, token_i, &s_token)) {
-            fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+            fprintf(stderr, "-%s: da_get error\n", SHELL_NAME);
             return 1;
         }
 
@@ -212,7 +214,7 @@ int shell_execute(const StringArray *tokens) {
         String *token;
 
         if (!da_get_string(tokens, 0, &token)) {
-            fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+            fprintf(stderr, "-%s: da_get error\n", SHELL_NAME);
             return 1;
         }
 
@@ -221,11 +223,6 @@ int shell_execute(const StringArray *tokens) {
 
     return 1;
 }
-
-// make another function that takes in an arg and splits it into
-//   more args that can be run
-// this function would be called in another function that goes
-//   through the arguments given and does forks if necessary
 
 int shell_execute_command(const String *token) {
     StringArray *string_args = shell_token_to_arguments(token);
@@ -237,6 +234,12 @@ int shell_execute_command(const String *token) {
         return 1;
     }
     if (args == NULL) {
+        da_free_string(string_args);
+
+        return 1;
+    }
+    if (da_count_string(string_args) == 0) {
+        free(args);
         da_free_string(string_args);
 
         return 1;
