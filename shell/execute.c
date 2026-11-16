@@ -1,3 +1,5 @@
+#include <asm-generic/errno-base.h>
+#include <asm-generic/errno.h>
 #include <errno.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -189,6 +191,61 @@ static const char **string_arg_array_to_execvp_arg_array(const StringArray *stri
     return char_args;
 }
 
+static void fprintf_errno_message_fork(const char *executable_run, int err_num) {
+    const char *msg;
+
+    switch (err_num) {
+        case ENOENT:
+            // File not found
+            msg = strchr(executable_run, '/') ? "No such file or directory" : "command not found";
+            break;
+        case EACCES:
+            // Permission denied
+            msg = "Permission denied";
+            break;
+        case ENOEXEC:
+            // Header format not recognized
+            msg = "Executable format error";
+            break;
+        case E2BIG:
+            // Number of args exceeds system limit
+            msg = "Number of arguments exceeds system limits";
+            break;
+        case ENOTDIR:
+            // Part of the path is a file, not a directory
+            msg = "A component of the path is not a directory";
+            break;
+        case EISDIR:
+            // A directory was attempted to be run, not an executable file
+            msg = "Is a directory";
+            break;
+        case ENOMEM:
+            // Not enough memory to load the new process
+            msg = "Not enough memory to start process";
+            break;
+        case EPERM:
+            // Similar to EACESS, but for WSL because Windows
+            msg = "Operation not permitted";
+            break;
+        case ELOOP:
+            // Too many symbolic links while resolving path
+            msg = "Too many symbolic links encountered while resolving path";
+            break;
+        case ENAMETOOLONG:
+            // Filename/path name exceeds system limits
+            msg = "Filename or path exceeds system length limits";
+            break;
+        case ETXTBSY:
+            msg = "Executable file is busy or recently open for writing";
+            break;
+        default:
+            msg = strerror(err_num);
+            break;
+    }
+
+    fprintf(stderr, "-%s: %s: %s\n", SHELL_NAME, executable_run, msg);
+}
+
 // Global functions
 // make it so that ctrl + c kills the child process, end the execution in the parent, and return 1
 //  should bring user back to shell
@@ -283,11 +340,10 @@ int shell_launch_program(const char **args) {
     pid = fork();
     if (pid == 0) {
         // Child process
-        //  add more execvp error checks with errno (like file not found, file had error, etc.)
-        //  test comment
-        if (execvp(args[0], (char **) args) == -1) {
-            fprintf(stderr, "-%s: Error executing '%s'\n", SHELL_NAME, args[0]);
-        }
+        execvp(args[0], (char **) args);
+
+        int err_num = errno;
+        fprintf_errno_message_fork(args[0], err_num);
 
         exit(EXIT_FAILURE);
     } else if (pid < 0) {
