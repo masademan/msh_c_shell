@@ -173,6 +173,7 @@ int shell_execute(const StringArray *tokens, size_t token_idx) {
                  token_mode == AND_MODE) ||  // Previous command was successful and operator is &&
                 (command_status != 0 &&
                  token_mode == OR_MODE)) {  // Previous command failed and operator is ||
+                // This is comes from a simplified if statement chain (very nice simplification)
                 command_status = shell_execute_command(token);
             }
         }
