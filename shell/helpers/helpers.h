@@ -17,4 +17,8 @@ size_t size_increase_func(size_t size);
    Also useful for the shell command "clear" */
 void clear_terminal(void);
 
+/* Takes in the executable that was attempted to be run as well as the error number from errno and
+   fprintf's the appropiate error message */
+void fprintf_errno_message_fork(const char *executable_run, int err_num);
+
 #endif
