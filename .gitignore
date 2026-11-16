@@ -1,3 +1,4 @@
 objs/
 *.o
 msh
+compile_command.json
