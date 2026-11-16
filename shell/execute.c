@@ -48,9 +48,22 @@ static int shell_cd(const char **args, size_t num_args) {
 
         return 1;
     }
-    // TODO: finish implementation
-    (void) args;
-    (void) num_args;
+
+    char *dir_to_cd_into;
+    if (num_args == 1) {
+        // CD into root directory
+        dir_to_cd_into = "/";
+    } else {
+        // CD into other directory
+        dir_to_cd_into = (char *) args[1];
+    }
+
+    if (chdir(dir_to_cd_into) != 0) {
+        int err_num = errno;
+        fprintf_errno_message_chdir(err_num);
+
+        return 1;
+    }
 
     return 0;
 }
@@ -81,7 +94,7 @@ static size_t offset_to_next_token(const StringArray *tokens, size_t curr_idx) {
 
     line_check_reset();
 
-    return 0;
+    return 1;
 }
 
 // Global functions

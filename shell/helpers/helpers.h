@@ -21,4 +21,8 @@ void clear_terminal(void);
    fprintf's the appropiate error message */
 void fprintf_errno_message_fork(const char *executable_run, int err_num);
 
+/* Takes in the error number from errno after running chdir and outputs the appropiate
+   error message */
+void fprintf_errno_message_chdir(int err_num);
+
 #endif

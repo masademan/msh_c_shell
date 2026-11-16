@@ -64,3 +64,9 @@ void fprintf_errno_message_fork(const char *executable_run, int err_num) {
 
     fprintf(stderr, "-%s: %s: %s\n", SHELL_NAME, executable_run, msg);
 }
+
+void fprintf_errno_message_chdir(int err_num) {
+    (void) err_num;
+
+    return;
+}
