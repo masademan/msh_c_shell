@@ -9,6 +9,7 @@
 #include "helpers/helpers.h"
 #include "loop.h"
 #include "macros/ansi_colors.h"
+#include "macros/shell_globals.h"
 #include "parse_command.h"
 #include "read_command.h"
 
@@ -86,7 +87,7 @@ void shell_loop(void) {
 
         // Pointer clean-up
         free_vars(&username, &hostname, &cwd, &command, &tokens);
-    } while (status == 0);
+    } while (status != SHELL_EXIT_CODE);
 
     clean_up_check();
 }

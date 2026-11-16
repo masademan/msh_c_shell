@@ -60,7 +60,7 @@ static int shell_exit(const char **args, size_t num_args) {
     (void) args;
     (void) num_args;
 
-    return 1;
+    return SHELL_EXIT_CODE;
 }
 
 static int shell_help(const char **args, size_t num_args) {
