@@ -145,6 +145,11 @@ String *ss_rstrip(const String *s);
    The caller must call ss_free() on it to free it */
 String *ss_strip(const String *s);
 
+/* Checks if b is a substring of a
+   Returns true if so, else returns false
+   Returns false if a or b is NULL */
+bool ss_is_substring(const String *a, const String *b);
+
 
 /* --- Unsafe functions --- */
 

@@ -329,11 +329,6 @@ int shell_execute_command(const String *token) {
 }
 
 int shell_launch_program(const char **args) {
-    // (void) args;
-    // (void) errno;
-    //
-    // return 1;
-
     pid_t pid, wpid;
     int status = 0;
 

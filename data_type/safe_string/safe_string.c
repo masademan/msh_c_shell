@@ -10,6 +10,7 @@
    expected: the warnings are a list of the functions you haven't written yet. */
 
 #include <stdlib.h>
+#include <string.h>  // Only used for ss_is_substring
 
 #include "safe_string.h"
 
@@ -737,6 +738,14 @@ String *ss_strip(const String *s) {
 
     return ss_substring(s, beginning_whitespace_count,
                         s_len - beginning_whitespace_count - ending_whitespace_count);
+}
+
+bool ss_is_substring(const String *a, const String *b) {
+    if (a == NULL || b == NULL) {
+        return false;
+    }
+
+    return strstr(a->data, b->data) != NULL;
 }
 
 
