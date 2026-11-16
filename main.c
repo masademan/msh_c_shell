@@ -22,6 +22,9 @@ int main(int arg_c, char **arg_v) {
     //      maybe allow the ansi colors.h to be used in printf in this shell
     //      maybe in the future do conditionals and loops in the shell (currently unused)
     //      do escape code + escape char + ansi code handling
+    //      add aliasing for commands (like "ls" to "ls --color=auto"), do research on
+    //        what is eligible for aliasing
+    //      maybe add the $0 thing that says the shell's name, like in bash
 
     // Run shell loop
     shell_loop();

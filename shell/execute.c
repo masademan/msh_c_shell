@@ -199,16 +199,16 @@ int shell_execute(const StringArray *tokens) {
 
     offset_to_next_token(tokens, 0);
 
-    printf("Tokens:\n");
-    String *s_token;
-    for (size_t token_i = 0; token_i < da_count_string(tokens); token_i++) {
-        if (!da_get_string(tokens, token_i, &s_token)) {
-            fprintf(stderr, "-%s: da_get error\n", SHELL_NAME);
-            return 1;
-        }
-
-        printf(" - token %zu: ⟨%s⟩\n", token_i + 1, ss_cstr(s_token));
-    }
+    // printf("Tokens:\n");
+    // String *s_token;
+    // for (size_t token_i = 0; token_i < da_count_string(tokens); token_i++) {
+    //     if (!da_get_string(tokens, token_i, &s_token)) {
+    //         fprintf(stderr, "-%s: da_get error\n", SHELL_NAME);
+    //         return 1;
+    //     }
+    //
+    //     printf(" - token %zu: ⟨%s⟩\n", token_i + 1, ss_cstr(s_token));
+    // }
 
     if (da_count_string(tokens) > 0) {
         String *token;
@@ -248,10 +248,10 @@ int shell_execute_command(const String *token) {
     int status = 1;
     bool built_in_done = false;
 
-    printf("Token args:\n");
-    for (size_t i = 0; args[i] != NULL; i++) {
-        printf(" - arg %zu: ⟨%s⟩\n", i + 1, args[i]);
-    }
+    // printf("Token args:\n");
+    // for (size_t i = 0; args[i] != NULL; i++) {
+    //     printf(" - arg %zu: ⟨%s⟩\n", i + 1, args[i]);
+    // }
 
     for (size_t i = 0; i < num_built_ins(); i++) {
         if (strcmp(args[0], built_in_command_names[i]) == 0) {

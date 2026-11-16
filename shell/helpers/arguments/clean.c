@@ -7,11 +7,22 @@
 #include "macros/shell_globals.h"
 #include "shell/helpers/commands/check.h"
 
-// still need to do escape chars (\\, \", \')
+/* Check if c is value_check, and if so, replace it with value_replace
+   Then increment offset
+   This is for replacing backslash escape characters with their respective character */
+static void handle_escape_chars(char *c, char value_check, char value_replace, size_t *offset) {
+    if (*c == value_check) {
+        *c = value_replace;
+        (*offset)++;
+    }
+}
+
 void clean_argument(String **arg_string) {
     CharArray *arg_char_arr = ss_split_to_char_array(*arg_string);
     size_t offset = 0;
     bool had_open_quotes = false;
+    bool had_open_backslashes = false;
+    bool found_escape_char = false;
     char c;
 
     line_check_reset();
@@ -26,6 +37,21 @@ void clean_argument(String **arg_string) {
 
         check_next_char(c);
 
+        // Backslash escape char check
+        if (found_escape_char) {
+            handle_escape_chars(&c, '\"', '\"', &offset);
+            handle_escape_chars(&c, '\'', '\'', &offset);
+            // handle_escape_chars(&c, 'n', '\n', &offset);
+            handle_escape_chars(&c, '\\', '\\', &offset);
+
+            found_escape_char = false;
+        }
+
+        if (!had_open_backslashes && has_open_backslash()) {
+            found_escape_char = true;
+        }
+        had_open_backslashes = has_open_backslash();
+
         if (!da_set_char(arg_char_arr, i - offset, c)) {
             da_free_char(arg_char_arr);
 
@@ -33,6 +59,7 @@ void clean_argument(String **arg_string) {
             return;
         }
 
+        // Opening/closing quotes check
         if ((!had_open_quotes && has_open_quotes()) || (had_open_quotes && !has_open_quotes())) {
             offset++;
         }
