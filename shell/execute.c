@@ -344,6 +344,8 @@ int shell_launch_program(const char **args) {
     } else if (pid < 0) {
         // Error forking
         fprintf(stderr, "-%s: Error forking\n", SHELL_NAME);
+
+        return 1;
     } else {
         // Parent process
         do {
@@ -355,12 +357,16 @@ int shell_launch_program(const char **args) {
                 }
 
                 perror("waitpid");
-                break;
+                return 1;
             }
         } while (!WIFEXITED(status) && !WIFSIGNALED(status));
 
-        return 0;
-    }
+        if (WIFEXITED(status)) {
+            return WEXITSTATUS(status);
+        } else if (WIFSIGNALED(status)) {
+            return 1;
+        }
 
-    return 0;
+        return 1;
+    }
 }
