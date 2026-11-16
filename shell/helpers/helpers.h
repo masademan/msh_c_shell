@@ -25,4 +25,7 @@ void fprintf_errno_message_fork(const char *executable_run, int err_num);
    error message */
 void fprintf_errno_message_chdir(const char *directory_cd_attempted, int err_num);
 
+/* Takes in the name of an internal shell command and printf's the appropiate help page */
+void printf_help_given_command(const char *command);
+
 #endif

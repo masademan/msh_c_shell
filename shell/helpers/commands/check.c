@@ -11,13 +11,14 @@ static bool open_double_quotes;
 
 static int open_parens;
 static int open_braces;
+static bool seen_command_chars_paren_brace;
 
 static bool open_conds;
 static bool open_loops;
 
 static unsigned int unfinished_pipes;
 static unsigned int unfinished_logic_and;
-static bool seen_command_chars;
+static bool seen_command_chars_logic_pipes;
 
 static bool open_backslashes;
 static bool unfinished_backslash;
@@ -51,6 +52,10 @@ static void check_for_parens(int chr) {
     }
 
     if ((chr != '(' && chr != ')') || open_backslashes) {
+        if (chr != '\n' && !da_contains_char(non_command_chars, chr)) {
+            seen_command_chars_paren_brace = true;
+        }
+
         return;
     }
 
@@ -63,7 +68,7 @@ static void check_for_parens(int chr) {
             return;
         }
 
-        seen_command_chars = false;
+        seen_command_chars_paren_brace = false;
     } else if (chr == ')') {
         --open_parens;
 
@@ -85,7 +90,7 @@ static void check_for_parens(int chr) {
                 raise(SIGINT);
                 return;
             }
-        } else if (!seen_command_chars) {
+        } else if (!seen_command_chars_paren_brace) {
             fprintf(stderr, "-%s: syntax error near unexpected token ')'", SHELL_NAME);
             raise(SIGINT);
             return;
@@ -117,7 +122,7 @@ static void check_for_braces(int chr) {
             return;
         }
 
-        seen_command_chars = false;
+        seen_command_chars_paren_brace = false;
     } else if (chr == '}') {
         --open_braces;
 
@@ -139,7 +144,7 @@ static void check_for_braces(int chr) {
                 raise(SIGINT);
                 return;
             }
-        } else if (!seen_command_chars) {
+        } else if (!seen_command_chars_paren_brace) {
             fprintf(stderr, "-%s: syntax error near unexpected token '}'", SHELL_NAME);
             raise(SIGINT);
             return;
@@ -171,11 +176,11 @@ static void check_for_pipes_and_OR_logic_ops(int chr) {
 
         if (!has_open_quotes()) {
             if (chr == '\n' && !open_backslashes) {
-                seen_command_chars = false;
+                seen_command_chars_logic_pipes = false;
             }
 
             if (!da_contains_char(non_command_chars, chr)) {
-                seen_command_chars = true;
+                seen_command_chars_logic_pipes = true;
             }
         }
 
@@ -186,7 +191,7 @@ static void check_for_pipes_and_OR_logic_ops(int chr) {
         return;
     }
 
-    if (do_errors && !seen_command_chars) {
+    if (do_errors && !seen_command_chars_logic_pipes) {
         fprintf(stderr, "-%s: syntax error near token '|'", SHELL_NAME);
         raise(SIGINT);
         return;
@@ -222,11 +227,11 @@ static void check_for_AND_logic_ops(int chr) {
 
         if (!has_open_quotes()) {
             if (chr == '\n' && !open_backslashes) {
-                seen_command_chars = false;
+                seen_command_chars_logic_pipes = false;
             }
 
             if (!da_contains_char(non_command_chars, chr)) {
-                seen_command_chars = true;
+                seen_command_chars_logic_pipes = true;
 
                 if (do_errors && prev_unfinished_logic_and == 1) {
                     fprintf(stderr, "-%s: unexpected '&'", SHELL_NAME);
@@ -243,7 +248,7 @@ static void check_for_AND_logic_ops(int chr) {
         return;
     }
 
-    if (do_errors && !seen_command_chars) {
+    if (do_errors && !seen_command_chars_logic_pipes) {
         fprintf(stderr, "-%s: syntax error near token '&'", SHELL_NAME);
         raise(SIGINT);
         return;
@@ -320,6 +325,7 @@ void check_next_char(int chr) {
 void line_check_reset(void) {
     open_single_quotes = false;
     open_double_quotes = false;
+    seen_command_chars_paren_brace = false;
 
     open_parens = 0;
     open_braces = 0;
@@ -329,7 +335,7 @@ void line_check_reset(void) {
 
     unfinished_pipes = 0;
     unfinished_logic_and = 0;
-    seen_command_chars = false;
+    seen_command_chars_logic_pipes = false;
 
     open_backslashes = false;
     unfinished_backslash = false;

@@ -14,6 +14,7 @@
 #include "helpers/arguments/split.h"
 #include "helpers/commands/check.h"
 #include "helpers/helpers.h"
+#include "macros/ansi_colors.h"
 #include "macros/shell_globals.h"
 
 // Built-in function prototypes
@@ -76,9 +77,20 @@ static int shell_exit(const char **args, size_t num_args) {
 }
 
 static int shell_help(const char **args, size_t num_args) {
+    if (num_args == 1) {
+        // Just help
+        printf("Masa's SHell (" RESET BOLD "msh" RESET "), %s\n", SHELL_VERSION);
+        printf("These shell commands are defined internally.  Type 'help' to see this list.\n");
+        printf("Type 'help [name]' to find out more about the command '[name]'.\n");
+        // printf("Use ''\n");
+        printf("Use 'man -k' or 'info' to find out more about commands not in this list.\n");
+    } else {
+        // More things
+        for (size_t i = 0; i < num_args; i++) {
+            printf_help_given_command(args[i]);
+        }
+    }
     // TODO: finish implementation
-    (void) args;
-    (void) num_args;
 
     return 0;
 }
@@ -97,6 +109,10 @@ static size_t offset_to_next_token(const StringArray *tokens, size_t curr_idx) {
     return 1;
 }
 
+static bool is_token(const String *token, const char *test_token) {
+    return strcmp(ss_cstr(token), test_token) == 0;
+}
+
 // Global functions
 // make it so that ctrl + c kills the child process, end the execution in the parent, and return 1
 //  should bring user back to shell
@@ -105,8 +121,8 @@ int shell_execute(const StringArray *tokens, size_t token_idx) {
         return 0;
     }
 
+    String *token;
     offset_to_next_token(tokens, 0);
-    (void) token_idx;
 
     // printf("Tokens:\n");
     // String *s_token;
@@ -119,18 +135,25 @@ int shell_execute(const StringArray *tokens, size_t token_idx) {
     //     printf(" - token %zu: ⟨%s⟩\n", token_i + 1, ss_cstr(s_token));
     // }
 
-    if (da_count_string(tokens) > 0) {
-        String *token;
-
+    while (token_idx < da_count_string(tokens)) {
         if (!da_get_string(tokens, 0, &token)) {
             fprintf(stderr, "-%s: da_get error\n", SHELL_NAME);
             return 1;
         }
 
-        return shell_execute_command(token);
+        // Token checking
+        //   &&, ||, |, (), {}
+        if (is_token(token, "&&")) {
+        } else if (is_token(token, "||")) {
+        } else if (is_token(token, "|")) {
+        } else if (is_token(token, "(")) {
+        } else if (is_token(token, ")")) {
+        } else if (is_token(token, "{")) {
+        } else if (is_token(token, "}")) {
+        }
     }
 
-    return 0;
+    return shell_execute_command(token);
 }
 
 int shell_execute_command(const String *token) {

@@ -94,3 +94,9 @@ void fprintf_errno_message_chdir(const char *directory_cd_attempted, int err_num
     fprintf(stderr, "-%s: cd: %s: %s\n", SHELL_NAME, directory_cd_attempted, msg);
     return;
 }
+
+void printf_help_given_command(const char *command) {
+    (void) command;
+
+    return;
+}
