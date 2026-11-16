@@ -49,18 +49,18 @@ static int shell_cd(const char **args, size_t num_args) {
         return 1;
     }
 
-    char *dir_to_cd_into;
+    const char *dir_to_cd_into;
     if (num_args == 1) {
         // CD into root directory
         dir_to_cd_into = "/";
     } else {
         // CD into other directory
-        dir_to_cd_into = (char *) args[1];
+        dir_to_cd_into = args[1];
     }
 
     if (chdir(dir_to_cd_into) != 0) {
         int err_num = errno;
-        fprintf_errno_message_chdir(err_num);
+        fprintf_errno_message_chdir(dir_to_cd_into, err_num);
 
         return 1;
     }

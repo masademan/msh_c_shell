@@ -1,3 +1,5 @@
+#include <asm-generic/errno-base.h>
+#include <asm-generic/errno.h>
 #include <errno.h>  // IWYU pragma: keep
 #include <stdio.h>
 #include <string.h>
@@ -65,8 +67,30 @@ void fprintf_errno_message_fork(const char *executable_run, int err_num) {
     fprintf(stderr, "-%s: %s: %s\n", SHELL_NAME, executable_run, msg);
 }
 
-void fprintf_errno_message_chdir(int err_num) {
-    (void) err_num;
+void fprintf_errno_message_chdir(const char *directory_cd_attempted, int err_num) {
+    const char *msg;
 
+    switch (err_num) {
+        case ENOENT:
+            msg = "No such file or directory";
+            break;
+        case ENOTDIR:
+            msg = "Not a directory";
+            break;
+        case EACCES:
+            msg = "Permission denied";
+            break;
+        case ELOOP:
+            msg = "Too many symbolic links encountered while resolving path";
+            break;
+        case ENAMETOOLONG:
+            msg = "Path exceeds system length limits";
+            break;
+        default:
+            msg = strerror(err_num);
+            break;
+    }
+
+    fprintf(stderr, "-%s: cd: %s: %s\n", SHELL_NAME, directory_cd_attempted, msg);
     return;
 }
