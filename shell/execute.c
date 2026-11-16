@@ -17,6 +17,10 @@
 #include "macros/ansi_colors.h"
 #include "macros/shell_globals.h"
 
+#define NOTHING_MODE 0
+#define AND_MODE 1
+#define OR_MODE 2
+
 // Built-in function prototypes
 // Example:
 //   int shell_cd(const char **args, size_t num_args);
@@ -99,7 +103,8 @@ static int shell_help(const char **args, size_t num_args) {
 /* This is to find where the next token is
    Usually the offset is 1 (very next token), but if there are
    parentheses, the offset is higher since those part are handled with forks,
-   which have to merge back with the parent process */
+   which have to merge back with the parent process
+   Only parentheses make the token skip more than 1 */
 static size_t offset_to_next_token(const StringArray *tokens, size_t curr_idx) {
     (void) tokens;
     (void) curr_idx;
@@ -122,7 +127,8 @@ int shell_execute(const StringArray *tokens, size_t token_idx) {
     }
 
     String *token;
-    offset_to_next_token(tokens, 0);
+    int command_status = -1;
+    int token_mode = NOTHING_MODE;
 
     // printf("Tokens:\n");
     // String *s_token;
@@ -136,24 +142,46 @@ int shell_execute(const StringArray *tokens, size_t token_idx) {
     // }
 
     while (token_idx < da_count_string(tokens)) {
-        if (!da_get_string(tokens, 0, &token)) {
+        if (!da_get_string(tokens, token_idx, &token)) {
             fprintf(stderr, "-%s: da_get error\n", SHELL_NAME);
             return 1;
         }
 
         // Token checking
-        //   &&, ||, |, (), {}
+        //   &&, ||, |, (), {}, ;
         if (is_token(token, "&&")) {
+            token_mode = AND_MODE;
         } else if (is_token(token, "||")) {
+            token_mode = OR_MODE;
         } else if (is_token(token, "|")) {
+            // TODO: finish fully
+            token_mode = NOTHING_MODE;
         } else if (is_token(token, "(")) {
+            // TODO: make it fork and then recurse
         } else if (is_token(token, ")")) {
+            break;
         } else if (is_token(token, "{")) {
+            token_mode = NOTHING_MODE;
         } else if (is_token(token, "}")) {
+            token_mode = NOTHING_MODE;
+        } else if (is_token(token, ";")) {
+            token_mode = NOTHING_MODE;
+        } else {
+            // Execute command
+            if ((command_status == -1) ||  // A command hasn't been done yet
+                (command_status == 0 &&
+                 token_mode == AND_MODE) ||  // Previous command was successful and operator is &&
+                (command_status != 0 &&
+                 token_mode == OR_MODE)) {  // Previous command failed and operator is ||
+                command_status = shell_execute_command(token);
+            }
         }
+
+
+        token_idx += offset_to_next_token(tokens, token_idx);
     }
 
-    return shell_execute_command(token);
+    return command_status;
 }
 
 int shell_execute_command(const String *token) {
