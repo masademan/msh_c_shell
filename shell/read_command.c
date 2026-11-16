@@ -222,7 +222,12 @@ static int shell_read_char(CharArray *line, size_t *position) {
         render_typed_command_after_removing_char(line, *position, shift_amount);
 
         if (shift_amount == 0) {
-            printf("\a");
+            disable_raw_mode();
+            printf("\n");
+
+            exit(EXIT_SUCCESS);  // For exiting
+
+            // printf("\a"); // For making sound
         }
 
         return CONTINUE_CODE;

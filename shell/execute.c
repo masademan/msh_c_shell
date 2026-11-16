@@ -191,6 +191,8 @@ static const char **string_arg_array_to_execvp_arg_array(const StringArray *stri
     return char_args;
 }
 
+/* Takes in the executable that was attempted to be run as well as the error number from errno and
+   fprintf's the appropiate error message */
 static void fprintf_errno_message_fork(const char *executable_run, int err_num) {
     const char *msg;
 
