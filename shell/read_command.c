@@ -59,11 +59,15 @@ static CharArray *shell_handle_ANSI(CharArray *line, size_t *position) {
             // TODO:
             // get prev history
 
+            printf("\a");
+
             da_free_char(char_a);
             return NULL;
         } else if (c == 'B') {  // Down arrow
             // TODO:
             // load next history
+
+            printf("\a");
 
             da_free_char(char_a);
             return NULL;
@@ -71,6 +75,8 @@ static CharArray *shell_handle_ANSI(CharArray *line, size_t *position) {
             if (*position < da_count_char(line)) {
                 move_cursor_right();
                 *position = *position + 1;
+            } else {
+                printf("\a");
             }
 
             da_free_char(char_a);
@@ -79,6 +85,8 @@ static CharArray *shell_handle_ANSI(CharArray *line, size_t *position) {
             if (*position > 0) {
                 move_cursor_left();
                 *position = *position - 1;
+            } else {
+                printf("\a");
             }
 
             da_free_char(char_a);
