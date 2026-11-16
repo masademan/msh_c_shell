@@ -73,12 +73,12 @@ void shell_loop(void) {
         command = shell_read_command();
 
         if (command == NULL || da_count_char(command) == 0) {
-            status = 1;
+            status = 0;
         } else {
             tokens = shell_parse_line(command);
 
             if (da_count_string(tokens) == 0) {
-                status = 1;
+                status = 0;
             } else {
                 status = shell_execute(tokens);
             }
@@ -86,7 +86,7 @@ void shell_loop(void) {
 
         // Pointer clean-up
         free_vars(&username, &hostname, &cwd, &command, &tokens);
-    } while (status);
+    } while (status == 0);
 
     clean_up_check();
 }

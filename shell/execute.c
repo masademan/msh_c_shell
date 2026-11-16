@@ -53,14 +53,14 @@ static int shell_cd(const char **args, size_t num_args) {
     (void) args;
     (void) num_args;
 
-    return 1;
+    return 0;
 }
 
 static int shell_exit(const char **args, size_t num_args) {
     (void) args;
     (void) num_args;
 
-    return 0;
+    return 1;
 }
 
 static int shell_help(const char **args, size_t num_args) {
@@ -68,7 +68,7 @@ static int shell_help(const char **args, size_t num_args) {
     (void) args;
     (void) num_args;
 
-    return 1;
+    return 0;
 }
 
 // Static functions
@@ -251,7 +251,7 @@ static void fprintf_errno_message_fork(const char *executable_run, int err_num) 
 //  should bring user back to shell
 int shell_execute(const StringArray *tokens) {
     if (da_count_string(tokens) == 0) {
-        return 1;
+        return 0;
     }
 
     offset_to_next_token(tokens, 0);
@@ -272,13 +272,13 @@ int shell_execute(const StringArray *tokens) {
 
         if (!da_get_string(tokens, 0, &token)) {
             fprintf(stderr, "-%s: da_get error\n", SHELL_NAME);
-            return 1;
+            return 0;
         }
 
         return shell_execute_command(token);
     }
 
-    return 1;
+    return 0;
 }
 
 int shell_execute_command(const String *token) {
@@ -288,21 +288,21 @@ int shell_execute_command(const String *token) {
     if (string_args == NULL) {
         free(args);
 
-        return 1;
+        return 0;
     }
     if (args == NULL) {
         da_free_string(string_args);
 
-        return 1;
+        return 0;
     }
     if (da_count_string(string_args) == 0) {
         free(args);
         da_free_string(string_args);
 
-        return 1;
+        return 0;
     }
 
-    int status = 1;
+    int status = 0;
     bool built_in_done = false;
 
     // printf("Token args:\n");
@@ -340,7 +340,7 @@ int shell_launch_program(const char **args) {
         int err_num = errno;
         fprintf_errno_message_fork(args[0], err_num);
 
-        exit(EXIT_FAILURE);
+        _exit(EXIT_FAILURE);
     } else if (pid < 0) {
         // Error forking
         fprintf(stderr, "-%s: Error forking\n", SHELL_NAME);
@@ -359,8 +359,8 @@ int shell_launch_program(const char **args) {
             }
         } while (!WIFEXITED(status) && !WIFSIGNALED(status));
 
-        return 1;
+        return 0;
     }
 
-    return 1;
+    return 0;
 }
