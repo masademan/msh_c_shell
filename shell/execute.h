@@ -6,7 +6,7 @@
 /* Takes in a dynamic array of strings and
    starts a process based on the args given
    An int is then returned, which is the status code after finishing */
-int shell_execute(const StringArray *tokens);
+int shell_execute(const StringArray *tokens, size_t token_idx);
 
 /* Takes in a dynamic array of strings and
    splits into the shell_launch_program or

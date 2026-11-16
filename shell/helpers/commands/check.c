@@ -62,6 +62,8 @@ static void check_for_parens(int chr) {
             raise(SIGINT);
             return;
         }
+
+        seen_command_chars = false;
     } else if (chr == ')') {
         --open_parens;
 
@@ -83,6 +85,10 @@ static void check_for_parens(int chr) {
                 raise(SIGINT);
                 return;
             }
+        } else if (!seen_command_chars) {
+            fprintf(stderr, "-%s: syntax error near unexpected token ')'", SHELL_NAME);
+            raise(SIGINT);
+            return;
         }
     }
 
@@ -110,6 +116,8 @@ static void check_for_braces(int chr) {
             raise(SIGINT);
             return;
         }
+
+        seen_command_chars = false;
     } else if (chr == '}') {
         --open_braces;
 
@@ -131,6 +139,10 @@ static void check_for_braces(int chr) {
                 raise(SIGINT);
                 return;
             }
+        } else if (!seen_command_chars) {
+            fprintf(stderr, "-%s: syntax error near unexpected token '}'", SHELL_NAME);
+            raise(SIGINT);
+            return;
         }
     }
 
@@ -330,16 +342,16 @@ void line_check_reset(void) {
     if (non_command_chars == NULL) {
         non_command_chars = da_new_char();
 
-        // da_add_char(non_command_chars, '(');
+        da_add_char(non_command_chars, '(');
         // da_add_char(non_command_chars, ')');
-        // da_add_char(non_command_chars, '{');
+        da_add_char(non_command_chars, '{');
         // da_add_char(non_command_chars, '}');
         da_add_char(non_command_chars, '|');
         da_add_char(non_command_chars, '&');
         da_add_char(non_command_chars, ' ');
         da_add_char(non_command_chars, '\n');
 
-        if (da_count_char(non_command_chars) != 4) {
+        if (da_count_char(non_command_chars) != 6) {
             fprintf(stderr, "-%s: da_add error", SHELL_NAME);
             raise(SIGINT);
             return;

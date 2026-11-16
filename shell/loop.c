@@ -81,7 +81,7 @@ void shell_loop(void) {
             if (da_count_string(tokens) == 0) {
                 status = 0;
             } else {
-                status = shell_execute(tokens);
+                status = shell_execute(tokens, 0);
             }
         }
 

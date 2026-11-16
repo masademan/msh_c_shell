@@ -87,12 +87,13 @@ static size_t offset_to_next_token(const StringArray *tokens, size_t curr_idx) {
 // Global functions
 // make it so that ctrl + c kills the child process, end the execution in the parent, and return 1
 //  should bring user back to shell
-int shell_execute(const StringArray *tokens) {
+int shell_execute(const StringArray *tokens, size_t token_idx) {
     if (da_count_string(tokens) == 0) {
         return 0;
     }
 
     offset_to_next_token(tokens, 0);
+    (void) token_idx;
 
     // printf("Tokens:\n");
     // String *s_token;
@@ -110,7 +111,7 @@ int shell_execute(const StringArray *tokens) {
 
         if (!da_get_string(tokens, 0, &token)) {
             fprintf(stderr, "-%s: da_get error\n", SHELL_NAME);
-            return 0;
+            return 1;
         }
 
         return shell_execute_command(token);
@@ -126,18 +127,18 @@ int shell_execute_command(const String *token) {
     if (string_args == NULL) {
         free(args);
 
-        return 0;
+        return 1;
     }
     if (args == NULL) {
         da_free_string(string_args);
 
-        return 0;
+        return 1;
     }
     if (da_count_string(string_args) == 0) {
         free(args);
         da_free_string(string_args);
 
-        return 0;
+        return 1;
     }
 
     int status = 0;
