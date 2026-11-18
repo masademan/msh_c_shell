@@ -55,7 +55,7 @@ static void shell_clean_most(CharArray *cleaned_line, const CharArray *line,
             offset += 2;
         } else if ((has_unfinished_pipe() || has_unfinished_logical_operator()) && c == '\n') {
             offset++;
-        } else if ((has_open_parens() || has_open_braces()) && c == '\n') {
+        } else if (!has_open_quotes() && (has_open_parens() || has_open_braces()) && c == '\n') {
             if (last_c_written != '(' && last_c_written != '{' && last_c_written != '\0' &&
                 last_c_written != ';') {
                 if (!da_set_char(cleaned_line, i - offset, ';')) {

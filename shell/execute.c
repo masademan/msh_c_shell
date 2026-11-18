@@ -47,6 +47,7 @@ static size_t num_built_ins(void) { return sizeof(built_in_command_names) / size
 
 // Built-in functions
 // Copy of the prototypes, but finished
+// TODO: ADD ~ WHEN IT'S JUST cd
 static int shell_cd(const char **args, size_t num_args) {
     if (num_args > 2) {
         fprintf(stderr, "-%s: cd: too many arguments\n", SHELL_NAME);
@@ -105,17 +106,73 @@ static int shell_help(const char **args, size_t num_args) {
    parentheses, the offset is higher since those part are handled with forks,
    which have to merge back with the parent process
    Only parentheses make the token skip more than 1 */
-static size_t offset_to_next_token(const StringArray *tokens, size_t curr_idx) {
-    (void) tokens;
-    (void) curr_idx;
-
-    line_check_reset();
-
-    return 1;
-}
-
 static bool is_token(const String *token, const char *test_token) {
     return strcmp(ss_cstr(token), test_token) == 0;
+}
+
+static size_t offset_to_next_token(const StringArray *tokens, size_t curr_idx) {
+    line_check_reset();
+    set_do_error(false);
+
+    String *token;
+    size_t token_idx;
+    for (token_idx = curr_idx; token_idx < da_count_string(tokens); token_idx++) {
+        if (!da_get_string(tokens, token_idx, &token)) {
+            fprintf(stderr, "-%s: da_get error\n", SHELL_NAME);
+            return 0;
+        }
+
+        if (is_token(token, "(")) {
+            check_next_char('(');
+            check_next_char('m');
+        } else if (is_token(token, ")")) {
+            check_next_char(')');
+        }
+
+        if (!has_open_parens()) {
+            break;
+        }
+    }
+
+    return 1 + token_idx - curr_idx;
+}
+
+static int fork_for_paren(const StringArray *tokens, size_t token_idx) {
+    pid_t pid, wpid;
+    int status = 0;
+
+    pid = fork();
+    if (pid == 0) {
+        // Child process
+        _exit(shell_execute(tokens, token_idx));
+    } else if (pid < 0) {
+        // Error forking
+        fprintf(stderr, "-%s: Error forking\n", SHELL_NAME);
+
+        return 1;
+    } else {
+        // Parent process
+        do {
+            wpid = waitpid(pid, &status, WUNTRACED);
+
+            if (wpid == -1) {
+                if (errno == EINTR) {
+                    continue;
+                }
+
+                perror("waitpid");
+                return 1;
+            }
+        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+
+        if (WIFEXITED(status)) {
+            return WEXITSTATUS(status);
+        } else if (WIFSIGNALED(status)) {
+            return 1;
+        }
+
+        return 1;
+    }
 }
 
 // Global functions
@@ -141,6 +198,8 @@ int shell_execute(const StringArray *tokens, size_t token_idx) {
     //     printf(" - token %zu: ⟨%s⟩\n", token_i + 1, ss_cstr(s_token));
     // }
 
+    // return 0;
+
     while (token_idx < da_count_string(tokens)) {
         if (!da_get_string(tokens, token_idx, &token)) {
             fprintf(stderr, "-%s: da_get error\n", SHELL_NAME);
@@ -157,13 +216,24 @@ int shell_execute(const StringArray *tokens, size_t token_idx) {
             // TODO: finish fully
             token_mode = NOTHING_MODE;
         } else if (is_token(token, "(")) {
-            // TODO: make it fork and then recurse
+            if ((command_status == -1) ||  // A command hasn't been done yet
+                (command_status == 0 &&
+                 token_mode == AND_MODE) ||  // Previous command was successful and operator is &&
+                (command_status != 0 &&
+                 token_mode == OR_MODE) ||     // Previous command failed and operator is ||
+                token_mode == NOTHING_MODE) {  // Continues if it's a nothing mode
+                command_status = fork_for_paren(tokens, token_idx + 1);
+            }
         } else if (is_token(token, ")")) {
             break;
         } else if (is_token(token, "{")) {
             token_mode = NOTHING_MODE;
+            token_idx++;
+            continue;
         } else if (is_token(token, "}")) {
             token_mode = NOTHING_MODE;
+            token_idx++;
+            continue;
         } else if (is_token(token, ";")) {
             token_mode = NOTHING_MODE;
         } else {
@@ -172,7 +242,8 @@ int shell_execute(const StringArray *tokens, size_t token_idx) {
                 (command_status == 0 &&
                  token_mode == AND_MODE) ||  // Previous command was successful and operator is &&
                 (command_status != 0 &&
-                 token_mode == OR_MODE)) {  // Previous command failed and operator is ||
+                 token_mode == OR_MODE) ||     // Previous command failed and operator is ||
+                token_mode == NOTHING_MODE) {  // Continues if it's a nothing mode
                 // This is comes from a simplified if statement chain (very nice simplification)
                 command_status = shell_execute_command(token);
             }

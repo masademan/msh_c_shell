@@ -26,6 +26,9 @@ int main(int arg_c, char **arg_v) {
     //        what is eligible for aliasing (simyon mentioned smth about an rcfile, check that out)
     //      maybe add the $0 thing that says the shell's name, like in bash
     //      check out stdout and stderr routing, like with > and |
+    //      environment variables
+    //      look up pushd and popd
+    //      do ctrl+c (SIGINT) in the shell when executing
 
     // Run shell loop
     shell_loop();
