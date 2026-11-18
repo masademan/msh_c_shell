@@ -96,6 +96,7 @@ void fprintf_errno_message_chdir(const char *directory_cd_attempted, int err_num
 }
 
 void printf_help_given_command(const char *command) {
+    // TODO:
     (void) command;
 
     return;

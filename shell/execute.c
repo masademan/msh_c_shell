@@ -162,8 +162,12 @@ int shell_execute(const StringArray *tokens, size_t token_idx) {
             break;
         } else if (is_token(token, "{")) {
             token_mode = NOTHING_MODE;
+            token_idx++;
+            continue;
         } else if (is_token(token, "}")) {
             token_mode = NOTHING_MODE;
+            token_idx++;
+            continue;
         } else if (is_token(token, ";")) {
             token_mode = NOTHING_MODE;
         } else {
