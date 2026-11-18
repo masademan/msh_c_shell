@@ -42,7 +42,10 @@ void clean_argument(String **arg_string) {
             handle_escape_chars(&c, '\"', '\"', &offset);
             handle_escape_chars(&c, '\'', '\'', &offset);
             // handle_escape_chars(&c, 'n', '\n', &offset);
+            handle_escape_chars(&c, 't', '\t', &offset);
             handle_escape_chars(&c, '\\', '\\', &offset);
+            // handle_escape_chars(&c, '$', '$', &offset);
+            // Somehow make a bool that stops environment var reading if this was true
 
             found_escape_char = false;
         }

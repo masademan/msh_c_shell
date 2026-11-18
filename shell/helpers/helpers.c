@@ -121,3 +121,8 @@ void printf_help_given_command(const char *command) {
         printf("\tReturns success unless PATTERN is not found.\n");
     }
 }
+
+void get_environment_variables(const char *variable) {
+    (void) variable;
+    return;
+}

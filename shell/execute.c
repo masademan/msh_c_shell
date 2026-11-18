@@ -1,6 +1,7 @@
 #include <asm-generic/errno-base.h>
 #include <asm-generic/errno.h>
 #include <errno.h>
+#include <signal.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,8 +23,6 @@
 #define OR_MODE 2
 
 // Built-in function prototypes
-// Example:
-//   int shell_cd(const char **args, size_t num_args);
 static int shell_cd(const char **args, size_t num_args);
 static int shell_exit(const char **args, size_t num_args);
 static int shell_help(const char **args, size_t num_args);
@@ -54,7 +53,6 @@ static bool is_builtin(const char *command_name) {
 }
 
 // Built-in functions
-// Copy of the prototypes, but finished
 // TODO: ADD ~ WHEN IT'S JUST cd
 static int shell_cd(const char **args, size_t num_args) {
     if (num_args > 2) {
@@ -64,9 +62,9 @@ static int shell_cd(const char **args, size_t num_args) {
     }
 
     const char *dir_to_cd_into;
-    if (num_args == 1) {
+    if (num_args == 1 || strcmp(args[1], "~") == 0) {
         // CD into root directory
-        dir_to_cd_into = "/";
+        dir_to_cd_into = "$HOME";
     } else if (strcmp(args[1], "-") == 0) {
         // TODO: use the actual environment variable
         dir_to_cd_into = "$OLDPWD";
@@ -130,15 +128,17 @@ static int shell_help(const char **args, size_t num_args) {
 }
 
 // Static functions
+/* Returns true if the String token is equal to the string (char *) test_token
+   Else, returns false */
+static bool is_token(const String *token, const char *test_token) {
+    return strcmp(ss_cstr(token), test_token) == 0;
+}
+
 /* This is to find where the next token is
    Usually the offset is 1 (very next token), but if there are
    parentheses, the offset is higher since those part are handled with forks,
    which have to merge back with the parent process
    Only parentheses make the token skip more than 1 */
-static bool is_token(const String *token, const char *test_token) {
-    return strcmp(ss_cstr(token), test_token) == 0;
-}
-
 static size_t offset_to_next_token(const StringArray *tokens, size_t curr_idx) {
     line_check_reset();
     set_do_error(false);
@@ -166,6 +166,9 @@ static size_t offset_to_next_token(const StringArray *tokens, size_t curr_idx) {
     return 1 + token_idx - curr_idx;
 }
 
+/* When shell_execute reaches a '(', it runs this function to fork the process
+   and run a recursive call of shell_execute
+   This returns the status code of the recursive call of shell_execute */
 static int fork_for_paren(const StringArray *tokens, size_t token_idx) {
     pid_t pid, wpid;
     int status = 0;
@@ -211,6 +214,13 @@ int shell_execute(const StringArray *tokens, size_t token_idx) {
     if (da_count_string(tokens) == 0) {
         return 0;
     }
+
+    // AI generated code (from read_command.c, just modified):
+    struct sigaction sa_ignore;
+    sa_ignore.sa_handler = SIG_IGN;
+    sigemptyset(&sa_ignore.sa_mask);
+    sa_ignore.sa_flags = 0;
+    sigaction(SIGINT, &sa_ignore, NULL);
 
     String *token;
     int command_status = -1;
@@ -339,6 +349,13 @@ int shell_launch_program(const char **args) {
     pid = fork();
     if (pid == 0) {
         // Child process
+        // AI generated code (from read_command.c, just modified):
+        struct sigaction sa;
+        sa.sa_handler = SIG_DFL;
+        sigemptyset(&sa.sa_mask);
+        sa.sa_flags = 0;
+        sigaction(SIGINT, &sa, NULL);
+
         execvp(args[0], (char **) args);
 
         int err_num = errno;
