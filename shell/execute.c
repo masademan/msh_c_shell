@@ -29,21 +29,29 @@ static int shell_exit(const char **args, size_t num_args);
 static int shell_help(const char **args, size_t num_args);
 
 // Built-in setup
-static char *built_in_command_names[] = {
+static char *builtin_command_names[] = {
     "cd",
     "exit",
     "help",
 };
 
-static int (*built_in_command_funcs[])(const char **, size_t) = {
+static int (*builtin_command_funcs[])(const char **, size_t) = {
     &shell_cd,
     &shell_exit,
     &shell_help,
 };
 
-// Make a list for the built-in commands in the same order as the built_in_commands array
+static size_t num_builtins(void) { return sizeof(builtin_command_names) / sizeof(char *); }
 
-static size_t num_built_ins(void) { return sizeof(built_in_command_names) / sizeof(char *); }
+static bool is_builtin(const char *command_name) {
+    for (size_t i = 0; i < num_builtins(); i++) {
+        if (strcmp(builtin_command_names[i], command_name) == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 // Built-in functions
 // Copy of the prototypes, but finished
@@ -59,6 +67,9 @@ static int shell_cd(const char **args, size_t num_args) {
     if (num_args == 1) {
         // CD into root directory
         dir_to_cd_into = "/";
+    } else if (strcmp(args[1], "-") == 0) {
+        // TODO: use the actual environment variable
+        dir_to_cd_into = "$OLDPWD";
     } else {
         // CD into other directory
         dir_to_cd_into = args[1];
@@ -78,6 +89,8 @@ static int shell_exit(const char **args, size_t num_args) {
     (void) args;
     (void) num_args;
 
+    printf("exit\n");
+
     return SHELL_EXIT_CODE;
 }
 
@@ -86,16 +99,32 @@ static int shell_help(const char **args, size_t num_args) {
         // Just help
         printf("Masa's SHell (" RESET BOLD "msh" RESET "), %s\n", SHELL_VERSION);
         printf("These shell commands are defined internally.  Type 'help' to see this list.\n");
-        printf("Type 'help [name]' to find out more about the command '[name]'.\n");
-        // printf("Use ''\n");
+        printf("Type 'help [name]' to find out more about the builtin command '[name]'.\n");
         printf("Use 'man -k' or 'info' to find out more about commands not in this list.\n");
+        printf("Note:\n");
+        printf(
+            "This is a shell made for a C class as a final project. Many features found in other shells "
+            "will be missing\n");
+        printf(
+            "But more features should come eventually, since this is an enjoyable project I'm learning "
+            "from!\n\n");
+
+        printf("Builtins:\n");
+        for (size_t i = 0; i < num_builtins(); i++) {
+            printf(" - %s\n", builtin_command_names[i]);
+        }
     } else {
         // More things
-        for (size_t i = 0; i < num_args; i++) {
-            printf_help_given_command(args[i]);
+        for (size_t i = 1; i < num_args; i++) {
+            if (is_builtin(args[i])) {
+                printf_help_given_command(args[i]);
+            } else {
+                fprintf(stderr,
+                        "-%s: help: command '%s' is not builtin, so it doesn't have a help page\n",
+                        SHELL_NAME, args[i]);
+            }
         }
     }
-    // TODO: finish implementation
 
     return 0;
 }
@@ -285,9 +314,9 @@ int shell_execute_command(const String *token) {
     //     printf(" - arg %zu: ⟨%s⟩\n", i + 1, args[i]);
     // }
 
-    for (size_t i = 0; i < num_built_ins(); i++) {
-        if (strcmp(args[0], built_in_command_names[i]) == 0) {
-            status = (*built_in_command_funcs[i])(args, da_count_string(string_args));
+    for (size_t i = 0; i < num_builtins(); i++) {
+        if (strcmp(args[0], builtin_command_names[i]) == 0) {
+            status = (*builtin_command_funcs[i])(args, da_count_string(string_args));
             built_in_done = true;
             break;
         }
