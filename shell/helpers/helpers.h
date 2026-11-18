@@ -28,8 +28,4 @@ void fprintf_errno_message_chdir(const char *directory_cd_attempted, int err_num
 /* Takes in the name of an internal shell command and printf's the appropiate help page */
 void printf_help_given_command(const char *command);
 
-/* Gets the environment variables named variable and returns it
-   TODO: write a return type, still have to figure out what it is */
-void get_environment_variables(const char *variable);
-
 #endif

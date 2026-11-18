@@ -20,7 +20,7 @@ SRCS = main.c \
 			 shell/helpers/commands/clean.c shell/helpers/commands/split.c \
 			 shell/helpers/arguments/clean.c shell/helpers/arguments/split.c \
 			 shell/history/history.c \
-			 get_info/get_sysinfo.c \
+			 get_info/get_sysinfo.c get_info/environ_var.c \
 			 data_type/dynamic_arrays/char_array.c data_type/dynamic_arrays/string_array.c \
 			 data_type/dynamic_arrays/char_array_and_string_conversion.c \
 			 data_type/safe_string/safe_string.c

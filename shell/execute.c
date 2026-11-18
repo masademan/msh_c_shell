@@ -12,6 +12,8 @@
 #include "data_type/dynamic_arrays/string_array.h"
 #include "data_type/safe_string/safe_string.h"
 #include "execute.h"
+#include "get_info/environ_var.h"
+#include "get_info/get_sysinfo.h"
 #include "helpers/arguments/split.h"
 #include "helpers/commands/check.h"
 #include "helpers/helpers.h"
@@ -25,18 +27,21 @@
 // Built-in function prototypes
 static int shell_cd(const char **args, size_t num_args);
 static int shell_exit(const char **args, size_t num_args);
+static int shell_export(const char **args, size_t num_args);
 static int shell_help(const char **args, size_t num_args);
 
 // Built-in setup
 static char *builtin_command_names[] = {
     "cd",
     "exit",
+    "export",
     "help",
 };
 
 static int (*builtin_command_funcs[])(const char **, size_t) = {
     &shell_cd,
     &shell_exit,
+    &shell_export,
     &shell_help,
 };
 
@@ -64,14 +69,25 @@ static int shell_cd(const char **args, size_t num_args) {
     const char *dir_to_cd_into;
     if (num_args == 1 || strcmp(args[1], "~") == 0) {
         // CD into root directory
-        dir_to_cd_into = "$HOME";
+        dir_to_cd_into = get_environ_var_val("HOME");
     } else if (strcmp(args[1], "-") == 0) {
-        // TODO: use the actual environment variable
-        dir_to_cd_into = "$OLDPWD";
+        // CD into the previous directory
+        dir_to_cd_into = get_environ_var_val("OLDPWD");
+
+        if (dir_to_cd_into[0] == '\0') {
+            fprintf(stderr, "-%s: cd: OLDPWD not set\n", SHELL_NAME);
+            return 1;
+        }
+
+        printf("%s\n", dir_to_cd_into);
     } else {
         // CD into other directory
         dir_to_cd_into = args[1];
     }
+
+    char *cwd = get_cwd();
+    set_environ_var_val("OLDPWD", cwd, true);
+    free(cwd);
 
     if (chdir(dir_to_cd_into) != 0) {
         int err_num = errno;
@@ -90,6 +106,14 @@ static int shell_exit(const char **args, size_t num_args) {
     printf("exit\n");
 
     return SHELL_EXIT_CODE;
+}
+
+// TODO: FINISH
+static int shell_export(const char **args, size_t num_args) {
+    (void) args;
+    (void) num_args;
+
+    return 0;
 }
 
 static int shell_help(const char **args, size_t num_args) {
@@ -226,6 +250,7 @@ int shell_execute(const StringArray *tokens, size_t token_idx) {
     int command_status = -1;
     int token_mode = NOTHING_MODE;
 
+    // TODO: REMOVE
     // printf("Tokens:\n");
     // String *s_token;
     // for (size_t token_i = 0; token_i < da_count_string(tokens); token_i++) {
@@ -319,6 +344,7 @@ int shell_execute_command(const String *token) {
     int status = 0;
     bool built_in_done = false;
 
+    // TODO: REMOVE
     // printf("Token args:\n");
     // for (size_t i = 0; args[i] != NULL; i++) {
     //     printf(" - arg %zu: ⟨%s⟩\n", i + 1, args[i]);

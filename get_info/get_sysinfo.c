@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "environ_var.h"
 #include "get_sysinfo.h"
 #include "shell/helpers/helpers.h"
 
@@ -109,6 +110,70 @@ char *get_cwd(void) {
             exit(EXIT_FAILURE);
         }
     }
+
+    return cwd;
+}
+
+bool is_in_home(const char *cwd, const char *home_dir) {
+    if (cwd == NULL || home_dir == NULL) {
+        return false;
+    }
+    if (cwd[0] == '\0' || home_dir[0] == '\0') {
+        return false;
+    }
+
+    for (size_t i = 0; i < strlen(home_dir); i++) {
+        if (cwd[i] != home_dir[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void shorten_cwd(char **cwd, const char *home_dir, const char *shortened_home) {
+    if (cwd == NULL || *cwd == NULL || home_dir == NULL || shortened_home == NULL) {
+        return;
+    }
+    if (home_dir[0] == '\0' || shortened_home[0] == '\0') {
+        return;
+    }
+    if (!is_in_home(*cwd, home_dir)) {
+        return;
+    }
+    size_t cwd_len = strlen(*cwd);
+    size_t home_dir_len = strlen(home_dir);
+    if (cwd_len < home_dir_len) {
+        return;
+    }
+
+    size_t shortened_home_len = strlen(shortened_home);
+    size_t new_cwd_len = cwd_len + shortened_home_len - home_dir_len;
+    char *new_cwd = malloc(sizeof(char) * (new_cwd_len + 1));  // +1 for the \0
+    if (new_cwd == NULL) {
+        return;
+    }
+
+    size_t position;
+    for (position = 0; position < shortened_home_len; position++) {
+        new_cwd[position] = shortened_home[position];
+    }
+
+    for (size_t i = home_dir_len; i < cwd_len; i++) {
+        new_cwd[position] = (*cwd)[i];
+        position++;
+    }
+
+    new_cwd[position] = '\0';
+
+    free(*cwd);
+    *cwd = new_cwd;
+}
+
+char *get_shortened_cwd(void) {
+    char *cwd = get_cwd();
+
+    shorten_cwd(&cwd, get_environ_var_val("HOME"), "~");
 
     return cwd;
 }

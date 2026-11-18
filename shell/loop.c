@@ -57,7 +57,7 @@ void shell_loop(void) {
         // HI_GREEN ; HI_BLUE
         username = get_username();
         hostname = get_hostname();
-        cwd = get_cwd();
+        cwd = get_shortened_cwd();
 
         /**/
         if (username[0] != '\0') {  // Has username
