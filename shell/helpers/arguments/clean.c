@@ -42,12 +42,31 @@ static bool expand_the_environ_var_val(CharArray *temp_environ_var, CharArray *e
    Caller owns the returns pointer and has to call da_free_char() on it to free it */
 static CharArray *expand_environ_vars(const CharArray *cleaned_arg) {
     CharArray *expanded_arg = da_new_char();
+
+    char c;
+    if (!da_get_char(cleaned_arg, 0, &c)) {
+        da_free_char(expanded_arg);
+
+        fprintf(stderr, "-%s: da_get error", SHELL_NAME);
+        return false;
+    }
+    if (da_count_char(cleaned_arg) == 1 && c == '~') {
+        char *environ_var_val = get_environ_var_val("HOME");
+
+        if (!da_add_all_char(expanded_arg, environ_var_val, strlen(environ_var_val))) {
+            da_free_char(expanded_arg);
+
+            fprintf(stderr, "-%s: da_add_all error", SHELL_NAME);
+            return false;
+        }
+
+        return expanded_arg;
+    }
     CharArray *temp_environ_var = da_new_char();
 
     size_t cleaned_len = da_count_char(cleaned_arg);
     da_reserve_char(expanded_arg, cleaned_len);
 
-    char c;
     bool found_escape_char = false;
     bool found_environ_var = false;
     for (size_t i = 0; i < cleaned_len; i++) {
