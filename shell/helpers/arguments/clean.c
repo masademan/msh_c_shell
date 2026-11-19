@@ -19,6 +19,24 @@ static bool char_is_alpha_or_underscore(char c) {
     return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || (c == '_');
 }
 
+/* Pulls the expanding of the environment value and inserting into the array into it's own function */
+static bool expand_the_environ_var_val(CharArray *temp_environ_var, CharArray *expanded_arg) {
+    String *environ_var = da_join_to_string(temp_environ_var);
+    char *environ_var_val = get_environ_var_val(ss_cstr(environ_var));
+    ss_free(environ_var);
+
+    if (!da_add_all_char(expanded_arg, environ_var_val, strlen(environ_var_val))) {
+        da_free_char(expanded_arg);
+        da_free_char(temp_environ_var);
+
+        fprintf(stderr, "-%s: da_add_all error", SHELL_NAME);
+        return false;
+    }
+
+    da_clear_char(temp_environ_var);
+
+    return true;
+}
 
 /* Takes in a clean argument (from clean_argument) and expands any environment variables necessary
    Caller owns the returns pointer and has to call da_free_char() on it to free it */
@@ -64,19 +82,9 @@ static CharArray *expand_environ_vars(const CharArray *cleaned_arg) {
                     continue;
                 }
 
-                String *environ_var = da_join_to_string(temp_environ_var);
-                char *environ_var_val = get_environ_var_val(ss_cstr(environ_var));
-                ss_free(environ_var);
-
-                if (!da_add_all_char(expanded_arg, environ_var_val, strlen(environ_var_val))) {
-                    da_free_char(expanded_arg);
-                    da_free_char(temp_environ_var);
-
-                    fprintf(stderr, "-%s: da_add_all error", SHELL_NAME);
+                if (!expand_the_environ_var_val(temp_environ_var, expanded_arg)) {
                     return NULL;
                 }
-
-                da_clear_char(temp_environ_var);
 
                 if (c == '$') {
                     found_environ_var = true;
@@ -88,6 +96,29 @@ static CharArray *expand_environ_vars(const CharArray *cleaned_arg) {
 
                     fprintf(stderr, "-%s: da_add error", SHELL_NAME);
                     return NULL;
+                }
+
+                if (da_count_char(temp_environ_var) == 1 && c == '0') {
+                    if (!da_add_char(expanded_arg, '-')) {
+                        da_free_char(expanded_arg);
+                        da_free_char(temp_environ_var);
+
+                        fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+                        return NULL;
+                    }
+                    if (!da_add_all_char(expanded_arg, SHELL_NAME, strlen(SHELL_NAME))) {
+                        da_free_char(expanded_arg);
+                        da_free_char(temp_environ_var);
+
+                        fprintf(stderr, "-%s: da_add_all error", SHELL_NAME);
+                        return NULL;
+                    }
+
+                    da_clear_char(temp_environ_var);
+
+                    found_environ_var = false;
+
+                    continue;
                 }
             }
         } else if (found_escape_char) {
@@ -114,15 +145,7 @@ static CharArray *expand_environ_vars(const CharArray *cleaned_arg) {
     }
 
     if (da_count_char(temp_environ_var) > 0) {
-        String *environ_var = da_join_to_string(temp_environ_var);
-        char *environ_var_val = get_environ_var_val(ss_cstr(environ_var));
-        ss_free(environ_var);
-
-        if (!da_add_all_char(expanded_arg, environ_var_val, strlen(environ_var_val))) {
-            da_free_char(expanded_arg);
-            da_free_char(temp_environ_var);
-
-            fprintf(stderr, "-%s: da_add_all error", SHELL_NAME);
+        if (!expand_the_environ_var_val(temp_environ_var, expanded_arg)) {
             return NULL;
         }
     }
