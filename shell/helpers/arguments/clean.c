@@ -43,6 +43,27 @@ static CharArray *expand_environ_vars(const CharArray *cleaned_arg) {
 
         if (found_environ_var) {
             if (!char_is_num(c) && !char_is_alpha_or_underscore(c)) {
+                found_environ_var = false;
+
+                if (da_count_char(temp_environ_var) == 0) {
+                    if (!da_add_char(expanded_arg, '$')) {
+                        da_free_char(expanded_arg);
+                        da_free_char(temp_environ_var);
+
+                        fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+                        return NULL;
+                    }
+                    if (!da_add_char(expanded_arg, c)) {
+                        da_free_char(expanded_arg);
+                        da_free_char(temp_environ_var);
+
+                        fprintf(stderr, "-%s: da_add error", SHELL_NAME);
+                        return NULL;
+                    }
+
+                    continue;
+                }
+
                 String *environ_var = da_join_to_string(temp_environ_var);
                 char *environ_var_val = get_environ_var_val(ss_cstr(environ_var));
                 ss_free(environ_var);
@@ -57,8 +78,8 @@ static CharArray *expand_environ_vars(const CharArray *cleaned_arg) {
 
                 da_clear_char(temp_environ_var);
 
-                if (c != '$') {
-                    found_environ_var = false;
+                if (c == '$') {
+                    found_environ_var = true;
                 }
             } else {
                 if (!da_add_char(temp_environ_var, c)) {
