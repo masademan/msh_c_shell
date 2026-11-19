@@ -24,6 +24,9 @@
 #define AND_MODE 1
 #define OR_MODE 2
 
+// AI generated segment (NULL terminated string array)
+extern char **environ;
+
 // Built-in function prototypes
 static int shell_cd(const char **args, size_t num_args);
 static int shell_exit(const char **args, size_t num_args);
@@ -58,7 +61,6 @@ static bool is_builtin(const char *command_name) {
 }
 
 // Built-in functions
-// TODO: ADD ~ WHEN IT'S JUST cd
 static int shell_cd(const char **args, size_t num_args) {
     if (num_args > 2) {
         fprintf(stderr, "-%s: cd: too many arguments\n", SHELL_NAME);
@@ -110,8 +112,20 @@ static int shell_exit(const char **args, size_t num_args) {
 
 // TODO: FINISH
 static int shell_export(const char **args, size_t num_args) {
+    if (num_args > 2) {
+        fprintf(stderr, "-%s: export: too many arguments\n", SHELL_NAME);
+
+        return 1;
+    }
+    if (num_args == 1) {
+        for (size_t i = 0; environ[i] != NULL; i++) {
+            printf("declare -x %s\n", environ[i]);
+        }
+        return 0;
+    }
     (void) args;
-    (void) num_args;
+
+    // now do parsing and set it
 
     return 0;
 }

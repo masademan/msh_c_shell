@@ -119,5 +119,14 @@ void printf_help_given_command(const char *command) {
         printf("\t\t PATTERN\tPattern specifying a help topic\n\n");
         printf("\tExit Status:\n");
         printf("\tReturns success unless PATTERN is not found.\n");
+    } else if (strcmp(command, "export") == 0) {
+        printf("export: export [name=value]\n");
+        printf("\tSet environment variables in the shell.\n\n");
+        printf("\tExports the NAME to the list of environment variables and\n");
+        printf("\tsets that variable to VALUE.\n\n");
+        printf("\tIf no NAME or VALUE is supplied, all the environment\n");
+        printf("\tvariables and their values will be outputted.\n\n");
+        printf("\tExit Status:\n");
+        printf("\tReturns success unless an NAME is invalid.\n");
     }
 }
