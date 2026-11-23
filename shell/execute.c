@@ -195,6 +195,11 @@ static size_t offset_to_next_token(const StringArray *tokens, size_t curr_idx) {
             check_next_char('m');
         } else if (is_token(token, ")")) {
             check_next_char(')');
+        } else if (is_token(token, "{")) {
+            check_next_char('{');
+            check_next_char('m');
+        } else if (is_token(token, "}")) {
+            check_next_char('}');
         }
 
         if (!has_open_parens()) {
@@ -303,16 +308,22 @@ int shell_execute(const StringArray *tokens, size_t token_idx) {
                 token_mode == NOTHING_MODE) {  // Continues if it's a nothing mode
                 command_status = fork_for_paren(tokens, token_idx + 1);
             }
+            token_mode = NOTHING_MODE;
         } else if (is_token(token, ")")) {
             break;
         } else if (is_token(token, "{")) {
+            if ((command_status == -1) ||  // A command hasn't been done yet
+                (command_status == 0 &&
+                 token_mode == AND_MODE) ||  // Previous command was successful and operator is &&
+                (command_status != 0 &&
+                 token_mode == OR_MODE) ||     // Previous command failed and operator is ||
+                token_mode == NOTHING_MODE) {  // Continues if it's a nothing mode
+                command_status = shell_execute(tokens, token_idx + 1);
+            }
             token_mode = NOTHING_MODE;
-            token_idx++;
-            continue;
+
         } else if (is_token(token, "}")) {
-            token_mode = NOTHING_MODE;
-            token_idx++;
-            continue;
+            break;
         } else if (is_token(token, ";")) {
             token_mode = NOTHING_MODE;
         } else {
