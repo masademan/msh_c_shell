@@ -18,7 +18,6 @@ int main(int arg_c, char **arg_v) {
     //      maybe in the future do conditionals and loops in the shell (currently unused)
     //      add aliasing for commands (like "ls" to "ls --color=auto"), do research on
     //        what is eligible for aliasing (simyon mentioned smth about an rcfile, check that out)
-    //      maybe add the $0 thing that says the shell's name, like in bash
     //      check out stdout and stderr routing, like with > and |
     //      export command
     //      look up pushd and popd
