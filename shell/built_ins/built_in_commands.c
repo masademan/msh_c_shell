@@ -7,10 +7,10 @@
 #include "built_in_commands.h"
 #include "get_info/environ_var.h"
 #include "get_info/get_sysinfo.h"
+#include "help.h"
 #include "macros/ansi_colors.h"
 #include "macros/shell_globals.h"
 #include "shell/helpers/printing/command_errors.h"
-#include "shell/helpers/printing/command_help.h"
 
 // AI generated segment (NULL terminated string array)
 extern char **environ;

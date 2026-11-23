@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "command_help.h"
+#include "help.h"
 
 void printf_help_given_command(const char *command) {
     if (strcmp(command, "cd") == 0) {
