@@ -17,15 +17,4 @@ size_t size_increase_func(size_t size);
    Also useful for the shell command "clear" */
 void clear_terminal(void);
 
-/* Takes in the executable that was attempted to be run as well as the error number from errno and
-   fprintf's the appropiate error message */
-void fprintf_errno_message_fork(const char *executable_run, int err_num);
-
-/* Takes in the error number from errno after running chdir and outputs the appropiate
-   error message */
-void fprintf_errno_message_chdir(const char *directory_cd_attempted, int err_num);
-
-/* Takes in the name of an internal shell command and printf's the appropiate help page */
-void printf_help_given_command(const char *command);
-
 #endif

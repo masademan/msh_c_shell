@@ -16,7 +16,8 @@
 #include "get_info/get_sysinfo.h"
 #include "helpers/arguments/split.h"
 #include "helpers/commands/check.h"
-#include "helpers/helpers.h"
+#include "helpers/printing/command_errors.h"
+#include "helpers/printing/command_help.h"
 #include "macros/ansi_colors.h"
 #include "macros/shell_globals.h"
 
