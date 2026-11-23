@@ -22,7 +22,6 @@ int main(int arg_c, char **arg_v) {
     //      check out stdout and stderr routing, like with > and |
     //      export command
     //      look up pushd and popd
-    //      shell history
     //      tab complete
 
     // Run shell loop
