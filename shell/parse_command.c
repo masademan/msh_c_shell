@@ -7,11 +7,16 @@
 // #include "data_type/safe_string/safe_string.h"
 #include "helpers/commands/clean.h"
 #include "helpers/commands/split.h"
+#include "history/history.h"
 #include "parse_command.h"
 
 StringArray *shell_parse_line(CharArray *line) {
     CharArray *cleaned_line = shell_clean_line(line);
     StringArray *split_tokens = shell_split_line(cleaned_line);
+
+    if (!(da_count_char(cleaned_line) == 0 || has_duplicate_at_2_newest_commands())) {
+        add_command(cleaned_line);
+    }
 
     // TODO: Remove later
     /*

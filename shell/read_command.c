@@ -403,9 +403,7 @@ CharArray *shell_read_command(void) {
         add_command(command);
     } while (!is_complete_command());
 
-    if (da_count_char(command) == 0 || has_duplicate_at_2_newest_commands()) {
-        pop_command();
-    }
+    pop_command();
 
     // print_history();
 
