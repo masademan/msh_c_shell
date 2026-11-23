@@ -12,6 +12,7 @@
 #include "helpers/commands/move.h"
 #include "macros/shell_globals.h"
 #include "read_command.h"
+#include "shell/history/history.h"
 
 // TODO: make shell history work
 //       maybe tab complete
@@ -60,22 +61,16 @@ static CharArray *shell_handle_ANSI(CharArray *line, size_t *position) {
         da_add_char(char_a, c);
 
         if (c == 'A') {  // Up arrow
-            // TODO:
-            // get prev history
-
             up_pressed = true;
 
-            printf("\a");
+            // printf("\a");
 
             da_free_char(char_a);
             return NULL;
         } else if (c == 'B') {  // Down arrow
-            // TODO:
-            // load next history
-
             down_pressed = true;
 
-            printf("\a");
+            // printf("\a");
 
             da_free_char(char_a);
             return NULL;
@@ -298,6 +293,31 @@ CharArray *shell_read_line(void) {
             render_typed_command_after_removing_char(line, position, line_len);
         }
 
+        if (up_pressed) {
+            up_pressed = false;
+
+            if (get_command_idx() + 1 == get_history_length()) {
+                printf("\a");
+            }
+
+            set_command_idx_to_prev();
+        }
+
+        if (down_pressed) {
+            down_pressed = false;
+
+            if (get_command_idx() == 0) {
+                printf("\a");
+            }
+
+            set_command_idx_to_next();
+        }
+
+        if (up_pressed || down_pressed) {
+            get_command(line);
+            position = da_count_char(line);
+        }
+
         if (c == CONTINUE_CODE || c == CLEAR_LINE_CODE) {
             continue;
         }
@@ -351,10 +371,14 @@ CharArray *shell_read_command(void) {
 
     line_check_reset();
 
+    add_command(command);
+
     do {
         if (da_count_char(command) != 0) {
             printf("> ");
         }
+
+        set_command_idx(0);
 
         new_line = shell_read_line();
 
@@ -368,9 +392,15 @@ CharArray *shell_read_command(void) {
         }
 
         da_extend_char(command, new_line);
-
         da_free_char(new_line);
+
+        pop_command();
+        add_command(command);
     } while (!is_complete_command());
+
+    if (da_count_char(command) == 0) {
+        pop_command();
+    }
 
     if (!keep_reading_command) {
         da_free_char(command);

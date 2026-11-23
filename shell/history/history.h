@@ -24,6 +24,12 @@ void set_command_idx_to_next(void);
    Returns false if the idx is out of range */
 bool set_command_idx(size_t idx);
 
+/* Returns the current command idx */
+size_t get_command_idx(void);
+
+/* Returns the length of the command history array */
+size_t get_history_length(void);
+
 /* Sets the inputted line to the command at the current idx
    Returns true if successful
    Returns false if line is NULL or any CharArray operation fails */
