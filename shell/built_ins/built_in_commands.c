@@ -5,6 +5,8 @@
 #include <unistd.h>
 
 #include "built_in_commands.h"
+#include "data_type/safe_string/safe_string.h"
+#include "export.h"
 #include "get_info/environ_var.h"
 #include "get_info/get_sysinfo.h"
 #include "help.h"
@@ -101,13 +103,30 @@ int shell_export(const char **args, size_t num_args) {
         for (size_t i = 0; environ[i] != NULL; i++) {
             printf("declare -x %s\n", environ[i]);
         }
+
         return 0;
     }
-    (void) args;
 
-    // now do parsing and set it
+    String *environ_var_name = NULL, *environ_var_val = NULL;
 
-    return 0;
+    if (!parse_export_arg(args[1], &environ_var_name, &environ_var_val)) {
+        fprintf(stderr, "-%s: export: '%s': not a valid identifier", SHELL_NAME, args[1]);
+
+        return 1;
+    }
+
+    int status = 0;
+    // if (!set_environ_var_val(ss_cstr(environ_var_name), ss_cstr(environ_var_val), true)) {
+    //     status = 1;
+    // }
+
+    printf("var_name: ⟨%s⟩\n", ss_cstr(environ_var_name));
+    printf("var_val: ⟨%s⟩\n", ss_cstr(environ_var_val));
+
+    ss_free(environ_var_name);
+    ss_free(environ_var_val);
+
+    return status;
 }
 
 int shell_help(const char **args, size_t num_args) {
