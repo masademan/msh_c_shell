@@ -41,4 +41,14 @@ void clean_up_command_history(void);
 /* Run this at the beginning of the program to setup the command history array */
 void setup_command_history(void);
 
+/* Returns true if the prior command and the current command are equal
+   Else, returns false
+   Also returns false if any da operations fails
+   This is to pop the command if it's the same (stops duplicates when scrolling through history) */
+bool has_duplicate_at_2_newest_commands(void);
+
+/* Print the commands in the history
+   FOR TESTING ONLY */
+void print_history(void);
+
 #endif

@@ -287,6 +287,11 @@ CharArray *shell_read_line(void) {
         c = shell_read_char(line, &position);
 
         if (c == CLEAR_LINE_CODE) {
+            if (get_command_idx() == 0) {
+                pop_command();
+                add_command(line);
+            }
+
             size_t line_len = da_count_char(line);
             da_clear_char(line);
             move_cursor_to(&position, 0);
@@ -294,8 +299,6 @@ CharArray *shell_read_line(void) {
         }
 
         if (up_pressed) {
-            up_pressed = false;
-
             if (get_command_idx() + 1 == get_history_length()) {
                 printf("\a");
             }
@@ -304,8 +307,6 @@ CharArray *shell_read_line(void) {
         }
 
         if (down_pressed) {
-            down_pressed = false;
-
             if (get_command_idx() == 0) {
                 printf("\a");
             }
@@ -314,8 +315,12 @@ CharArray *shell_read_line(void) {
         }
 
         if (up_pressed || down_pressed) {
+            up_pressed = false;
+            down_pressed = false;
+
             get_command(line);
-            position = da_count_char(line);
+            render_typed_command_after_removing_char(line, 0, 0);
+            move_cursor_to(&position, da_count_char(line));
         }
 
         if (c == CONTINUE_CODE || c == CLEAR_LINE_CODE) {
@@ -398,9 +403,11 @@ CharArray *shell_read_command(void) {
         add_command(command);
     } while (!is_complete_command());
 
-    if (da_count_char(command) == 0) {
+    if (da_count_char(command) == 0 || has_duplicate_at_2_newest_commands()) {
         pop_command();
     }
+
+    // print_history();
 
     if (!keep_reading_command) {
         da_free_char(command);
