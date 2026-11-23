@@ -7,6 +7,7 @@
 #include "get_info/get_sysinfo.h"
 #include "helpers/commands/check.h"
 #include "helpers/helpers.h"
+#include "history/history.h"
 #include "loop.h"
 #include "macros/ansi_colors.h"
 #include "macros/shell_globals.h"
@@ -49,6 +50,8 @@ void shell_loop(void) {
 
     clear_terminal();
 
+    setup_command_history();
+
     // TODO: Use configs that are set up in main.c to turn on/off the user and machine name
     //       Allow for arrow keys to select previous commands and stuff
 
@@ -90,4 +93,5 @@ void shell_loop(void) {
     } while (status != SHELL_EXIT_CODE);
 
     clean_up_check();
+    clean_up_command_history();
 }

@@ -6,171 +6,9 @@
 #include "data_type/dynamic_arrays/char_array.h"
 #include "data_type/dynamic_arrays/char_array_and_string_conversion.h"
 #include "data_type/safe_string/safe_string.h"
-#include "get_info/environ_var.h"
+#include "environ_var_expand.h"
 #include "macros/shell_globals.h"
 #include "shell/helpers/commands/check.h"
-
-/* Returns true if c is a number (0-9)
-   Else, returns false */
-static bool char_is_num(char c) { return '0' <= c && c <= '9'; }
-
-/* Returns true if c is a letter (a-z, A-Z) or an underscore (_) */
-static bool char_is_alpha_or_underscore(char c) {
-    return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || (c == '_');
-}
-
-/* Pulls the expanding of the environment value and inserting into the array into it's own function */
-static bool expand_the_environ_var_val(CharArray *temp_environ_var, CharArray *expanded_arg) {
-    String *environ_var = da_join_to_string(temp_environ_var);
-    char *environ_var_val = get_environ_var_val(ss_cstr(environ_var));
-    ss_free(environ_var);
-
-    if (!da_add_all_char(expanded_arg, environ_var_val, strlen(environ_var_val))) {
-        da_free_char(expanded_arg);
-        da_free_char(temp_environ_var);
-
-        fprintf(stderr, "-%s: da_add_all error", SHELL_NAME);
-        return false;
-    }
-
-    da_clear_char(temp_environ_var);
-
-    return true;
-}
-
-/* Takes in a clean argument (from clean_argument) and expands any environment variables necessary
-   Caller owns the returns pointer and has to call da_free_char() on it to free it */
-static CharArray *expand_environ_vars(const CharArray *cleaned_arg) {
-    CharArray *expanded_arg = da_new_char();
-
-    char c;
-    if (!da_get_char(cleaned_arg, 0, &c)) {
-        da_free_char(expanded_arg);
-
-        fprintf(stderr, "-%s: da_get error", SHELL_NAME);
-        return false;
-    }
-    if (da_count_char(cleaned_arg) == 1 && c == '~') {
-        char *environ_var_val = get_environ_var_val("HOME");
-
-        if (!da_add_all_char(expanded_arg, environ_var_val, strlen(environ_var_val))) {
-            da_free_char(expanded_arg);
-
-            fprintf(stderr, "-%s: da_add_all error", SHELL_NAME);
-            return false;
-        }
-
-        return expanded_arg;
-    }
-    CharArray *temp_environ_var = da_new_char();
-
-    size_t cleaned_len = da_count_char(cleaned_arg);
-    da_reserve_char(expanded_arg, cleaned_len);
-
-    bool found_escape_char = false;
-    bool found_environ_var = false;
-    for (size_t i = 0; i < cleaned_len; i++) {
-        if (!da_get_char(cleaned_arg, i, &c)) {
-            da_free_char(expanded_arg);
-            da_free_char(temp_environ_var);
-
-            fprintf(stderr, "-%s: da_get error", SHELL_NAME);
-            return NULL;
-        }
-
-        if (found_environ_var) {
-            if (!char_is_num(c) && !char_is_alpha_or_underscore(c)) {
-                found_environ_var = false;
-
-                if (da_count_char(temp_environ_var) == 0) {
-                    if (!da_add_char(expanded_arg, '$')) {
-                        da_free_char(expanded_arg);
-                        da_free_char(temp_environ_var);
-
-                        fprintf(stderr, "-%s: da_add error", SHELL_NAME);
-                        return NULL;
-                    }
-                    if (!da_add_char(expanded_arg, c)) {
-                        da_free_char(expanded_arg);
-                        da_free_char(temp_environ_var);
-
-                        fprintf(stderr, "-%s: da_add error", SHELL_NAME);
-                        return NULL;
-                    }
-
-                    continue;
-                }
-
-                if (!expand_the_environ_var_val(temp_environ_var, expanded_arg)) {
-                    return NULL;
-                }
-
-                if (c == '$') {
-                    found_environ_var = true;
-                }
-            } else {
-                if (!da_add_char(temp_environ_var, c)) {
-                    da_free_char(expanded_arg);
-                    da_free_char(temp_environ_var);
-
-                    fprintf(stderr, "-%s: da_add error", SHELL_NAME);
-                    return NULL;
-                }
-
-                if (da_count_char(temp_environ_var) == 1 && c == '0') {
-                    if (!da_add_char(expanded_arg, '-')) {
-                        da_free_char(expanded_arg);
-                        da_free_char(temp_environ_var);
-
-                        fprintf(stderr, "-%s: da_add error", SHELL_NAME);
-                        return NULL;
-                    }
-                    if (!da_add_all_char(expanded_arg, SHELL_NAME, strlen(SHELL_NAME))) {
-                        da_free_char(expanded_arg);
-                        da_free_char(temp_environ_var);
-
-                        fprintf(stderr, "-%s: da_add_all error", SHELL_NAME);
-                        return NULL;
-                    }
-
-                    da_clear_char(temp_environ_var);
-
-                    found_environ_var = false;
-
-                    continue;
-                }
-            }
-        } else if (found_escape_char) {
-            if (c == '\\' || c == '$') {
-                da_pop_char(expanded_arg, NULL);
-            }
-
-            found_escape_char = false;
-        } else if (c == '\\') {
-            found_escape_char = true;
-        } else if (c == '$') {
-            found_environ_var = true;
-        }
-
-        if (!found_environ_var) {
-            if (!da_add_char(expanded_arg, c)) {
-                da_free_char(expanded_arg);
-                da_free_char(temp_environ_var);
-
-                fprintf(stderr, "-%s: da_add error", SHELL_NAME);
-                return NULL;
-            }
-        }
-    }
-
-    if (da_count_char(temp_environ_var) > 0) {
-        if (!expand_the_environ_var_val(temp_environ_var, expanded_arg)) {
-            return NULL;
-        }
-    }
-
-    return expanded_arg;
-}
 
 /* Check if c is value_check, and if so, replace it with value_replace
    Then increment offset
@@ -240,11 +78,14 @@ void clean_argument(String **arg_string) {
 
     da_remove_n_char(arg_char_arr, da_count_char(arg_char_arr) - offset, offset);
 
+    // ss_free(*arg_string);
+    // *arg_string = da_join_to_string(arg_char_arr);
+    // da_free_char(arg_char_arr);
+
     CharArray *environ_var_expanded_arg_arr = expand_environ_vars(arg_char_arr);
     da_free_char(arg_char_arr);
 
     ss_free(*arg_string);
-
     *arg_string = da_join_to_string(environ_var_expanded_arg_arr);
 
     da_free_char(environ_var_expanded_arg_arr);

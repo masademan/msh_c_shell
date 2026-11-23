@@ -17,6 +17,10 @@
 //       maybe tab complete
 
 #define CONTINUE_CODE -2
+#define CLEAR_LINE_CODE -3
+
+bool up_pressed;
+bool down_pressed;
 
 struct termios orig_termios;
 
@@ -59,6 +63,8 @@ static CharArray *shell_handle_ANSI(CharArray *line, size_t *position) {
             // TODO:
             // get prev history
 
+            up_pressed = true;
+
             printf("\a");
 
             da_free_char(char_a);
@@ -66,6 +72,8 @@ static CharArray *shell_handle_ANSI(CharArray *line, size_t *position) {
         } else if (c == 'B') {  // Down arrow
             // TODO:
             // load next history
+
+            down_pressed = true;
 
             printf("\a");
 
@@ -192,12 +200,19 @@ static int shell_read_char(CharArray *line, size_t *position) {
     // printf("\n(%d)", c);
 
     if (c == '\033') {  // Handle ANSI
+        up_pressed = false;
+        down_pressed = false;
+
         CharArray *char_a = shell_handle_ANSI(line, position);
         if (char_a != NULL) {
             da_add_char(line, '\033');
             da_add_char(line, '[');
             da_extend_char(line, char_a);
             da_free_char(char_a);
+        }
+
+        if (up_pressed || down_pressed) {
+            return CLEAR_LINE_CODE;
         }
 
         return CONTINUE_CODE;
@@ -276,7 +291,14 @@ CharArray *shell_read_line(void) {
     while (keep_reading_command) {
         c = shell_read_char(line, &position);
 
-        if (c == CONTINUE_CODE) {
+        if (c == CLEAR_LINE_CODE) {
+            size_t line_len = da_count_char(line);
+            da_clear_char(line);
+            move_cursor_to(&position, 0);
+            render_typed_command_after_removing_char(line, position, line_len);
+        }
+
+        if (c == CONTINUE_CODE || c == CLEAR_LINE_CODE) {
             continue;
         }
 

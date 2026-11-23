@@ -18,7 +18,7 @@ SRCS = main.c \
 			 shell/helpers/helpers.c \
 			 shell/helpers/commands/check.c shell/helpers/commands/edit.c shell/helpers/commands/move.c \
 			 shell/helpers/commands/clean.c shell/helpers/commands/split.c \
-			 shell/helpers/arguments/clean.c shell/helpers/arguments/split.c \
+			 shell/helpers/arguments/clean.c shell/helpers/arguments/split.c shell/helpers/arguments/environ_var_expand.c \
 			 shell/helpers/printing/command_errors.c shell/helpers/printing/command_help.c \
 			 shell/history/history.c \
 			 get_info/get_sysinfo.c get_info/environ_var.c \
