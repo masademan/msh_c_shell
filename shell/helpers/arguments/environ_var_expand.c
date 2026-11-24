@@ -6,15 +6,7 @@
 #include "environ_var_expand.h"
 #include "get_info/environ_var.h"
 #include "macros/shell_globals.h"
-
-/* Returns true if c is a number (0-9)
-   Else, returns false */
-static bool char_is_num(char c) { return '0' <= c && c <= '9'; }
-
-/* Returns true if c is a letter (a-z, A-Z) or an underscore (_) */
-static bool char_is_alpha_or_underscore(char c) {
-    return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || (c == '_');
-}
+#include "shell/helpers/helpers.h"
 
 bool expand_the_environ_var_val(CharArray *temp_environ_var, CharArray *expanded_arg) {
     String *environ_var = da_join_to_string(temp_environ_var);

@@ -110,7 +110,7 @@ int shell_export(const char **args, size_t num_args) {
     String *environ_var_name = NULL, *environ_var_val = NULL;
 
     if (!parse_export_arg(args[1], &environ_var_name, &environ_var_val)) {
-        fprintf(stderr, "-%s: export: '%s': not a valid identifier", SHELL_NAME, args[1]);
+        fprintf(stderr, "-%s: export: '%s': not a valid identifier\n", SHELL_NAME, args[1]);
 
         return 1;
     }

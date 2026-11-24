@@ -4,14 +4,14 @@
 #include "data_type/safe_string/safe_string.h"
 #include "export.h"
 #include "shell/helpers/arguments/clean.h"
+#include "shell/helpers/helpers.h"
 
 bool parse_export_arg(const char *export_arg, String **environ_var_name, String **environ_var_val) {
-    (void) export_arg;
-    (void) environ_var_name;
-    (void) environ_var_val;
-
     size_t var_name_len = 0, export_arg_len = strlen(export_arg);
     for (size_t i = 0; i < export_arg_len && export_arg[i] != '='; i++) {
+        if (!char_is_num(export_arg[i]) && !char_is_alpha_or_underscore(export_arg[i])) {
+            return false;
+        }
         var_name_len++;
     }
 
