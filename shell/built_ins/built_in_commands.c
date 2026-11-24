@@ -116,12 +116,12 @@ int shell_export(const char **args, size_t num_args) {
     }
 
     int status = 0;
-    // if (!set_environ_var_val(ss_cstr(environ_var_name), ss_cstr(environ_var_val), true)) {
-    //     status = 1;
-    // }
+    if (!set_environ_var_val(ss_cstr(environ_var_name), ss_cstr(environ_var_val), true)) {
+        status = 1;
+    }
 
-    printf("var_name: ⟨%s⟩\n", ss_cstr(environ_var_name));
-    printf("var_val: ⟨%s⟩\n", ss_cstr(environ_var_val));
+    // printf("var_name: |%s|\n", ss_cstr(environ_var_name));
+    // printf("var_val: |%s|\n", ss_cstr(environ_var_val));
 
     ss_free(environ_var_name);
     ss_free(environ_var_val);
