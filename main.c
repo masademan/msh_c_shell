@@ -19,7 +19,6 @@ int main(int arg_c, char **arg_v) {
     //      add aliasing for commands (like "ls" to "ls --color=auto"), do research on
     //        what is eligible for aliasing (simyon mentioned smth about an rcfile, check that out)
     //      check out stdout and stderr routing, like with > and |
-    //      export command
     //      look up pushd and popd
     //      tab complete
 
